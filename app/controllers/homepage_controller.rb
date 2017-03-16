@@ -5,6 +5,9 @@ class HomepageController < ApplicationController
 
   APP_DEFAULT_VIEW_TYPE = "grid"
   VIEW_TYPES = ["grid", "list", "map"]
+  def home
+    render layout: "home"
+  end
 
   # rubocop:disable AbcSize
   # rubocop:disable MethodLength
