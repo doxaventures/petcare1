@@ -1,0 +1,95 @@
+.header-menu-container {
+    display: block !Important;
+    padding: 0.625em 0.75em;
+    height: 3.75em;
+}
+
+.left .header-text-link {
+    height: 3.75em;
+    line-height: 3.5625em;
+    padding-right: 0.75em;
+    padding-left: 0.75em;
+    display: block;
+    color: #3c3c3c;
+    margin-top: 3px;
+}
+
+h2.action-heading {
+    margin-bottom: 1px;
+    margin-top: 15px;
+}
+
+
+
+.header-hover:hover {
+    background-color: #e8e8e8;
+    height: 3.7em;
+}
+
+.header-wide-logo {
+    background-image: url(/system/wide_logos/1/header/134271.png?1489670053) !important;
+    width: 10.5em;
+    height: 2.5em;
+    background-repeat: no-repeat;
+    -webkit-background-size: 10.5em auto;
+    -moz-background-size: 10.5em auto;
+    -o-background-size: 10.5em auto;
+    background-size: 10.5em auto;
+    display: inline-block;
+}
+
+
+
+
+
+
+.homepage .btn-u-dark:hover {
+	color: #f79c1a !important;
+}
+
+.new-listing-link {
+    -webkit-border-radius: 0.3125em;
+    -moz-border-radius: 0.3125em;
+    -ms-border-radius: 0.3125em;
+    -o-border-radius: 0.3125em;
+    border-radius: 0.3125em;
+    background: #20428c !important;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    margin: 0.75em 0;
+    padding: 0 1.5em;
+    padding-bottom: 4px;
+    height: 2.625em;
+    border: 0;
+    display: table;
+    line-height: 1.5em;
+    display: block;
+    margin-top: 0.625em;
+    margin-bottom: 0.625em;
+    height: 2.5em;
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+    line-height: 2.3125em;
+    max-width: 12.5em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+section#portfolio img {
+    border-radius: 4px;
+    box-shadow: 0 0 1px 1px #DDC;
+}
+
+section#portfolio-2 img {
+    border-radius: 4px;
+    box-shadow: 0 0 1px 1px #DDC;
+}
+
+
+@media (max-width: 768px) {
+	.margin-top-120 {
+    margin-top: 50px;
+}
+}
