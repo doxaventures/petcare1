@@ -189,3 +189,4 @@ gem 'transit-ruby', '~> 0.8'
 
 # Markdown parser
 gem 'redcarpet', '~> 3.3', '>= 3.3.4'
+gem 'geocoder'

@@ -48,7 +48,10 @@ module ListingIndexService::Search::DatabaseSearchHelper
       :listing_shape_id,
       :categories,
       :fields,
-      :price_cents
+      :price_cents,
+      :lat,
+      :lng,
+      :location_name
     ].any? { |field| search[field].present? }
   end
 

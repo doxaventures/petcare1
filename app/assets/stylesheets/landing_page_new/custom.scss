@@ -87,9 +87,227 @@ section#portfolio-2 img {
     box-shadow: 0 0 1px 1px #DDC;
 }
 
+.dropdown.dropdown-lg .dropdown-menu {
+    margin-top: -1px;
+    padding: 6px 20px;
+}
+.input-group-btn .btn-group {
+    display: flex !important;
+}
+.btn-group .btn {
+    border-radius: 0;
+    margin-left: -1px;
+}
+.btn-group .btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.btn-group .form-horizontal .btn[type="submit"] {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.form-horizontal .form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+div#adv-search select {
+    width: 35%;
+    height: 55px !important;
+    border-right: 1px solid;
+}
+
+div#adv-search input {
+    width: 30%;
+    height: 55px;
+    border: none;
+    box-shadow: none;
+    font-size: 16px;
+}
+
+div#adv-search button {
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+    height: 55px;
+    border: none;
+    margin-top: 0px;
+}
+
+.form-group .form-control:last-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+
+button, .button {
+    -webkit-border-radius: 0.3125em;
+    -moz-border-radius: 0.3125em;
+    -ms-border-radius: 0.3125em;
+    -o-border-radius: 0.3125em;
+    border-radius: 0.3125em;
+    background: #4a90e2;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+     margin: 0px;
+    padding: 0 1.5em !important;
+    padding-bottom: 4px;
+    height: 2.625em;
+    border: 0;
+    display: table;
+    line-height: 1.5em;
+    padding-top: 0.5625em;
+    padding-bottom: 0.5625em;
+    height: auto;
+}
+
+select#user_category_id {
+    display: block;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width: 100%;
+    height: 42px;
+    padding: 6px 10px;
+    outline: none;
+    border-style: solid;
+    border-radius: 0;
+    background: #fff;
+    font: 15px/23px 'Open Sans', Helvetica, Arial, sans-serif;
+    color: #5d676e;
+    appearance: normal;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    box-shadow: none;
+    border-color: #ebebeb;
+    border-left: none;
+}
+
+input.form-control:hover {
+	z-index: 0;
+}
+
+@media screen and (min-width: 768px) {
+    #adv-search {
+        width: 750px;
+        margin: 0 auto;
+    }
+    .dropdown.dropdown-lg {
+        position: static !important;
+    }
+    .dropdown.dropdown-lg .dropdown-menu {
+        min-width: 500px;
+    }
+
+    div#adv-search form {
+    display: flex;
+}
+}
+
+.container.collage-container {
+    padding: 70px;
+}
+.col-md-4 img {
+    margin-left: 90px;
+    margin-top: 20px;
+}
+.col-md-6 img {
+    margin-left: 110px;
+}
+
+@media (max-width: 768px) {
+	div#adv-search button {
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 45px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+div#adv-search input {
+    height: 45px;
+    width: 100%;
+    border-radius: 4px;
+}
+
+div#adv-search select {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.input-group {
+    position: relative;
+    display: block;
+    border-collapse: separate;
+}
+.col-md-4 img {
+    display: block;
+    margin: 0 auto;
+}
+.col-md-8 p {
+    display: block;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-left: 33px;
+    margin-bottom: 20px;
+}
+button.btn.btn-join.btn-success {
+    display: block;
+    margin: 0 auto;
+    width: 335px;
+}
+h3 {
+    display: block;
+    margin-left: 72px;
+}
+.col-md-4 img {
+    display: block;
+    margin: 0 auto;
+    margin-left: 125px;
+    margin-bottom: 10px;
+}
+.col-md-6 img {
+    display: block;
+    margin: 0 auto;
+    margin-left: 102px;
+    margin-top: 20px;
+}
+.col-md-6 p {
+    display: block;
+    margin: 0 auto;
+    margin-left: 10px;
+}
+button.btn.btn-cnt.btn-success {
+    display: block;
+    margin: 0 auto;
+    width: 350px;
+    margin-right: 40px;
+    margin-top: 15px;
+}
+
+}
+
+
 
 @media (max-width: 768px) {
 	.margin-top-120 {
     margin-top: 50px;
+}
+
+.margin-top-for-cntainer1 p.text-center {
+    margin-bottom: 50px;
+}
+
+}
+
+
+@media (min-width: 991px) {
+	
+	#adv-search {
+    width: 800px !important;
+    margin: 0 auto;
 }
 }

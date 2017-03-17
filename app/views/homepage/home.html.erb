@@ -1,53 +1,55 @@
+<script type="text/javascript">
+  $(function(){
+    var input = document.getElementById("location_name");
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    window.google.maps.event.addListener(autocomplete, 'place_changed', function(){
+      var place = autocomplete.getPlace();
+      var lat = place.geometry.location.lat(),
+          lng = place.geometry.location.lng();
+      $("#lat").val(toRadians(lat));
+      $("#lng").val(toRadians(lng));
+    });
+    function toRadians(degrees) {
+      return degrees * (Math.PI/180);
+    }
+  });
+</script>
+
   <div class="container-fluid pads-25 contain">
     <div class="row">
       <div class="margin-top-120">
         <h1 class="text-center colr-text"><b>PET STORE</b></h1>
-        <p class="text-center colr-text">Find a pet care partner.
+        <p class="text-center colr-text">Find a pet care partner.</p>
       </div>
     </div>
-    <div class="container md-margin-bottom-10">
-      <div class="container seting">
-        <div class="col-sm-3">
-          <div class="row media-fr-marg-btm">
-            <div class="dropdown">
-              <button class="btn btn-block btn-u-bright dropdown-toggle hover-set left-r" type="button" data-toggle="dropdown">CHOOSE A PET
-              <i class="fa fa-caret-down" aria-hidden="true"></i></button>
-              <ul class="dropdown-menu drop-cs">
-                <li><a href="#">Option-1</a></li>
-                <li><a href="#">Option-2</a></li>
-                <li><a href="#">Option-3</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="row media-fr-marg-btm">
-            <div class="dropdown">
-              <button class="btn btn-block btn-u-bright dropdown-toggle hover-set" type="button" data-toggle="dropdown">CHOOSE A SERVICE
-              <i class="fa fa-caret-down" aria-hidden="true"></i></button>
-              <ul class="dropdown-menu drop-cs">
-                <li><a href="#">Option-1</a></li>
-                <li><a href="#">Option-2</a></li>
-                <li><a href="#">Option-3</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-3">
-          <div class="row media-fr-marg-btm">
-            <div class="dropdown">
-              <input class="btn btn-block btn-u-bright dropdown-toggle hover-set input-set" placeholder="Location" type="text" style="border:none; border-left: 1px solid;">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-2">
-          <div class="row">
-            <button type="button" class="btn btn-block btn-u-dark hover-set"> SEARCH</button>
-          </div>
-        </div>
-      </div>
-    </div>
+
+  <div class="input-group" id="adv-search">
+    <%=form_tag '/s', method: :get do%>
+      <select class="form-control 1" id="user_category_id" name="category">
+        <option>Choose a Pet</option>
+        <%Category.all.each do |category|%>
+          <option value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+        <%end%>
+      </select>
+      <select class="form-control 2" id="user_category_id">
+          <option value="0" selected>Choose a Service</option>
+          <option value="1">Option 1</option>
+          <option value="2">Option 2</option>
+          <option value="3">Option 3</option>
+          <option value="4">Option 4</option>
+          <option value="4">Option 5</option>
+      </select>
+      <input type="text" name="location_name" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+      <%=hidden_field_tag :lat, params[:lat]%>
+      <%=hidden_field_tag :lng, params[:lng]%>
+          <button type="submit" class="btn btn-primary">Search</button>
+    <%end%>
   </div>
+  </div>
+
+
+
+
   <div class="container margin-top-for-cntainer1">
     <h2 class="section-head-title">How It Works</h2>
      <div class="row">
@@ -190,7 +192,7 @@
       </div> 
       <div class="col-sm-8">
         <p class="col-md-offset-2 margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor. Nam et ligula sed arcu porttitor posuere at in mi. Suspendisse potenti. Maecenas eget felis ut turpis scelerisque mollis vel eget justo. Ut quis viverra purus. Nulla convallis molestie metus, vel maximus lacus rutrum consequat. Nam et scelerisque orci. In sed feugiat nisl, vel molestie elit,Nam et ligula sed arcu porttitor posuere at in mi. Suspendisse potenti. Maecenas eget felis ut turpis scelerisque mollis vel eget justo. Ut quis viverra purus. Nulla convallis molestie metus.</p>
-        <button type="button" class="btn btn-default btn-lg padin-ars">Join</button>
+        <button type="submit" class="btn btn-default btn-lg padin-ars">Contact Support</button>
       </div>
     </div>
   </section>
