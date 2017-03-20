@@ -5,8 +5,15 @@ class HomepageController < ApplicationController
 
   APP_DEFAULT_VIEW_TYPE = "grid"
   VIEW_TYPES = ["grid", "list", "map"]
+
   def home
     render layout: "home"
+  end
+
+  def fetch_subcategories
+    category = Category.find_by(url: params[:category])
+    subcategories = Category.where(parent_id: category.id)
+    render layout: false, locals: { subcategories: subcategories }
   end
 
   # rubocop:disable AbcSize
