@@ -14,225 +14,209 @@
     }
   });
 </script>
-
-  <div class="container-fluid pads-25 contain">
-    <div class="row">
-      <div class="margin-top-120">
-        <h1 class="text-center colr-text"><b>PET STORE</b></h1>
-        <p class="text-center colr-text">Find a pet care partner.</p>
-      </div>
+<div class="container-fluid pads-25 contain" style="background: url(assets/dogs-bg.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;">
+  <div class="row">
+    <div class="margin-top-120">
+      <h1 class="text-center colr-text"><b><%= community_slogan.html_safe %></b></h1>
+      <p class="text-center colr-text"><%= community_description.html_safe %></p>
     </div>
-
+  </div>
   <div class="input-group" id="adv-search">
     <%=form_tag '/s', method: :get do%>
-      <select class="form-control 1" id="user_category_id" name="category" data-remote="true" data-url="<%=fetch_subcategories_path%>">
-        <option>Choose a Pet</option>
-        <%Category.parent_categories.each do |category|%>
-          <option value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
-        <%end%>
-      </select>
-      <div id="fetch_subcategory">
-        <%= render 'homepage/sub_categories', subcategories: [] %>
-      </div>
-      <input type="text" name="location_name" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
-      <%=hidden_field_tag :lat, params[:lat]%>
-      <%=hidden_field_tag :lng, params[:lng]%>
-          <button type="submit" class="btn btn-custom">Search</button>
+    <select class="form-control 1" id="user_category_id" name="category" data-remote="true" data-url="<%=fetch_subcategories_path%>">
+      <option>Choose a Pet</option>
+      <%Category.parent_categories.each do |category|%>
+      <option value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+      <%end%>
+    </select>
+    <div id="fetch_subcategory">
+      <%= render 'homepage/sub_categories', subcategories: [] %>
+    </div>
+    <input type="text" name="location_name" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+    <%=hidden_field_tag :lat, params[:lat]%>
+    <%=hidden_field_tag :lng, params[:lng]%>
+    <button type="submit" class="btn btn-custom">Search</button>
     <%end%>
   </div>
-  </div>
-
-
-
-
-  <div class="container margin-top-for-cntainer1">
-    <h2 class="section-head-title">How It Works</h2>
-     <div class="row">
-        <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-          <!--  <img src="/assets/search-for-wire.jpg" alt="edit.png"> -->
-          <div class="section-hiw-icon">
-            <i class="fa fa-search" aria-hidden="true"></i>
-          </div>
-           <h2 class="text-center style-for-owner-list">SEARCH</h2>
-           <p class="text-center">Use the search bar above or pet categories below to search for pet services in your area.</p>
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-           <!-- <img src="/assets/calender-1.jpg"> -->
-            <div class="section-hiw-icon">
-            <i class="fa fa-calendar" aria-hidden="true"></i>
-          </div>
-           <h2 class="text-center style-for-owner-list">BOOK</h2>
-           <p class="text-center">Book a service and pay securely online. Your pet care partner will contact you to finalize details.</p>
-        </div>
-        <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-           <!-- <img src="/assets/heart2.png", style="width: 204px;"> -->
-            <div class="section-hiw-icon">
-            <i class="fa fa-heart" aria-hidden="true"></i>
-          </div>
-           <h2 class="text-center style-for-owner-list">ENJOY</h2>
-           <p class="text-center">Enjoy the care your pet receives.</p>
-        </div>
-     </div>
-  </div>
-
-
-  <section id="portfolio">
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12 text-center">
-                      <hr class="star-primary">
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
-                      </a>
-                  </div>
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
-                      </a>
-                  </div>
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
-                      </a>
-                  </div>
-          </div>
-
-      </section>
-      <section id="portfolio-2">
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12 text-center">
-                      <hr class="star-primary">
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
-                      </a>
-                  </div>
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
-                      </a>
-                  </div>
-                  <div class="col-sm-4 portfolio-item">
-                      <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                          <!-- <div class="caption">
-                              <div class="caption-content">
-                                  <i class="fa fa-search-plus fa-3x"></i>
-                              </div>
-                          </div> -->
-                          <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
-                      </a>
-                  </div>
-          </div>
-          
-      </section>
-  <section>
-    <div class="border-5">
-      <div class="col-sm-12">
-      <h2 class="section-head-title">Get Started</h2>
+</div>
+<div class="container margin-top-for-cntainer1">
+  <h2 class="section-head-title">How It Works</h2>
+  <div class="row">
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!--  <img src="/assets/search-for-wire.jpg" alt="edit.png"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-search" aria-hidden="true"></i>
       </div>
-     <!--  <div class="col-sm-8">
-        <p class="margin-top-media">All you need to get started is create an account on Petstore. Click Join below
-        </p>
-        <button type="button" class="btn btn-default btn-lg padin-ar">Join</button>
-        <h2 class="action-heading">BECOME A PARTNER</h2>
-        <p class="margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+      <h2 class="text-center style-for-owner-list">SEARCH</h2>
+      <p class="text-center">Use the search bar above or pet categories below to search for pet services in your area.</p>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!-- <img src="/assets/calender-1.jpg"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
       </div>
-      <div class="col-sm-4">
-        <img src="/assets/rabbit.jpg" class="width-100-w" style="margin-top: 10px;">
-      </div> -->
-
-    <div class="col-md-12 action-wrapper-1">
-      <div>
-        <div class="col-md-6">
-          <div class="action-text-1">
-            <p class="margin-top-media action-text">All you need to get started is create an account on Petstore. Click Join below
-        </p>
-        <a class="btn btn-custom-action" href="">Join Now</a>
+      <h2 class="text-center style-for-owner-list">BOOK</h2>
+      <p class="text-center">Book a service and pay securely online. Your pet care partner will contact you to finalize details.</p>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!-- <img src="/assets/heart2.png", style="width: 204px;"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+      </div>
+      <h2 class="text-center style-for-owner-list">ENJOY</h2>
+      <p class="text-center">Enjoy the care your pet receives.</p>
+    </div>
+  </div>
+</div>
+<section id="portfolio">
+  <div class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <hr class="star-primary">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 portfolio-item">
+      <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
           </div>
-          <p class="partner-text">
-          <span>Become a Partner</span><br>
-          Are you looking to become a pet care partner? We're looking for partners who love pets and have experience caring for pet needs. Become a pet care partner and you'll be able  to earn money while helping care for pets in your neighborhood . Your first step is to join Petstore at the link above. Before you can list services as a pet care provider on our website, you just need to get validated. Because we love pets we want to first verify the identity of pet care partners. <a href="mailto:someone@example.com" target="_top">Email us</a> to request validation and we will respond back with the simple details. Once you have been validated you're ready to start listing pet care services. We're excited to hear from you.</p>
-        </div>
+          </div> -->
+        <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
+      </a>
+    </div>
+    <div class="col-sm-4 portfolio-item">
+      <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
+          </div>
+          </div> -->
+        <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
+      </a>
+    </div>
+    <div class="col-sm-4 portfolio-item">
+      <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
+          </div>
+          </div> -->
+        <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
+      </a>
+    </div>
+  </div>
+</section>
+<section id="portfolio-2">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <hr class="star-primary">
       </div>
     </div>
-
+    <div class="row">
+      <div class="col-sm-4 portfolio-item">
+        <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
+        </a>
+      </div>
+      <div class="col-sm-4 portfolio-item">
+        <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
+        </a>
+      </div>
+      <div class="col-sm-4 portfolio-item">
+        <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
+        </a>
+      </div>
     </div>
-  </section>
-  <section>
-    <div class="container border-5">
-      <div class="col-sm-12">
+</section>
+<section>
+<div class="border-5">
+<div class="col-sm-12">
+<h2 class="section-head-title">Get Started</h2>
+</div>
+<!--  <div class="col-sm-8">
+  <p class="margin-top-media">All you need to get started is create an account on Petstore. Click Join below
+  </p>
+  <button type="button" class="btn btn-default btn-lg padin-ar">Join</button>
+  <h2 class="action-heading">BECOME A PARTNER</h2>
+  <p class="margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+  </div>
+  <div class="col-sm-4">
+  <img src="/assets/rabbit.jpg" class="width-100-w" style="margin-top: 10px;">
+  </div> -->
+<div class="col-md-12 action-wrapper-1">
+<div>
+<div class="col-md-6">
+<div class="action-text-1">
+<p class="margin-top-media action-text">All you need to get started is create an account on Petstore. Click Join below
+</p>
+<a class="btn btn-custom-action" href="">Join Now</a>
+</div>
+<p class="partner-text">
+<span>Become a Partner</span><br>
+Are you looking to become a pet care partner? We're looking for partners who love pets and have experience caring for pet needs. Become a pet care partner and you'll be able  to earn money while helping care for pets in your neighborhood . Your first step is to join Petstore at the link above. Before you can list services as a pet care provider on our website, you just need to get validated. Because we love pets we want to first verify the identity of pet care partners. <a href="mailto:someone@example.com" target="_top">Email us</a> to request validation and we will respond back with the simple details. Once you have been validated you're ready to start listing pet care services. We're excited to hear from you.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section>
+  <div class="container border-5">
+    <div class="col-sm-12">
       <h2 class="section-head-title">Trust Worthy Support</h2>
-      </div>
-       <div class="text-img">
+    </div>
+    <div class="text-img">
       <div class="col-sm-3">
-      <div class="section-half-img">
-        
-        </div>
-      </div> 
+        <div class="section-half-img"></div>
+      </div>
       <div class="col-sm-6 action-img-sec-2">
-      <i class="fa fa-paw"></i>
+        <i class="fa fa-paw"></i>
         <p class="margin-top-media">We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.</p>
         <a class="cont-supp" href="">Contact Support</a>
       </div>
       <div class="col-sm-3"></div>
     </div>
-    </div>
-  </section>
-
-
-  <div class="container-fluid text-media-cen">
-    <div class="row">
-      <nav class="navbar navbar-default" role="navigation">
-    <div class="container">
+  </div>
+</section>
+<div class="container-fluid text-media-cen">
+  <div class="row">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container">
         <ul class="nav navbar-nav navbar-left mar-5-tp">
-          <li><a href="#">ABOUT</a>
-          </li>
-          <li><a href="#">CONTACT</a>
-          </li>
+          <li><a href="#">ABOUT</a></li>
+          <li><a href="#">CONTACT</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right font-size-32">
-          <li><a href="#"><i class="fa fa-facebook-square"  aria-hidden="true"></i></a>
-          </li>
-          <li><a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-          </li>
-          <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-          </li>
+          <li><a href="#"><i class="fa fa-facebook-square"  aria-hidden="true"></i></a></li>
+          <li><a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a></li>
+          <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
         </ul>
-      </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-  </nav>
-    </div>
+      </div>
+      <!-- /.navbar-collapse -->
   </div>
+  <!-- /.container-fluid -->
+  </nav>
+</div>
+</div>

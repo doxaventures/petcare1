@@ -4,14 +4,7 @@ body {
     line-height: 1.5em;
 }
 
-.contain {
-    background: url(http://wallpaper-gallery.net/images/dogs-wallpapers/dogs-wallpapers-9.jpg) no-repeat center center;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    height: 600px;
-}
+
 
 .container.pads-25{
 padding: 25px;   
@@ -476,7 +469,9 @@ b.brder-btm {
 }
 
 
-
+ .navbar {
+    border-bottom: none;
+}
 
 
 
