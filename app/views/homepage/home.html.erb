@@ -35,7 +35,7 @@
     <div id="fetch_subcategory">
       <%= render 'homepage/sub_categories', subcategories: [] %>
     </div>
-    <input type="text" name="location_name" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+    <input type="text" name="location_name" class="form-control" placeholder="Enter a Location"> id="location_name" value="<%=params[:location_name]%>" />
     <%=hidden_field_tag :lat, params[:lat]%>
     <%=hidden_field_tag :lng, params[:lng]%>
     <button type="submit" class="btn btn-custom">Search</button>
