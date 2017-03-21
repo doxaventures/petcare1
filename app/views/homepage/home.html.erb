@@ -14,13 +14,13 @@
     }
   });
 </script>
-<div class="container-fluid pads-25 contain" style="background: url(assets/dogs-bg.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
+<div class="container-fluid pads-25 contain" style="background: url(assets/pets.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;">
   <div class="row">
     <div class="margin-top-120">
-      <h1 class="text-center colr-text"><b><%= community_slogan.html_safe %></b></h1>
+      <h1 class="text-center colr-text"><b>PETSTORE</b></h1>
       <p class="text-center colr-text"><%= community_description.html_safe %></p>
     </div>
   </div>
@@ -80,33 +80,36 @@
   </div>
   <div class="row">
     <div class="col-sm-4 portfolio-item">
-      <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+      <a href="/s?category=dog" class="portfolio-link" data-toggle="modal">
         <!-- <div class="caption">
           <div class="caption-content">
               <i class="fa fa-search-plus fa-3x"></i>
           </div>
           </div> -->
-        <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
+        <img src="/assets/dog-catog.png" class="img-responsive width-100" alt="Cabin">
+        <p class="text-on-top">Dog</p>
       </a>
     </div>
     <div class="col-sm-4 portfolio-item">
-      <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+      <a href="/s?category=cat" class="portfolio-link" data-toggle="modal">
         <!-- <div class="caption">
           <div class="caption-content">
               <i class="fa fa-search-plus fa-3x"></i>
           </div>
           </div> -->
-        <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
+        <img src="/assets/cat-catog.png" class="img-responsive width-100" alt="Slice of cake">
+        <p class="text-on-top">Cat</p>
       </a>
     </div>
     <div class="col-sm-4 portfolio-item">
-      <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+      <a href="/s?category=bird" class="portfolio-link" data-toggle="modal">
         <!-- <div class="caption">
           <div class="caption-content">
               <i class="fa fa-search-plus fa-3x"></i>
           </div>
           </div> -->
-        <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
+        <img src="/assets/bird-catog.png" class="img-responsive width-100" alt="Circus tent">
+        <p class="text-on-top">Bird</p>
       </a>
     </div>
   </div>
@@ -120,33 +123,36 @@
     </div>
     <div class="row">
       <div class="col-sm-4 portfolio-item">
-        <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
+        <a href="/s?category=small-animal" class="portfolio-link" data-toggle="modal">
           <!-- <div class="caption">
             <div class="caption-content">
                 <i class="fa fa-search-plus fa-3x"></i>
             </div>
             </div> -->
-          <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
+          <img src="/assets/small-animal-catog.png" class="img-responsive width-100 rltv" alt="Cabin">
+          <p class="text-on-top-animal">Small animal</p>
         </a>
       </div>
       <div class="col-sm-4 portfolio-item">
-        <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
+        <a href="/s?category=reptile" class="portfolio-link" data-toggle="modal">
           <!-- <div class="caption">
             <div class="caption-content">
                 <i class="fa fa-search-plus fa-3x"></i>
             </div>
             </div> -->
-          <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
+          <img src="/assets/reptile-catog.png" class="img-responsive width-100" alt="Slice of cake">
+          <p class="text-on-top">Reptile</p>
         </a>
       </div>
       <div class="col-sm-4 portfolio-item">
-        <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
+        <a href="/s?category=fish" class="portfolio-link" data-toggle="modal">
           <!-- <div class="caption">
             <div class="caption-content">
                 <i class="fa fa-search-plus fa-3x"></i>
             </div>
             </div> -->
-          <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
+          <img src="/assets/fish-catog.png" class="img-responsive width-100" alt="Circus tent">
+          <p class="text-on-top">Fish</p>
         </a>
       </div>
     </div>
@@ -188,15 +194,15 @@ Are you looking to become a pet care partner? We're looking for partners who lov
       <h2 class="section-head-title">Trust Worthy Support</h2>
     </div>
     <div class="text-img">
-      <div class="col-sm-3">
+      <div class="col-sm-4">
         <div class="section-half-img"></div>
+        <img src="/assets/care-blcok.png" class="img-responsive width-100 supp" alt="Circus tent">
       </div>
-      <div class="col-sm-6 action-img-sec-2">
-        <i class="fa fa-paw"></i>
-        <p class="margin-top-media">We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.</p>
+      <div class="col-sm-8">
+       <!--  <i class="fa fa-paw"></i> -->
+        <p class="margin-top-media-supp">We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.</p>
         <a class="cont-supp" href="">Contact Support</a>
       </div>
-      <div class="col-sm-3"></div>
     </div>
   </div>
 </section>
