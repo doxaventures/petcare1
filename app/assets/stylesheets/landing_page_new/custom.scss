@@ -36,18 +36,18 @@ p.action-text {
     line-height: 44px;
     text-align: center;
     color: #FFF;
-    margin-left: 50px;
     margin-top: 20px;
 }
 
 a.btn.btn-custom-action {
     display: block;
-    font-size: 25px;
+    font-size: 20px;
     border: 2px solid #fff;
     margin-top: 20px;
     color: #fff;
-    width: 200px;
+    width: 80%;
     margin: 30px auto;
+    border-radius: 0px;
 }
 
 a.btn.btn-custom-action:hover {
@@ -60,8 +60,8 @@ a.btn.btn-custom-action:hover {
 
 p.partner-text {
     background: rgba(250, 235, 215, 0.5);
-    color: #000;
-    font-size: 18px;
+    color: #162409;
+    font-size: 17px;
     text-shadow: #fff;
     margin-left: -15px;
     padding: 36px;
@@ -70,11 +70,20 @@ p.partner-text {
     border-bottom-right-radius: 20px;
     text-align: justify;
     padding-top: 20px;
+    font-weight: 600;
 }
 
 p.partner-text a {
-    color: #902432;
+    color: #162409;
+    text-decoration: underline;
+    font-weight: 600;
+    font-size: 17px;
 }
+
+.dropdown {
+    width: 220px;
+}
+
 
 i.fa.fa-paw {
     font-size: 120px;
@@ -108,7 +117,7 @@ a.cont-supp {
     margin-top: 60px;
     padding-top: 10px;
     padding-bottom: 10px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     text-align: center;
 }
@@ -120,7 +129,7 @@ a.cont-supp:hover {
     margin-top: 60px;
     padding-top: 10px;
     padding-bottom: 10px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     text-align: center;
 }
@@ -170,8 +179,8 @@ select#sub_category_id {
 
 p.text-on-top-animal {
     position: absolute;
-    left: 80px;
-    top: 120px;
+    right: 40px;
+    bottom: 20px;
     font-size: 40px;
     color: #fff;
     text-shadow: 2px 2px #626e60;
@@ -188,15 +197,15 @@ section#portfolio-2 img:hover {
 }
 
 .container.margin-top-for-cntainer1 p.text-center {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 500;
     color: #626e60;
 }
 
 p.text-on-top {
     position: absolute;
-    left: 148px;
-    top: 120px;
+    right: 40px;
+    bottom: 20px;
     font-size: 40px;
     color: #fff;
     text-shadow: 2px 2px #626e60;
@@ -275,7 +284,7 @@ section#portfolio-2 img {
 }
 
 div#adv-search select {
-    width: 35%;
+    width: 100%;
     height: 55px !important;
     border-right: 1px solid;
 }
@@ -286,7 +295,76 @@ div#adv-search input {
     border: none;
     box-shadow: none;
     font-size: 16px;
+    font-family: FontAwesome;
+    text-align: center;
 }
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown:before {
+    content: "";
+    position: absolute;
+    right: 87px;
+    top: 25px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #5d6c73;
+    z-index: 999;
+}
+
+.dropdown-2:before {
+    content: "";
+    position: absolute;
+    right: 76px;
+    top: 25px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #5d6c73;
+    z-index: 999;
+}
+
+input.empty {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+}
+
+.dropdown-2 {
+    position: relative;
+}
+
+.dropdown-2:after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 3px;
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #333;
+}
+
+.dropdown:after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 3px;
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #333;
+}
+
+
 
 div#adv-search button {
     padding-left: 48px !important;
@@ -384,17 +462,48 @@ input.form-control:hover {
 	div#adv-search button {
     padding-left: 40px;
     padding-right: 40px;
-    height: 45px;
+    height: 50px;
     border: none;
     width: 100%;
     margin-top: 10px;
     border-radius: 4px;
 }
 
+.dropdown {
+    width: 100%;
+}
+
+.dropdown-2:before {
+    content: "";
+    position: absolute;
+    right: 30px;
+    top: 90px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #5d6c73;
+    z-index: 999;
+}
+
+.dropdown:before {
+    content: "";
+    position: absolute;
+    right: 30px;
+    top: 25px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #5d6c73;
+    z-index: 999;
+}
+
 div#adv-search input {
-    height: 45px;
+    height: 50px;
     width: 100%;
     border-radius: 4px;
+
 }
 
 div#adv-search select {
@@ -459,7 +568,6 @@ button.btn.btn-cnt.btn-success {
 @media (max-width: 620px) {
 p.partner-text {
     background: rgba(250, 235, 215, 0.5);
-    color: #000;
     font-size: 16px;
     padding: 36px;
     padding-left: 15px;
@@ -469,11 +577,12 @@ p.partner-text {
 }
 
 p.action-text {
-    font-size: 24px;
+    font-size: 42px;
     line-height: 44px;
     text-align: center;
     color: #FFF;
-    margin-top: 20px;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 
 a.btn.btn-custom-action {
@@ -482,8 +591,11 @@ a.btn.btn-custom-action {
     border: 2px solid #fff;
     margin-top: 20px;
     color: #fff;
-    width: 200px;
+    width: 80%;
     margin: 30px auto;
+    border-radius: 0px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 }
 
@@ -504,5 +616,17 @@ a.btn.btn-custom-action {
 	#adv-search {
     width: 800px !important;
     margin: 0 auto;
+}
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+         
+         p.text-on-top-animal {
+    position: absolute;
+    right: 17px;
+    bottom: 20px;
+    font-size: 40px;
+    color: #fff;
+    text-shadow: 2px 2px #626e60;
 }
 }

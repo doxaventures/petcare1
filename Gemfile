@@ -12,7 +12,7 @@ gem 'compass-rails', '~> 2.0'
 
 # Requiring 'compass' gem directly is not normally needed,
 # 'compass-rails' already does that.
-#
+gem "font-awesome-rails"
 # However, we want to have compass version which is at least 0.13,
 # because it fixes a bug that caused compass helpers to override
 # important Rails asset helpers
