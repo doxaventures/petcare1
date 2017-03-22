@@ -14,7 +14,7 @@
     }
   });
 </script>
-<div class="container-fluid pads-25 contain" style="background: url(assets/pets.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
+<div class="container-fluid pads-25 contain" style="background: url(assets/pets-bg.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;">
@@ -26,16 +26,18 @@
   </div>
   <div class="input-group" id="adv-search">
     <%=form_tag '/s', method: :get do%>
+    <div class="dropdown">
     <select class="form-control 1" id="user_category_id" name="category" data-remote="true" data-url="<%=fetch_subcategories_path%>">
       <option>Choose a Pet</option>
       <%Category.parent_categories.each do |category|%>
-      <option value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+      <option id="option-style" value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
       <%end%>
     </select>
+    </div>
     <div id="fetch_subcategory">
       <%= render 'homepage/sub_categories', subcategories: [] %>
     </div>
-    <input type="text" name="location_name" placeholder="Enter a Location" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+    <input type="text" name="location_name" placeholder="&#xf041; Enter a Location" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
     <%=hidden_field_tag :lat, params[:lat]%>
     <%=hidden_field_tag :lng, params[:lng]%>
     <button type="submit" class="btn btn-custom">Search</button>
@@ -75,6 +77,7 @@
   <div class="container">
   <div class="row">
     <div class="col-lg-12 text-center">
+    <h2 class="section-head-title">Choose a Category</h2>
       <hr class="star-primary">
     </div>
   </div>
@@ -176,8 +179,7 @@
 <div>
 <div class="col-md-6 sml-screen">
 <div class="action-text-1">
-<p class="margin-top-media action-text">All you need to get started is create an account on Petstore. Click Join below
-</p>
+<p class="margin-top-media action-text">To get started,click Join below</p>
 <a class="btn btn-custom-action" href="/en/login">Join Now</a>
 </div>
 <p class="partner-text">
@@ -191,7 +193,7 @@ Are you looking to become a pet care partner? We're looking for partners who lov
 <section>
   <div class="container border-5">
     <div class="col-sm-12">
-      <h2 class="section-head-title">Trust Worthy Support</h2>
+      <h2 class="section-head-title">Trustworthy Support</h2>
     </div>
     <div class="text-img">
       <div class="col-sm-4">
