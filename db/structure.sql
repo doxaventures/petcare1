@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.16, for osx10.11 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: sharetribe_development
+-- Host: localhost    Database: petstore_development
 -- ------------------------------------------------------
--- Server version	5.7.15-log
+-- Server version	5.7.17-0ubuntu0.16.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -286,6 +286,7 @@ CREATE TABLE `communities` (
   `small_cover_photo_processing` tinyint(1) DEFAULT NULL,
   `favicon_processing` tinyint(1) DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT NULL,
+  `commission_from_seller` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_communities_on_uuid` (`uuid`),
   KEY `index_communities_on_domain` (`domain`) USING BTREE,
@@ -1449,6 +1450,76 @@ CREATE TABLE `shipping_addresses` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `stripe_accounts`
+--
+
+DROP TABLE IF EXISTS `stripe_accounts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stripe_accounts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `person_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `publishable_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `secret_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_user_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `currency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_account_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_account_status` text COLLATE utf8_unicode_ci,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `stripe_payment_gateways`
+--
+
+DROP TABLE IF EXISTS `stripe_payment_gateways`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stripe_payment_gateways` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `community_id` int(11) DEFAULT NULL,
+  `stripe_publishable_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_secret_key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_client_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `commission_from_seller` int(11) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_stripe_payment_gateways_on_community_id` (`community_id`),
+  CONSTRAINT `fk_rails_fded3ed086` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `stripe_payments`
+--
+
+DROP TABLE IF EXISTS `stripe_payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stripe_payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `payer_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `recipient_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `organization_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `transaction_id` int(11) DEFAULT NULL,
+  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `community_id` int(11) DEFAULT NULL,
+  `sum_cents` int(11) DEFAULT NULL,
+  `currency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `stripe_transaction_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_stripe_payments_on_community_id` (`community_id`),
+  CONSTRAINT `fk_rails_d4d6f29d2f` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `testimonials`
 --
 
@@ -1599,7 +1670,7 @@ CREATE TABLE `transactions` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-03-09 13:12:16
+-- Dump completed on 2017-04-02 20:16:20
 INSERT INTO schema_migrations (version) VALUES ('20080806070738');
 
 INSERT INTO schema_migrations (version) VALUES ('20080807071903');
@@ -3225,4 +3296,12 @@ INSERT INTO schema_migrations (version) VALUES ('20170216134444');
 INSERT INTO schema_migrations (version) VALUES ('20170220123526');
 
 INSERT INTO schema_migrations (version) VALUES ('20170309104456');
+
+INSERT INTO schema_migrations (version) VALUES ('20170402143621');
+
+INSERT INTO schema_migrations (version) VALUES ('20170402143750');
+
+INSERT INTO schema_migrations (version) VALUES ('20170402144308');
+
+INSERT INTO schema_migrations (version) VALUES ('20170402144605');
 

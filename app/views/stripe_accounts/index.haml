@@ -1,0 +1,14 @@
+- content_for :title_header do
+  %h1= t("layouts.no_tribe.settings")
+
+= render :partial => "layouts/left_hand_navigation", :locals => { :links => left_hand_navigation_links }
+
+.left-navi-section.settings-section.payment-settings
+  %h2= t("stripe_accounts.payout_info_title")
+
+  - if community_ready_for_payments
+    = render "stripe_connection_details"
+  - else
+    = t("stripe_accounts.admin_account_not_connected",
+      contact_admin_link: link_to(t("stripe_accounts.contact_admin_link_text"),
+      new_user_feedback_path)).html_safe

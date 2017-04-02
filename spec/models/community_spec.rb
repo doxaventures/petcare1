@@ -88,6 +88,7 @@
 #  small_cover_photo_processing               :boolean
 #  favicon_processing                         :boolean
 #  deleted                                    :boolean
+#  commission_from_seller                     :integer
 #
 # Indexes
 #
