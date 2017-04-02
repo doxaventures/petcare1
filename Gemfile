@@ -151,6 +151,7 @@ group :development do
   gem 'better_errors', "~> 2.1.1"
   gem 'web-console', '~> 2.0'
   gem 'awesome_print', '~> 1.6.1'
+  gem 'letter_opener'
 end
 
 group :test do
@@ -190,3 +191,4 @@ gem 'transit-ruby', '~> 0.8'
 # Markdown parser
 gem 'redcarpet', '~> 3.3', '>= 3.3.4'
 gem 'geocoder'
+gem 'stripe'

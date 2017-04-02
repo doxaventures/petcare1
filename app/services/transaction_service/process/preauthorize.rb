@@ -216,8 +216,9 @@ module TransactionService::Process
     end
 
     def ensure_can_execute!(tx:, allowed_states:)
-      tx_state = tx[:current_state]
-
+      tx = Transaction.find(tx[:id])
+      tx_state = tx.current_state.to_sym
+      
       unless allowed_states.include?(tx_state)
         raise TransactionService::Transaction::IllegalTransactionStateException.new(
                "Transaction was in illegal state, expected state: [#{allowed_states.join(',')}], actual state: #{tx_state}")
