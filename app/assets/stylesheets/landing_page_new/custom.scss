@@ -14,16 +14,42 @@
     margin-top: 3px;
 }
 
+section.content-section.video-section {
+    height: 600px;
+}
+
+p.partner-text span.mail {
+    color: #162409;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+section.content-section.video-section h1.text-center.colr-text {
+    font-size: 60px;
+    font-family: "Proxima Nova Soft";
+    color: #fff;
+    text-shadow: 1px 1px #626e60;
+    margin-bottom: 10px;
+}
+
+section.content-section.video-section p.text-center.colr-text {
+    font-size: 25px;
+    font-family: "Proxima Nova Soft";
+    color: #fff;
+    text-shadow: 1px 1px #000;
+    margin-bottom: 30px;
+}
+
 h2.action-heading {
     margin-bottom: 1px;
     margin-top: 15px;
 }
 
-
 p.partner-text span {
     color: #902432;
-    font-size: 20px;
+    font-size: 21px;
     text-transform: uppercase;
+    font-family: "Proxima Nova Soft";
 }
 
 .header-hover:hover {
@@ -37,6 +63,7 @@ p.action-text {
     text-align: center;
     color: #FFF;
     margin-top: 20px;
+    font-family: "Proxima Nova Soft";
 }
 
 a.btn.btn-custom-action {
@@ -71,6 +98,7 @@ p.partner-text {
     text-align: justify;
     padding-top: 20px;
     font-weight: 600;
+    font-family: "Proxima Nova Soft";
 }
 
 p.partner-text a {
@@ -108,6 +136,7 @@ p.margin-top-media-supp {
     font-size: 19px;
     color: #626e60;
     text-align: justify;
+    font-family: "Proxima Nova Soft";
 }
 
 a.cont-supp {
@@ -120,6 +149,16 @@ a.cont-supp {
     font-size: 20px;
     font-weight: 500;
     text-align: center;
+}
+
+nav.navbar.navbar-default.navbar-footer {
+    background: #626e60;
+    color: #fff;
+    margin-top: 100px;
+}
+
+nav.navbar.navbar-default.navbar-footer a {
+    color: #fff;
 }
 
 a.cont-supp:hover {
@@ -200,6 +239,7 @@ section#portfolio-2 img:hover {
     font-size: 18px;
     font-weight: 500;
     color: #626e60;
+    font-family: "Proxima Nova Soft"
 }
 
 p.text-on-top {
@@ -209,6 +249,7 @@ p.text-on-top {
     font-size: 40px;
     color: #fff;
     text-shadow: 2px 2px #626e60;
+    font-family: "Proxima Nova Soft";
 }
 
 img.rltv {
@@ -295,7 +336,7 @@ div#adv-search input {
     border: none;
     box-shadow: none;
     font-size: 16px;
-    font-family: FontAwesome;
+    font-family: FontAwesome, Proxima Nova Soft;
     text-align: center;
 }
 
@@ -583,6 +624,7 @@ p.action-text {
     color: #FFF;
     margin-top: 50px;
     margin-bottom: 50px;
+    font-family: "Proxima Nova Soft";
 }
 
 a.btn.btn-custom-action {

@@ -1,5 +1,5 @@
 body {
-    font-family: 'Source Sans Pro', helvetica, sans-serif;
+    font-family: "Proxima Nova Soft";
     font-size: 1.4em !important;
     line-height: 1.5em;
 }
@@ -208,17 +208,17 @@ b.brder-btm {
         margin-bottom: -10px;
 
     }
- .section-head-title {
+  .section-head-title {
     text-align: center;
-    font-size: 32px;
+    font-size: 35px;
     font-style: inherit;
     font-weight: bolder;
-    font-family: 'Source Sans Pro', helvetica, sans-serif;
-    margin-top: 3em;
+    font-family: "Proxima Nova Soft";
     margin-bottom: 1.5em;
     text-shadow: 1px 1px #ddd;
     letter-spacing: 2px;
     color: #626e60;
+    margin-top: 50px;
 }
 
   .section-hiw-icon .fa {
@@ -247,6 +247,8 @@ b.brder-btm {
         letter-spacing: 1px;
         text-shadow: 1px 1px #ddd;
         margin-top: 20px;
+        color: #574848;
+        font-family: "Proxima Nova Soft"
     }
 
 
