@@ -173,9 +173,27 @@ a.cont-supp:hover {
     text-align: center;
 }
 
+p.hiw-copy {
+    text-align: center;
+    margin-bottom: 2.5em;
+    margin-top: -15px;
+    font-size: 15px;
+    font-family: "Proxima Nova Soft";
+    color: #626e60;
+}
+
+
 a.cont-supp:hover, a.cont-supp:focus {
    color: #777;
    text-decoration: none;
+}
+
+.header {
+    margin-bottom: 6px !important;
+}
+
+.header-wide-logo {
+    background-image: url(/system/wide_logos/1/header/new_petstore_logo.png?1493474029) !important;
 }
 .header-wide-logo {
     background-image: url(/system/wide_logos/1/header/new_petstore_logo.png?1493474029);
