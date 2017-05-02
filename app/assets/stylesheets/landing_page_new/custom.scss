@@ -627,21 +627,33 @@ button.btn.btn-cnt.btn-success {
 @media (max-width: 620px) {
 p.partner-text {
     background: rgba(250, 235, 215, 0.5);
-    font-size: 16px;
-    padding: 36px;
+    font-size: 15px;
+    padding: 20px;
     padding-left: 15px;
     border-radius: 5px;
     text-align: center;
     padding-top: 20px;
 }
 
+.header-right {
+    margin-top: 5px !important;
+}
+
+p.partner-text span {
+    font-size: 18px;
+}
+
+p.partner-text span.mail {
+    font-size: 14px;
+}
+
 p.action-text {
-    font-size: 42px;
+    font-size: 35px;
     line-height: 44px;
     text-align: center;
     color: #FFF;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     font-family: "Proxima Nova Soft";
 }
 
