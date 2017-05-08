@@ -4,6 +4,13 @@
     height: 3.75em;
 }
 
+.col-sm-12.first-section {
+    box-shadow: 0 0 4px #626e60;
+    padding-top: 0px;
+    padding: 50px;
+    text-align: center;
+}
+
 .left .header-text-link {
     height: 3.75em;
     line-height: 3.5625em;
@@ -194,7 +201,7 @@ p.hiw-copy {
 
 
 a.cont-supp:hover, a.cont-supp:focus {
-   color: #777;
+   color: #ddd;
    text-decoration: none;
 }
 
