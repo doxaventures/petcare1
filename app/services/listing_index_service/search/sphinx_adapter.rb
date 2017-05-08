@@ -60,15 +60,33 @@ module ListingIndexService::Search
         # Do a short circuit and return emtpy paginated collection of listings wrapped into a success result
         DatabaseSearchHelper.success_result(0, [], nil)
       else
-
-        with = HashUtils.compact(
-          {
-            community_id: community_id,
-            category_id: search[:categories], # array of accepted ids
-            listing_shape_id: search[:listing_shape_id],
-            price_cents: search[:price_cents],
-            listing_id: numeric_search_match_listing_ids,
-          })
+        if search[:location_name].present?
+          limit = 10_000
+          if (search[:lat].present? && search[:lat] > 0) && (search[:lng].present? && search[:lng] > 0)
+            @coordinates = [search[:lat], search[:lng]]
+          else
+            latlng = Geocoder.coordinates(search[:location_name])
+            @coordinates = [to_radians(latlng[0]), to_radians(latlng[1])]
+          end
+          with_geo = HashUtils.compact(
+            {
+              community_id: community_id,
+              category_id: search[:categories], # array of accepted ids
+              listing_shape_id: search[:listing_shape_id],
+              price_cents: search[:price_cents],
+              listing_id: numeric_search_match_listing_ids,
+              geodist: 0.0..limit,
+            })
+        else
+          with = HashUtils.compact(
+            {
+              community_id: community_id,
+              category_id: search[:categories], # array of accepted ids
+              listing_shape_id: search[:listing_shape_id],
+              price_cents: search[:price_cents],
+              listing_id: numeric_search_match_listing_ids,
+            })
+        end
 
         selection_groups = search[:fields].select { |v| v[:type] == :selection_group }
         grouped_by_operator = selection_groups.group_by { |v| v[:operator] }
@@ -77,21 +95,37 @@ module ListingIndexService::Search
           custom_dropdown_field_options: (grouped_by_operator[:or] || []).map { |v| v[:value] },
           custom_checkbox_field_options: (grouped_by_operator[:and] || []).flat_map { |v| v[:value] },
         }
-
-        models = Listing.search(
-          Riddle::Query.escape(search[:keywords] || ""),
-          sql: {
-            include: included_models
-          },
-          page: search[:page],
-          per_page: search[:per_page],
-          star: true,
-          with: with,
-          with_all: with_all,
-          order: 'sort_date DESC',
-          max_query_time: 1000 # Timeout and fail after 1s
-        )
-
+        
+        if @coordinates.present?
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            geo: @coordinates,
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with_geo,
+            with_all: with_all,
+            order: 'geodist ASC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        else
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'sort_date DESC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        end
         begin
           DatabaseSearchHelper.success_result(models.total_entries, models, includes)
         rescue ThinkingSphinx::SphinxError => e
@@ -99,6 +133,10 @@ module ListingIndexService::Search
         end
       end
 
+    end
+
+    def to_radians(degrees)
+      degrees * (Math::PI/180)
     end
 
     def search_out_of_bounds?(per_page, page)

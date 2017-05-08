@@ -84,6 +84,8 @@ Kassi::Application.routes.draw do
     CustomLandingPage::LandingPageStore.enabled?(request.env[:current_marketplace]&.id)
   }
 
+  get '/fetch_subcategories' => 'homepage#fetch_subcategories', as: :fetch_subcategories
+
   # Conditional routes for search view if landing page is enabled
   get '/:locale/s' => 'homepage#index', as: :search_with_locale, constraints: ->(request) {
     locale_matcher_anchored.match(request.params["locale"]) &&
@@ -126,6 +128,8 @@ Kassi::Application.routes.draw do
     get "/transactions/new" => "transactions#new", as: :new_transaction
 
     # preauthorize flow
+    get "/listings/:listing_id/stripe_preauthorize" => "preauthorize_transactions#stripe_preauthorize", :as => :stripe_preauthorize_payment
+    post "/listings/:listing_id/stripe_preauthorized" => "preauthorize_transactions#stripe_preauthorized", :as => :stripe_preauthorized_payment
 
     # Deprecated route (26-08-2016)
     get "/listings/:listing_id/book", :to => redirect { |params, request|
@@ -147,7 +151,12 @@ Kassi::Application.routes.draw do
     get "/listing_bubble/:id" => "listings#listing_bubble", :as => :listing_bubble
     get "/listing_bubble_multiple/:ids" => "listings#listing_bubble_multiple", :as => :listing_bubble_multiple
     get '/:person_id/settings/payments/paypal_account' => 'paypal_accounts#index', :as => :paypal_account_settings_payment
+    get '/:person_id/settings/payments/stripe_account' => 'stripe_accounts#index', :as => :stripe_account_settings_payment
+    get '/:person_id/settings/update_bank_details' => 'settings#update_bank_details', :as => :update_bank_details
+    post '/connect/managed' => 'stripe#managed', as: 'stripe_managed'
+    post '/connect/update_payment_info' => 'stripe#update_payment_info', as: 'update_payment_info'
 
+    post '/stripe_accounts/edit_bank_details' => 'stripe_accounts#edit_bank_details', as: 'edit_bank_details'
     # community membership related actions
 
     get  '/community_memberships/pending_consent' => 'community_memberships#pending_consent', as: :pending_consent
@@ -211,6 +220,9 @@ Kassi::Application.routes.draw do
           post :resend_verification_email
           get :edit_text_instructions
           get :test_welcome_email
+          get :payment_gateways
+          put :payment_gateways, to: 'communities#update_payment_gateway'
+          post :payment_gateways, to: 'communities#create_payment_gateway'
           get :social_media
           get :analytics
           put :social_media, to: 'communities#update_social_media'

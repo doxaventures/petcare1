@@ -13,12 +13,14 @@ module TransactionService::Transaction
 
   SETTINGS_ADAPTERS = {
     paypal: TransactionService::Gateway::PaypalSettingsAdapter.new,
+    stripe: TransactionService::Gateway::StripeSettingsAdapter.new,
     none: TransactionService::Gateway::FreeSettingsAdapter.new
   }
 
   GATEWAY_ADAPTERS = {
     paypal: TransactionService::Gateway::PaypalAdapter.new,
-    none: TransactionService::Gateway::FreeAdapter.new,
+    stripe: TransactionService::Gateway::StripeAdapter.new,
+    none: TransactionService::Gateway::FreeAdapter.new
   }
 
   TX_PROCESSES = {
@@ -91,6 +93,7 @@ module TransactionService::Transaction
 
     tx_process = tx_process(tx[:payment_process])
     gateway_adapter = gateway_adapter(tx[:payment_gateway])
+    
     res = tx_process.create(tx: tx,
                             gateway_fields: opts[:gateway_fields],
                             gateway_adapter: gateway_adapter,
@@ -154,6 +157,36 @@ module TransactionService::Transaction
       .or_else(res)
   end
 
+  def automatic_hold_amount(community_id:, transaction_id:)
+    tx = Transaction.find(transaction_id)
+    community = Community.find(community_id)
+    payment = tx.payment
+    @payer = payment.payer
+    @recipient = payment.recipient
+    @hold_amount = payment.hold_amount_cents
+    Stripe.api_key = community.payment_gateway.stripe_secret_key
+
+    hold_amount_attrs = {
+      :amount => @hold_amount, # amount in cents
+      :currency => payment.currency,
+      :customer => @payer.stripe_customer_id,
+      :description => "Hold amount to #{@recipient.full_name} from #{@payer.full_name}",
+      :application_fee => 0,
+      :destination => @recipient.stripe_account.stripe_user_id,
+      :capture => false,
+      :receipt_email => @recipient.emails.first.address,
+      :metadata => {'listing_id' => payment.tx.listing_id, 'seller_id' => @recipient.id, 'buyer_id' =>  @payer.id}
+    }
+
+    begin
+      charge = Stripe::Charge.create(hold_amount_attrs)
+      payment.update_attributes(hold_amount_cents: @hold_amount, hold_amount_transaction_id: charge.id, hold_amount_updated_at: Time.zone.now)
+      run_at = 7.days.from_now + 10.minutes
+      Delayed::Job.enqueue(AutomaticHoldAmountJob.new(transaction_id, community_id), :priority => 8, :run_at => run_at)
+    rescue Stripe::CardError => e
+      error = e.json_body[:error][:message]
+    end
+  end
 
   def complete_preauthorization(community_id:, transaction_id:, message: nil, sender_id: nil)
     tx = TxStore.get_in_community(community_id: community_id, transaction_id: transaction_id)

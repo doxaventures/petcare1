@@ -5,8 +5,15 @@ class HomepageController < ApplicationController
 
   APP_DEFAULT_VIEW_TYPE = "grid"
   VIEW_TYPES = ["grid", "list", "map"]
+
   def home
     render layout: "home"
+  end
+
+  def fetch_subcategories
+    category = Category.find_by(url: params[:category])
+    subcategories = Category.where(parent_id: category.id)
+    render layout: false, locals: { subcategories: subcategories }
   end
 
   # rubocop:disable AbcSize
@@ -167,7 +174,10 @@ class HomepageController < ApplicationController
       price_max: params[:price_max],
       locale: I18n.locale,
       include_closed: false,
-      sort: nil
+      sort: nil,
+      lat: params[:lat],
+      lng: params[:lng],
+      location_name: params[:location_name]
     }
 
     if @view_type != 'map' && location_search_in_use

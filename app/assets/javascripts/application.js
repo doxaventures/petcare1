@@ -10,8 +10,6 @@
 // NOTE: See config/initializers/assets.rb for some critical configuration regarding sprockets.
 // Basically, in HOT mode, we do not include this file for
 // Rails.application.config.assets.precompile
-//= require vendor-bundle
-//= require app-bundle
 
 // This is a manifest file that'll be compiled into including all the files listed below.
 // Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
@@ -88,4 +86,5 @@
 //= require listing_form
 //= require radio_buttons
 //= require new_layout
+//= require connect
 //= require_self

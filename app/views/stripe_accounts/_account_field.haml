@@ -1,0 +1,14 @@
+.list-group-item#bank-account{ data: { publishable: @current_user.stripe_account.publishable_key } }
+%script{ src: 'https://js.stripe.com/v2/' }
+= hidden_field_tag :bank_account_token
+%input{"data-stripe" => "country", :type => "hidden", :value => @current_community.country}
+%input{"data-stripe" => "currency", :type => "hidden", :value => @current_community.currency}
+%input.form-control{ type: 'text', id: "acc_number", data: { stripe: 'account_number' } }
+
+.row
+  .col-12
+    .form-group
+      %label.control-label.col-xs-12.col-sm-3
+        Routing Number
+      .col-xs-12.col-sm-9
+        %input.form-control{ type: 'text', id: "routing_number", data: { stripe: 'routing_number' }  }

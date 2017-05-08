@@ -29,6 +29,18 @@ class PreauthorizeTransactionsController < ApplicationController
     end
   }
 
+  # PARSE_TIME = ->(v) {
+  #   return if v.nil?
+  #   begin
+  #     TransactionViewUtils.parse_booking_time(v)
+  #   rescue ArgumentError => e
+  #     # The transformator has to return something else than `Date` or
+  #     # `nil` so that the `date` validator know that it's not a valid
+  #     # date
+  #     e
+  #   end
+  # }
+
   NewTransactionParams = EntityUtils.define_builder(
     [:delivery, :to_symbol, one_of: [nil, :shipping, :pickup]],
     [:start_on, :date, transform_with: PARSE_DATE],
@@ -229,11 +241,8 @@ class PreauthorizeTransactionsController < ApplicationController
 
     validation_result.on_success { |tx_params|
       is_booking = date_selector?(listing)
-
       quantity = calculate_quantity(tx_params: tx_params, is_booking: is_booking, unit: listing.unit_type)
-
       listing_entity = ListingQuery.listing(params[:listing_id])
-
       item_total = ItemTotal.new(
         unit_price: listing_entity[:price],
         quantity: quantity)
@@ -250,39 +259,32 @@ class PreauthorizeTransactionsController < ApplicationController
         { listing_id: listing.id,
           listing_uuid: listing.uuid_object.to_s })
 
-      render "listing_conversations/initiate",
-             locals: {
-               start_on: tx_params[:start_on],
-               end_on: tx_params[:end_on],
-               listing: listing_entity,
-               delivery_method: tx_params[:delivery],
-               quantity: tx_params[:quantity],
-               author: query_person_entity(listing_entity[:author_id]),
-               action_button_label: translate(listing_entity[:action_button_tr_key]),
-               expiration_period: MarketplaceService::Transaction::Entity.authorization_expiration_period(:paypal),
-               form_action: initiated_order_path(person_id: @current_user.id, listing_id: listing_entity[:id]),
-               country_code: LocalizationUtils.valid_country_code(@current_community.country),
-               paypal_analytics_event: [
-                 "RedirectingBuyerToPayPal",
-                 { listing_id: listing.id,
-                   listing_uuid: listing.uuid_object.to_s,
-                   community_id: @current_community.id,
-                   marketplace_uuid: @current_community.uuid_object.to_s,
-                   user_logged_in: @current_user.present? }],
-               price_break_down_locals: TransactionViewUtils.price_break_down_locals(
-                 booking:  is_booking,
-                 quantity: quantity,
-                 start_on: tx_params[:start_on],
-                 end_on:   tx_params[:end_on],
-                 duration: quantity,
-                 listing_price: listing_entity[:price],
-                 localized_unit_type: translate_unit_from_listing(listing_entity),
-                 localized_selector_label: translate_selector_label_from_listing(listing_entity),
-                 subtotal: subtotal_to_show(order_total),
-                 shipping_price: shipping_price_to_show(tx_params[:delivery], shipping_total),
-                 total: order_total.total,
-                 unit_type: listing.unit_type)
-             }
+      render "listing_conversations/stripe_preauthorize",
+        locals: {
+          start_on: tx_params[:start_on],
+          end_on: tx_params[:end_on],
+          listing: listing_entity,
+          delivery_method: tx_params[:delivery],
+          quantity: tx_params[:quantity],
+          author: query_person_entity(listing_entity[:author_id]),
+          action_button_label: translate(listing_entity[:action_button_tr_key]),
+          expiration_period: MarketplaceService::Transaction::Entity.authorization_expiration_period(:stripe),
+          form_action: initiated_order_path(person_id: @current_user.id, listing_id: listing_entity[:id]),
+          country_code: LocalizationUtils.valid_country_code(@current_community.country),
+          price_break_down_locals: TransactionViewUtils.price_break_down_locals(
+            booking:  is_booking,
+            quantity: quantity,
+            start_on: tx_params[:start_on],
+            end_on:   tx_params[:end_on],
+            duration: quantity,
+            listing_price: listing_entity[:price],
+            localized_unit_type: translate_unit_from_listing(listing_entity),
+            localized_selector_label: translate_selector_label_from_listing(listing_entity),
+            subtotal: subtotal_to_show(order_total),
+            shipping_price: shipping_price_to_show(tx_params[:delivery], shipping_total),
+            total: order_total.total,
+            unit_type: listing.unit_type)
+        }
 
     }
 
@@ -331,10 +333,11 @@ class PreauthorizeTransactionsController < ApplicationController
       is_booking = date_selector?(listing)
 
       quantity = calculate_quantity(tx_params: tx_params, is_booking: is_booking, unit: listing.unit_type)
+
       shipping_total = calculate_shipping_from_model(tx_params: tx_params, listing_model: listing, quantity: quantity)
 
       tx_response = create_preauth_transaction(
-        payment_type: :paypal,
+        payment_type: :stripe,
         community: @current_community,
         listing: listing,
         listing_quantity: quantity,
@@ -343,6 +346,7 @@ class PreauthorizeTransactionsController < ApplicationController
         force_sync: !request.xhr?,
         delivery_method: tx_params[:delivery],
         shipping_price: shipping_total.total,
+        stripeToken: params[:stripeToken].present? ? params[:stripeToken] : nil,
         booking_fields: {
           start_on: tx_params[:start_on],
           end_on: tx_params[:end_on]
@@ -429,10 +433,8 @@ class PreauthorizeTransactionsController < ApplicationController
         redirect_to tx_response[:data][:gateway_fields][:redirect_url]
       end
     else
-      render json: {
-               op_status_url: transaction_op_status_path(tx_response[:data][:gateway_fields][:process_token]),
-               op_error_msg: t("error_messages.paypal.generic_error")
-             }
+      transaction_id = tx_response.data[:transaction][:id]
+      redirect_to person_transaction_path(:person_id => @current_user.id, :id => transaction_id)
     end
   end
 
@@ -547,42 +549,29 @@ class PreauthorizeTransactionsController < ApplicationController
   end
 
   def create_preauth_transaction(opts)
-
-    # PayPal doesn't like images with cache buster in the URL
-    logo_url = Maybe(opts[:community])
-                 .wide_logo
-                 .select { |wl| wl.present? }
-                 .url(:paypal, timestamp: false)
-                 .or_else(nil)
-
-    gateway_fields =
-      {
-        merchant_brand_logo_url: logo_url,
-        success_url: success_paypal_service_checkout_orders_url,
-        cancel_url: cancel_paypal_service_checkout_orders_url(listing_id: opts[:listing].id)
-      }
+    gateway_fields = { stripeToken: opts[:stripeToken] }
 
     transaction = {
-          community_id: opts[:community].id,
-          community_uuid: opts[:community].uuid_object,
-          listing_id: opts[:listing].id,
-          listing_uuid: opts[:listing].uuid_object,
-          listing_title: opts[:listing].title,
-          starter_id: opts[:user].id,
-          starter_uuid: opts[:user].uuid_object,
-          listing_author_id: opts[:listing].author.id,
-          listing_author_uuid: opts[:listing].author.uuid_object,
-          listing_quantity: opts[:listing_quantity],
-          unit_type: opts[:listing].unit_type,
-          unit_price: opts[:listing].price,
-          unit_tr_key: opts[:listing].unit_tr_key,
-          unit_selector_tr_key: opts[:listing].unit_selector_tr_key,
-          availability: opts[:listing].availability,
-          content: opts[:content],
-          payment_gateway: opts[:payment_type],
-          payment_process: :preauthorize,
-          booking_fields: opts[:booking_fields],
-          delivery_method: opts[:delivery_method]
+      community_id: opts[:community].id,
+      community_uuid: opts[:community].uuid_object,
+      listing_id: opts[:listing].id,
+      listing_uuid: opts[:listing].uuid_object,
+      listing_title: opts[:listing].title,
+      starter_id: opts[:user].id,
+      starter_uuid: opts[:user].uuid_object,
+      listing_author_id: opts[:listing].author.id,
+      listing_author_uuid: opts[:listing].author.uuid_object,
+      listing_quantity: opts[:listing_quantity],
+      unit_type: opts[:listing].unit_type,
+      unit_price: opts[:listing].price,
+      unit_tr_key: opts[:listing].unit_tr_key,
+      unit_selector_tr_key: opts[:listing].unit_selector_tr_key,
+      availability: opts[:listing].availability,
+      content: opts[:content],
+      payment_gateway: opts[:payment_type],
+      payment_process: :preauthorize,
+      booking_fields: opts[:booking_fields],
+      delivery_method: opts[:delivery_method]
     }
 
     if(opts[:delivery_method] == :shipping)

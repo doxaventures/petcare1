@@ -12,7 +12,7 @@ gem 'compass-rails', '~> 2.0'
 
 # Requiring 'compass' gem directly is not normally needed,
 # 'compass-rails' already does that.
-#
+gem "font-awesome-rails"
 # However, we want to have compass version which is at least 0.13,
 # because it fixes a bug that caused compass helpers to override
 # important Rails asset helpers
@@ -151,6 +151,7 @@ group :development do
   gem 'better_errors', "~> 2.1.1"
   gem 'web-console', '~> 2.0'
   gem 'awesome_print', '~> 1.6.1'
+  gem 'letter_opener'
 end
 
 group :test do
@@ -189,3 +190,5 @@ gem 'transit-ruby', '~> 0.8'
 
 # Markdown parser
 gem 'redcarpet', '~> 3.3', '>= 3.3.4'
+gem 'geocoder'
+gem 'stripe'

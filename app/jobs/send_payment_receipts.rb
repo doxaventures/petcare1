@@ -17,6 +17,14 @@ class SendPaymentReceipts < Struct.new(:transaction_id)
         receipts << TransactionMailer.paypal_new_payment(transaction) if receipt_to_seller
         receipts << TransactionMailer.paypal_receipt_to_payer(transaction)
         receipts
+      when :stripe
+        community = Community.find(transaction[:community_id])
+        payment = stripe_payment_for(transaction_id)
+
+        receipts = []
+        receipts << TransactionMailer.stripe_new_payment(payment, community) if receipt_to_seller
+        receipts << TransactionMailer.stripe_receipt_to_payer(payment, community)
+        receipts
       else
         []
       end
@@ -33,6 +41,10 @@ class SendPaymentReceipts < Struct.new(:transaction_id)
   def set_service_name!(community_id)
     # Set the correct service name to thread for I18n to pick it
     ApplicationHelper.store_community_service_name_to_thread_from_community_id(community_id)
+  end
+
+  def stripe_payment_for(transaction_id)
+    StripePayment.where(transaction_id: transaction_id).first
   end
 
 end

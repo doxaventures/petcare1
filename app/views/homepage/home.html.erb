@@ -2,200 +2,292 @@
   <div class="row">
     <div class="margin-top-120">
       <h1 class="text-center colr-text"><b>اُردُو‎ </b></h1>
-      <p class="text-center colr-text">Find a pet care partner.
+      <p class="text-center colr-text">Find a pet care partner.</p>
+<script type="text/javascript">
+  $(function(){
+    var input = document.getElementById("location_name");
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    window.google.maps.event.addListener(autocomplete, 'place_changed', function(){
+      var place = autocomplete.getPlace();
+      var lat = place.geometry.location.lat(),
+          lng = place.geometry.location.lng();
+      $("#lat").val(toRadians(lat));
+      $("#lng").val(toRadians(lng));
+    });
+    function toRadians(degrees) {
+      return degrees * (Math.PI/180);
+    }
+  });
+</script>
+<div class="image-bg-sm-screen"  style=" height: 600px; webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; background: url(/assets/pet-bg.png);">
+<section class="content-section video-section">
+  <div class="pattern-overlay">
+            <a id="bgndVideo" class="player" data-property="{videoURL:'https://youtu.be/VEjoWEwydZY',containment:'.video-section', quality:'large', autoPlay:true, mute:true, opacity:1}"></a>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="margin-top-120">
+      <h1 class="text-center colr-text"><%= community_description.html_safe %></h1>
+      <!-- <p class="text-center colr-text"><%= community_description.html_safe %></p> -->
+    </div>
+    <div class="input-group" id="adv-search">
+    <%=form_tag '/s', method: :get do%>
+    <div class="dropdown">
+    <select class="form-control 1" id="user_category_id" name="category" data-remote="true" data-url="<%=fetch_subcategories_path%>">
+      <option>Choose a Pet</option>
+      <%Category.parent_categories.each do |category|%>
+      <option id="option-style" value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+      <%end%>
+    </select>
+    </div>
+    <div id="fetch_subcategory">
+      <%= render 'homepage/sub_categories', subcategories: [] %>
+    </div>
+    <input type="text" name="location_name" placeholder="&#xf041; Enter a Location" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+    <%=hidden_field_tag :lat, params[:lat]%>
+    <%=hidden_field_tag :lng, params[:lng]%>
+    <button type="submit" class="btn btn-custom">Search</button>
+    <%end%>
+  </div>
+          <br>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="container md-margin-bottom-10">
-    <div class="container seting">
-      <div class="col-sm-3">
-        <div class="row media-fr-marg-btm">
-          <div class="dropdown">
-            <button class="btn btn-block btn-u-bright dropdown-toggle hover-set" type="button" data-toggle="dropdown">CHOOSE A PET
-            <i class="fa fa-caret-down" aria-hidden="true"></i></button>
-            <ul class="dropdown-menu drop-cs">
-              <li><a href="#">Option-1</a></li>
-              <li><a href="#">Option-2</a></li>
-              <li><a href="#">Option-3</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="row media-fr-marg-btm">
-          <div class="dropdown">
-            <button class="btn btn-block btn-u-bright dropdown-toggle hover-set" type="button" data-toggle="dropdown">CHOOSE A SERVICE
-            <i class="fa fa-caret-down" aria-hidden="true"></i></button>
-            <ul class="dropdown-menu drop-cs">
-              <li><a href="#">Option-1</a></li>
-              <li><a href="#">Option-2</a></li>
-              <li><a href="#">Option-3</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-3">
-        <div class="row media-fr-marg-btm">
-          <div class="dropdown">
-            <button class="btn btn-block btn-u-bright dropdown-toggle hover-set" type="button" data-toggle="dropdown">LOCATION
-            <i class="fa fa-map-marker" aria-hidden="true"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-2">
-        <div class="row">
-          <button type="button" class="btn btn-block btn-u-dark hover-set"> SEARCH</button>
-        </div>
-      </div>
+</section>
+  </div>
+<!-- <div class="container-fluid pads-25 contain" style="background: url(assets/pets-bg.jpg) no-repeat center center; height: 600px; webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;">
+  <div class="row">
+    <div class="margin-top-120">
+      <h1 class="text-center colr-text"><b>PETSTORE</b></h1>
+      <p class="text-center colr-text"><%= community_description.html_safe %></p>
     </div>
   </div>
-</div>
+  <div class="input-group" id="adv-search">
+    <%=form_tag '/s', method: :get do%>
+    <div class="dropdown">
+    <select class="form-control 1" id="user_category_id" name="category" data-remote="true" data-url="<%=fetch_subcategories_path%>">
+      <option>Choose a Pet</option>
+      <%Category.parent_categories.each do |category|%>
+      <option id="option-style" value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+      <%end%>
+    </select>
+    </div>
+    <div id="fetch_subcategory">
+      <%= render 'homepage/sub_categories', subcategories: [] %>
+    </div>
+    <input type="text" name="location_name" placeholder="&#xf041; Enter a Location" class="form-control" id="location_name" value="<%=params[:location_name]%>" />
+    <%=hidden_field_tag :lat, params[:lat]%>
+    <%=hidden_field_tag :lng, params[:lng]%>
+    <button type="submit" class="btn btn-custom">Search</button>
+    <%end%>
+  </div>
+</div> -->
 <div class="container margin-top-for-cntainer1">
-  <h2 class="style-for-howitworks"><b class="brder-btm">How It Works</b></h2>
-  <hr class="star-primary">
-   <div class="row">
-      <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-         <img src="/assets/search-for-wire.jpg" alt="edit.png">
-         <h2 class="text-center style-for-owner-list">SEARCH</h2>
-         <p class="text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+  <h2 class="section-head-title">How It Works</h2>
+  <p class="hiw-copy">Petstore is a marketplace for pet services available now in Portland, Oregon and expanding soon to other areas. Choose services from a wide variety of professional and private pet care partners. Our partners offer services for all sorts of pets, making it easy to arrange all your pet needs in one place.</p>
+  <div class="row">
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!--  <img src="/assets/search-for-wire.jpg" alt="edit.png"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-search" aria-hidden="true"></i>
       </div>
-      <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-         <img src="/assets/calender-1.jpg">
-         <h2 class="text-center style-for-owner-list">BOOK</h2>
-         <p class="text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+      <h2 class="text-center style-for-owner-list">SEARCH</h2>
+      <p class="text-center">Use the search bar above or the pet categories below to find pet services in your area.</p>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!-- <img src="/assets/calender-1.jpg"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
       </div>
-      <div class="col-md-4 col-sm-12 col-xs-12 text-center">
-         <img src="/assets/heart2.png", style="width: 204px;">
-         <h2 class="text-center style-for-owner-list">ENJOY</h2>
-         <p class="text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+      <h2 class="text-center style-for-owner-list">BOOK</h2>
+      <p class="text-center">Book a service and pay securely online. Your pet care partner will contact you to finalize details.</p>
+    </div>
+    <div class="col-md-4 col-sm-12 col-xs-12 text-center">
+      <!-- <img src="/assets/heart2.png", style="width: 204px;"> -->
+      <div class="section-hiw-icon">
+        <i class="fa fa-heart" aria-hidden="true"></i>
       </div>
-   </div>
+      <h2 class="text-center style-for-owner-list">ENJOY</h2>
+      <p class="text-center">Enjoy the care your pet receives.</p>
+    </div>
+  </div>
 </div>
-
-
 <section id="portfolio">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <hr class="star-primary">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/dog.jpg" class="img-responsive width-100" alt="Cabin">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/cat.jpg" class="img-responsive width-100" alt="Slice of cake">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/nimo.jpg" class="img-responsive width-100" alt="Circus tent">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/small-animal.jpg" class="img-responsive width-100" alt="Game controller">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/reptile.jpg" class="img-responsive width-100" alt="Safe">
-                    </a>
-                </div>
-                <div class="col-sm-4 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
-                        <!-- <div class="caption">
-                            <div class="caption-content">
-                                <i class="fa fa-search-plus fa-3x"></i>
-                            </div>
-                        </div> -->
-                        <img src="/assets/fish3.jpg" class="img-responsive width-100" alt="Submarine">
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-<section>
-  <div class="container border-5">
-    <div class="col-sm-12">
-      <h2 class="text-center md-margin-bottom-10"><b class="brder-btm">GET STARTED</b></h2>
-    </div>
-    <div class="col-sm-8">
-      <p class="margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.
-      </p>
-      <button type="button" class="btn btn-default btn-lg padin-ar">Join</button>
-      <h2>BECOME A PARTNER</h2>
-      <p class="margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
-    </div>
-    <div class="col-sm-4">
-      <img src="/assets/small-animal.jpg " class="width-100-w">
+  <div class="container">
+  <div class="row">
+    <div class="col-lg-12 text-center">
+    <h2 class="section-head-title">Choose a Category</h2>
+      <hr class="star-primary">
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-4 portfolio-item">
+      <a href="/s?category=dog" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
+          </div>
+          </div> -->
+        <img src="/assets/dog-catog.png" class="img-responsive width-100" alt="Cabin">
+        <p class="text-on-top">Dog</p>
+      </a>
+    </div>
+    <div class="col-sm-4 portfolio-item">
+      <a href="/s?category=cat" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
+          </div>
+          </div> -->
+        <img src="/assets/cat-catog.png" class="img-responsive width-100" alt="Slice of cake">
+        <p class="text-on-top">Cat</p>
+      </a>
+    </div>
+    <div class="col-sm-4 portfolio-item">
+      <a href="/s?category=bird" class="portfolio-link" data-toggle="modal">
+        <!-- <div class="caption">
+          <div class="caption-content">
+              <i class="fa fa-search-plus fa-3x"></i>
+          </div>
+          </div> -->
+        <img src="/assets/bird-catog.png" class="img-responsive width-100" alt="Circus tent">
+        <p class="text-on-top">Bird</p>
+      </a>
+    </div>
+  </div>
+</section>
+<section id="portfolio-2">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <hr class="star-primary">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4 portfolio-item">
+        <a href="/s?category=small-animal" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/small-animal-catog.png" class="img-responsive width-100 rltv" alt="Cabin">
+          <p class="text-on-top-animal">Small animal</p>
+        </a>
+      </div>
+      <div class="col-sm-4 portfolio-item">
+        <a href="/s?category=reptile" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/reptile-catog.png" class="img-responsive width-100" alt="Slice of cake">
+          <p class="text-on-top">Reptile</p>
+        </a>
+      </div>
+      <div class="col-sm-4 portfolio-item">
+        <a href="/s?category=fish" class="portfolio-link" data-toggle="modal">
+          <!-- <div class="caption">
+            <div class="caption-content">
+                <i class="fa fa-search-plus fa-3x"></i>
+            </div>
+            </div> -->
+          <img src="/assets/fish-cat.png" class="img-responsive width-100" alt="Circus tent">
+          <p class="text-on-top">Fish</p>
+        </a>
+      </div>
+    </div>
+</section>
+<section>
+<div class="border-5">
+<div class="col-sm-12">
+<h2 class="section-head-title">Get Started</h2>
+</div>
+<!--  <div class="col-sm-8">
+  <p class="margin-top-media">All you need to get started is create an account on Petstore. Click Join below
+  </p>
+  <button type="button" class="btn btn-default btn-lg padin-ar">Join</button>
+  <h2 class="action-heading">BECOME A PARTNER</h2>
+  <p class="margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor.</p>
+  </div>
+  <div class="col-sm-4">
+  <img src="/assets/rabbit.jpg" class="width-100-w" style="margin-top: 10px;">
+  </div> -->
+<div class="col-md-12 action-wrapper-1">
+<div>
+<div class="col-md-6 sml-screen">
+<div class="action-text-1">
+<p class="margin-top-media action-text">To get started,click Join below</p>
+<a class="btn btn-custom-action" href="/en/login">Join Now</a>
+</div>
+<p class="partner-text">
+<span>BECOME A PET CARE PARTNER</span><br>
+We're looking for pet care partners who love pets and have experience caring for pet needs. Become a pet care partner and you will earn money while caring for pets in your neighborhood. A small percentage goes to Petstore and you keep the rest. Your first step is to create an account on Petstore. Then, before you can list pet care services on our website, you will need to get validated. Because we love pets we want to verify the identity of pet care partners. Email us at <span class="mail">customercare@petstore.com</span> and we will respond with the easy process. Once you have been validated you will be able to start listing pet care services online. After a service is completed, your payment will be transferred directly to your bank account. We're excited to help get you started and look forward to hearing from you.</p>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section>
   <div class="container border-5">
     <div class="col-sm-12">
-      <h2 class="text-center md-margin-bottom-10"><b class="brder-btm">TRUST WORTHY SUPPORT</b></h2>
+      <h2 class="section-head-title">Trustworthy Support</h2>
     </div>
-    <div class="col-sm-4">
-      <img src="/assets/small-animal.jpg " class="width-100-w">
-    </div> 
-    <div class="col-sm-8">
-      <p class="col-md-offset-2 margin-top-media">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at euismod quam, et sagittis leo. Pellentesque aliquet, orci et venenatis vestibulum, est nunc mollis lorem, accumsan convallis orci orci in mi. Vivamus ac scelerisque massa. Integer fermentum ultricies quam, faucibus ornare lacus. Vivamus sit amet viverra dui. Donec turpis urna, ultricies a mi at, facilisis accumsan dolor. Nam et ligula sed arcu porttitor posuere at in mi. Suspendisse potenti. Maecenas eget felis ut turpis scelerisque mollis vel eget justo. Ut quis viverra purus. Nulla convallis molestie metus, vel maximus lacus rutrum consequat. Nam et scelerisque orci. In sed feugiat nisl, vel molestie elit,Nam et ligula sed arcu porttitor posuere at in mi. Suspendisse potenti. Maecenas eget felis ut turpis scelerisque mollis vel eget justo. Ut quis viverra purus. Nulla convallis molestie metus.</p>
-      <button type="button" class="btn btn-default btn-lg padin-ars">Join</button>
+    <div class="text-img">
+      <div class="col-sm-4">
+        <div class="section-half-img"></div>
+        <img src="/assets/care-blcok.png" class="img-responsive width-100 supp" alt="Circus tent">
+      </div>
+      <div class="col-sm-8">
+       <!--  <i class="fa fa-paw"></i> -->
+        <p class="margin-top-media-supp">We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.</p>
+        <a class="cont-supp" href="/en/user_feedbacks/new">Contact Support</a>
+      </div>
     </div>
   </div>
 </section>
-
-
 <div class="container-fluid text-media-cen">
   <div class="row">
-    <nav class="navbar navbar-default" role="navigation">
-  <div class="container">
-      <ul class="nav navbar-nav navbar-left mar-5-tp">
-        <li><a href="#">ABOUT</a>
-        </li>
-        <li><a href="#">CONTACT</a>
-        </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right font-size-32">
-        <li><a href="#"><i class="fa fa-facebook-square"  aria-hidden="true"></i></a>
-        </li>
-        <li><a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-        </li>
-        <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-        </li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+    <nav class="navbar navbar-default navbar-footer" role="navigation">
+      <div class="container">
+        <ul class="nav navbar-nav navbar-left mar-5-tp">
+          <li><a href="/en/infos/about">ABOUT</a></li>
+          <li><a href="/en/user_feedbacks/new">CONTACT</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right font-size-32">
+          <li><a href="#"><i class="fa fa-facebook-square"  aria-hidden="true"></i></a></li>
+          <li><a href="#"><i class="fa fa-twitter-square" aria-hidden="true"></i></a></li>
+          <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
   </div>
+  <!-- /.container-fluid -->
+  </nav>
 </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+  
+    $(".player").mb_YTPlayer();
+  
+  });
+</script>
+<script type="text/javascript">
+  $("#sticky").sticky({
+     topSpacing: 0
+  });
+
+  window.ST.initializeLocationSearch({form: '#homepage-filters', search: '#search', status: '#ls', coordinate: '#lc', boundingbox: '#boundingbox', maxDistance: '#distance_max'});
+  
+</script>

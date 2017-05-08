@@ -1,0 +1,8 @@
+<div class="dropdown-2">
+<select class="form-control 1" id="sub_category_id" name="category" style="width:220px">
+  <option>Choose a service</option>
+  <%subcategories.each do |category|%>
+    <option value="<%=category.url%>"><%=category.display_name(I18n.locale)%></option>
+  <%end%>
+</select>
+</div>

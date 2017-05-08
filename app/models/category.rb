@@ -48,6 +48,9 @@ class Category < ActiveRecord::Base
   before_save :uniq_url
   before_destroy :can_destroy?
 
+  scope :subcategories, -> { where.not(parent_id: nil) }
+  scope :parent_categories, -> { where(parent_id: nil) }
+
 
   def translation_attributes=(attributes)
     build_attrs = attributes.map { |locale, values| { locale: locale, values: values } }

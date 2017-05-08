@@ -181,7 +181,8 @@ class ListingsController < ApplicationController
       [nil, nil]
     end
 
-    payment_gateway = MarketplaceService::Community::Query.payment_type(@current_community.id)
+    # payment_gateway = MarketplaceService::Community::Query.payment_type(@current_community.id)
+    payment_gateway = :stripe
     process = get_transaction_process(community_id: @current_community.id, transaction_process_id: @listing.transaction_process_id)
     form_path = new_transaction_path(listing_id: @listing.id)
     community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
@@ -749,6 +750,16 @@ class ListingsController < ApplicationController
       {seller_commission_in_use: payment_settings[:commission_type].or_else(:none) != :none,
        payment_gateway: payment_type,
        minimum_commission: Money.new(p_set[:minimum_transaction_fee_cents], currency),
+       commission_from_seller: p_set[:commission_from_seller],
+       minimum_price_cents: p_set[:minimum_price_cents]}
+    when matches([:stripe])
+      p_set = Maybe(payment_settings_api.get_active(community_id: community.id))
+        .select {|res| res[:success]}
+        .map {|res| res[:data]}
+        .or_else({})
+      {seller_commission_in_use: !!community.commission_from_seller,
+       payment_gateway: payment_type,
+       minimum_commission: Money.new(0, currency),
        commission_from_seller: p_set[:commission_from_seller],
        minimum_price_cents: p_set[:minimum_price_cents]}
     else

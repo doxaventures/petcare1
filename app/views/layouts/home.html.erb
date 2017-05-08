@@ -3,19 +3,84 @@
 <head>
 	<title>Petstore</title>
 	<%= stylesheet_link_tag "landing_page_new/base" %>
-	<%= javascript_include_tag "landing_page_new/base" %>
-	<%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" %>
+	<%= stylesheet_link_tag "application" %>
+	<%= javascript_include_tag "application", "landing_page_new/base" %>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;key=AIzaSyBBcXaseBeFQumBF1drulBHUTDSJ3ijiUs"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
-	    <meta content="website" property="og:type"/>
-	<%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" %>
+	<meta content="website" property="og:type"/>
 	 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
 	 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	 <style type="text/css">
+	.col-md-12.action-wrapper-1 {
+    background: #ddd url(assets/action-wrapper-1.png);
+    height: 600px;
+    box-shadow: 0 0 5px 1px #ccc;
+    background-size: cover;
+    background-repeat: no-repeat;
+} box-shadow: 0 0 5px 1px #ccc;
+
+  .contain {
+    background: url(assets/pets-bg.jpg) no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 600px;
+}
+
+@media (max-width: 480px) {
+	.col-md-12.action-wrapper-1 {
+
+    height: 680px;
+
+  
+}
+
+.col-md-6.sml-screen {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+}
+
+@media (max-width: 350px) {
+	.col-md-12.action-wrapper-1 {
+
+    height: 835px;
+  
+}
+
+.col-md-6.sml-screen {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+}
+
+
+	 </style>
 </head>
-<body>
+<body class="homepage">
+   <%= render partial: 'layouts/global_header', locals: header_props()%>
 
+  <%= yield %>
+
+<<<<<<< HEAD
 <%= yield %>
+=======
 
+>>>>>>> 968f26106314e457c1be4aff6369ddd01ec7cc56
+
+<script type="text/javascript">
+    $('#iconified').on('keyup', function() {
+    var input = $(this);
+    if(input.val().length === 0) {
+        input.addClass('empty');
+    } else {
+        input.removeClass('empty');
+    }
+});
+</script>
 
 </body>
 </html>
