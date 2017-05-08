@@ -4,6 +4,10 @@
     height: 3.75em;
 }
 
+.header-right {
+    margin-top: 5px !important;
+}
+
 .left .header-text-link {
     height: 3.75em;
     line-height: 3.5625em;
@@ -690,3 +694,15 @@ a.btn.btn-custom-action {
     text-shadow: 2px 2px #626e60;
 }
 }
+
+@media (min-width: 768px) {
+    section.content-section.video-section h1.text-center.colr-text {
+    margin-bottom: 40px;
+}
+
+.margin-top-120 {
+    margin-top: 200px!important;
+}
+
+}
+
