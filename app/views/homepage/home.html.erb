@@ -27,6 +27,7 @@
           <div class="margin-top-120">
       <h1 class="text-center colr-text"><%= community_description.html_safe %></h1>
     <!--  <p class="text-center colr-text"><%= community_description.html_safe %></p>-->
+      <!-- <p class="text-center colr-text"><%= community_description.html_safe %></p> -->
     </div>
     <div class="input-group" id="adv-search">
     <%=form_tag '/s', method: :get do%>
@@ -85,10 +86,29 @@
     <%end%>
   </div>
 </div> -->
-<div class="container margin-top-for-cntainer1">
+<section class="section-gap-margin">
+  <div class="container border-5">
+  <h2 class="section-head-title">A place for all your pets</h2>
+    <div class="col-sm-12 first-section">
+        <div class=" col-sm-7">
+         <!--  <i class="fa fa-paw"></i> -->
+          <p style="margin-left: 4px;
+    margin-top: 50px;
+    font-size: 25px; color: #626e60;}">Choose private or professional pet care partners<br><br>
+          One site for all your pet care needs<br><br>
+          Quickly plan vacation pet care<br><br>
+          Find services for exotic pets</p>
+        </div>
+        <div class="col-sm-5" style="padding-right: 20px;">
+          <div class="section-half-img"></div>
+          <img src="/assets/pet-family.jpg" class="img-responsive width-100" alt="Circus tent">
+        </div>
+      </div>
+    </div>
+</section>
+<div class="container margin-top-for-cntainer1 section-gap-margin">
   <h2 class="section-head-title">How It Works</h2>
-  <p class="hiw-copy">Petstore is a marketplace for pet services available now in Portland, Oregon and expanding soon to other areas. Choose services from a wide variety of professional and private pet care partners. Our partners offer services for all sorts of pets, making it easy to arrange all your pet needs in one place.</p>
-  <div class="row">
+  <div class="row margin-top-44">
     <div class="col-md-4 col-sm-12 col-xs-12 text-center">
       <!--  <img src="/assets/search-for-wire.jpg" alt="edit.png"> -->
       <div class="section-hiw-icon">
@@ -159,7 +179,7 @@
     </div>
   </div>
 </section>
-<section id="portfolio-2">
+<section id="portfolio-2 section-gap-margin">
   <div class="container">
     <div class="row">
       <div class="col-lg-12 text-center">
@@ -202,10 +222,10 @@
       </div>
     </div>
 </section>
-<section>
+<section class="section-gap-margin">
 <div class="border-5">
 <div class="col-sm-12">
-<h2 class="section-head-title">Get Started</h2>
+<h2 class="section-head-title" style="margin-top: 100px;">Become a Pet Care partner</h2>
 </div>
 <!--  <div class="col-sm-8">
   <p class="margin-top-media">All you need to get started is create an account on Petstore. Click Join below
@@ -217,15 +237,12 @@
   <div class="col-sm-4">
   <img src="/assets/rabbit.jpg" class="width-100-w" style="margin-top: 10px;">
   </div> -->
-<div class="col-md-12 action-wrapper-1">
+<div class="col-md-12 action-wrapper-1 section-gap-margin">
 <div>
 <div class="col-md-6 sml-screen">
-<div class="action-text-1">
-<p class="margin-top-media action-text">To get started,click Join below</p>
-<a class="btn btn-custom-action" href="/en/login">Join Now</a>
-</div>
+
 <p class="partner-text">
-<span>BECOME A PET CARE PARTNER</span><br>
+
 We're looking for pet care partners who love pets and have experience caring for pet needs. Become a pet care partner and you will earn money while caring for pets in your neighborhood. A small percentage goes to Petstore and you keep the rest. Your first step is to create an account on Petstore. Then, before you can list pet care services on our website, you will need to get validated. Because we love pets we want to verify the identity of pet care partners. Email us at <span class="mail">customercare@petstore.com</span> and we will respond with the easy process. Once you have been validated you will be able to start listing pet care services online. After a service is completed, your payment will be transferred directly to your bank account. We're excited to help get you started and look forward to hearing from you.</p>
 </div>
 </div>
