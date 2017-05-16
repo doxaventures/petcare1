@@ -1649,7 +1649,7 @@ en:
       days: days
       night: night
       nights: nights
-      invalid_parameters: "Invalid values for new transaction"
+      invalid_parameters: "Unfortunately, payment authorization failed. Please try again or submit a different form of payment."
     stripe_preauthorize:
       details: Details
       by: "%{listing} by %{author}"
