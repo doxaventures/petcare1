@@ -1,62 +1,128 @@
 - frontpage_fragment_cache("list_item", listing) do
-  .home-list-item
-    - if listing.listing_images.size > 0
-      = link_to listing_path(listing.url), :class => "home-list-image-container-desktop" do
-        = image_tag listing.listing_images.first[:small_3x2], {:alt => listed_listing_title(listing), :class => "home-list-image"}
-    - if listing.listing_images.size > 0
-      = link_to listing_path(listing.url), :class => "home-list-image-container-mobile" do
-        = image_tag listing.listing_images.first[:thumb], {:alt => listed_listing_title(listing), :class => "home-list-image"}
-    .home-list-details-right
-      .home-list-price
+  .col-4
+    .list-main-col
+      .list-main-img
+        = link_to listing_path(listing.url) do
+          - listing_image = listing.listing_images.present? ? listing.listing_images.first[:medium] : "placeholder.jpg"
+          = image_tag listing_image, {:alt => listed_listing_title(listing), :class => "home-list-image"}
+      .list-main-in
+        .list-name-address
+          %h3
+            = link_to(person_path(username: listing.author.username), :class => "home-list-author-name") do
+              = PersonViewUtils.person_entity_display_name(listing.author, @current_community.name_display_type)
+              -# if @current_community.show_category_in_listing_list
+                %a.home-share-type-link{:href => search_path(:transaction_type => shape_name_map[listing.listing_shape_id], :view => :list)}
+                  = icon_tag(listing.icon_name, ["icon-fix"])
+                  = shape_name(listing)
+          %p.bodycopyitl= listing.address
+        .list-task
+          = link_to listing_path(listing.url) do
+            = justifY_string(listing.title, 60)
+        .list-rating
+          .star-ratings-reviews
+            - star_rating_percentage = 0
+            - if listing.author.num_of_reviews > 0
+              - star_rating_percentage = (listing.author.num_of_positive_reviews / listing.author.num_of_reviews).to_f * 100
+            %p= (listing.author.num_of_positive_reviews / listing.author.num_of_reviews).to_f * 5 rescue 0.to_f
+
+            .star-ratings-sprite
+              %span.star-ratings-sprite-rating{:style => "width:#{star_rating_percentage.to_f}%"}
+            .noofreview
+              = pluralize(listing.author.num_of_reviews, t(".review"), t(".reviews"))
         - if listing.price
-          .home-list-item-price-value
+          .list-item-price-value
             = humanized_money_with_symbol(listing.price).upcase
-          - price_text = nil
-          - if listing.quantity.present?
+          -# price_text = nil
+          -# if listing.quantity.present?
             - price_text = t("listings.form.price.per") + " " + listing.quantity
-          - elsif listing.unit_type
+          -# elsif listing.unit_type
             - price_text = price_quantity_per_unit(listing)
 
-          - if price_text.present?
+          -# if price_text.present?
             .home-list-price-quantity{:title => price_text}
               = price_text
         - else
           .home-list-listing-shape-value
             = shape_name(listing)
+            
+          
+      -#.col-list-top
+        .home-list-details-right
+          .home-list-price
+            - if listing.price
+              .home-list-item-price-value
+                = humanized_money_with_symbol(listing.price).upcase
+              -# price_text = nil
+              -# if listing.quantity.present?
+                - price_text = t("listings.form.price.per") + " " + listing.quantity
+              -# elsif listing.unit_type
+                - price_text = price_quantity_per_unit(listing)
 
-    %div{:class => (listing.listing_images.size > 0 ? "home-list-details-with-image" : "")}
-      %h2.home-list-title
-        = link_to listing_path(listing.url) do
-          = listing.title
-          - if @current_community.show_category_in_listing_list
-            %a.home-share-type-link{:href => search_path(:transaction_type => shape_name_map[listing.listing_shape_id], :view => :list)}
-              = icon_tag(listing.icon_name, ["icon-fix"])
+              -# if price_text.present?
+                .home-list-price-quantity{:title => price_text}
+                  = price_text
+            - else
+              .home-list-listing-shape-value
+                = shape_name(listing)
+
+      -#%div{:class => (listing.listing_images.size > 0 ? "home-list-details-with-image" : "")}
+      / .listtitle-address
+      /   %h2.home-list-title
+      /     = link_to(person_path(username: listing.author.username), :class => "home-list-author-name") do
+      /       = PersonViewUtils.person_entity_display_name(listing.author, @current_community.name_display_type)
+      /       -# if @current_community.show_category_in_listing_list
+      /         %a.home-share-type-link{:href => search_path(:transaction_type => shape_name_map[listing.listing_shape_id], :view => :list)}
+      /           = icon_tag(listing.icon_name, ["icon-fix"])
+      /           = shape_name(listing) 
+      /   %p.bodycopyitl= listing.author.try(:location).try(:address)
+
+      -#.home-list-price-mobile{:class => (listing.listing_images.size > 0 ? "home-list-price-mobile-with-listing-image" : "home-list-price-mobile-without-listing-image")}
+        .pricelist.visible-mobile.hidden-desktop
+          - if listing.price
+            .home-list-price-value-mobile
+              = humanized_money_with_symbol(listing.price).upcase
+            - price_text = nil
+            - if listing.quantity.present?
+              - price_text = t("listings.form.price.per") + " " + listing.quantity
+            - elsif listing.unit_type
+              - price_text = price_quantity_per_unit(listing)
+            -# if price_text.present?
+              .home-list-price-quantity{:title => price_text}
+                = price_text
+          - else
+            .home-list-shape-value-mobile
               = shape_name(listing)
-      .home-list-price-mobile{:class => (listing.listing_images.size > 0 ? "home-list-price-mobile-with-listing-image" : "home-list-price-mobile-without-listing-image")}
-        - if listing.price
-          .home-list-price-value-mobile
-            = humanized_money_with_symbol(listing.price).upcase
-          - price_text = nil
-          - if listing.quantity.present?
-            - price_text = t("listings.form.price.per") + " " + listing.quantity
-          - elsif listing.unit_type
-            - price_text = price_quantity_per_unit(listing)
-          - if price_text.present?
-            .home-list-price-quantity{:title => price_text}
-              = price_text
-        - else
-          .home-list-shape-value-mobile
-            = shape_name(listing)
 
+      -#.home-list-author{:class => (listing.listing_images.size > 0 ? "home-list-author-with-listing-image" : "home-list-author-without-listing-image")}
+      .list-desc
+        .col-8
+          .home-list-avatar
+            = link_to(person_path(username: listing.author.username), :class => "home-fluid-thumbnail-grid-author-avatar-image") do
+              = image_tag(listing.author.avatar.thumb || missing_avatar(:thumb))
+          .home-list-author-details
+            .listing-title-and-icons
+              %span.rname-nouse
+                / = link_to listing_path(listing.url) do
+                /   = listing.title
+              -#%span.ricon
+                = icon_tag("plus", ["icon-1px"])
+                = icon_tag("new_listing", ["icon-1px"])
+                = icon_tag("favor", ["icon-1px"])
+            / .home-list-author-reviews.bodycopy
+            /   .star-ratings-reviews
+            /     - star_rating_percentage = 0
+            /     - if listing.author.num_of_reviews > 0
+            /       - star_rating_percentage = (listing.author.num_of_positive_reviews / listing.author.num_of_reviews).to_f * 100
+            /     %p= (listing.author.num_of_positive_reviews / listing.author.num_of_reviews).to_f * 5 rescue 0.to_f
 
-    .home-list-author{:class => (listing.listing_images.size > 0 ? "home-list-author-with-listing-image" : "home-list-author-without-listing-image")}
-      .home-list-avatar
-        = link_to(person_path(username: listing.author.username), :class => "home-fluid-thumbnail-grid-author-avatar-image") do
-          = image_tag(listing.author.avatar.thumb || missing_avatar(:thumb))
-      .home-list-author-details
-        = link_to(person_path(username: listing.author.username), :class => "home-list-author-name") do
-          = PersonViewUtils.person_entity_display_name(listing.author, @current_community.name_display_type)
-        .home-list-author-reviews
-          - if listing.author.num_of_reviews > 0
-            = icon_tag("testimonial")
-            = pluralize(listing.author.num_of_reviews, t(".review"), t(".reviews"))
+            /     .star-ratings-sprite
+            /       %span.star-ratings-sprite-rating{:style => "width:#{star_rating_percentage.to_f}%"}
+            /     .noofreview
+            /       = pluralize(listing.author.num_of_reviews, t(".review"), t(".reviews"))
+            / .home-list-desc
+            /   %p.bodycopyitl= truncate_html(listing.description, :length => 160, :omission => "...")
+    
+    / .list-main-col-right
+    /   - if listing.listing_images.size > 0
+    /     = link_to listing_path(listing.url), :class => "home-list-image-mobile" do
+    /       = image_tag listing.listing_images.first[:thumb], {:alt => listed_listing_title(listing), :class => "home-list-image"}  

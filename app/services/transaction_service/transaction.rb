@@ -79,7 +79,6 @@ module TransactionService::Transaction
     community_id = opts[:transaction][:community_id]
 
     set_adapter = settings_adapter(payment_gateway)
-
     Result::Success.new(result: set_adapter.configured?(community_id: community_id, author_id: author_id))
   end
 
@@ -300,7 +299,10 @@ module TransactionService::Transaction
         charged_commission: payment[:charged_commission],
         payment_gateway_fee: payment[:payment_gateway_fee],
         shipping_address: tx[:shipping_address],
-        booking: tx[:booking]})
+        subscription_type: tx[:subscription_type],
+        subscription: tx[:subscription],
+        booking: tx[:booking],
+        service_time: tx[:service_time]})
   end
 
   def calculate_commission(item_total, commission_from_seller, minimum_commission)

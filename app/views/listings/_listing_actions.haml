@@ -20,8 +20,136 @@
   - if is_author
     = render partial: "delivery_opts", locals: { delivery_opts: delivery_opts, is_author: is_author }
   - else
-
+    %label#second_price{style: 'color:#2275d7;'}
     = form_tag form_path, :method => :get, :id => "booking-dates" do
+      - content_for :extra_javascript do
+        :javascript
+          var $subscription_type_container = $('.subscription-type');
+              var $subscription_checkbox = $('#subscription-checkbox');
+              $subscription_checkbox.click(function() { toggleType(); });
+
+              var toggleType = function(){
+                if($subscription_checkbox.is(":checked")) {
+                  $subscription_type_container.show();
+                } else {
+                  $subscription_type_container.hide();
+                  $('.subscription-type').find('input').removeAttr('checked');
+                  document.getElementById('second_price').textContent = lowestprice
+                
+                }
+              };
+              toggleType(); //initialize
+              var radio = function(){
+                source = false;
+                if($subscription_checkbox.is(":checked")){
+                  source = true; 
+                }
+                return source;
+              };
+
+              $subscription_type_container.click(function() { 
+              if((#{@listing.weekly_discount.present?}) && (document.getElementById('subscription_type_weekly').checked))   {
+                //if (document.getElementById('subscription_type_weekly').checked) {
+                  var discount = #{(@listing.weekly_discount.to_f / 100)* @listing.price_cents}
+                  var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+                  document.getElementById('second_price').textContent = "As low as " + "$" + price + " with a subscription"
+                //}
+              }
+
+              else if((#{@listing.bi_weekly_discount.present?}) && (document.getElementById('subscription_type_bi-weekly').checked)) {
+                //if (document.getElementById('subscription_type_bi-weekly').checked) {
+                  var discount = #{(@listing.bi_weekly_discount.to_f / 100)* @listing.price_cents}
+                  var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+                  document.getElementById('second_price').textContent = "As low as " + "$" + price + " with a subscription"
+                //}
+              }
+
+              else if((#{@listing.monthly_discount.present?}) && (document.getElementById('subscription_type_monthly').checked)) {
+                //if (document.getElementById('subscription_type_monthly').checked) {
+                  var discount = #{(@listing.monthly_discount.to_f / 100)* @listing.price_cents}
+                  var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+                  document.getElementById('second_price').textContent = "As low as " + "$" + price + " with a subscription"
+                //}
+              }
+
+              else if((#{@listing.quarterly_discount.present?}) && (document.getElementById('subscription_type_quarterly').checked)) {
+                //if (document.getElementById('subscription_type_quarterly').checked) {
+                  var discount = #{(@listing.quarterly_discount.to_f / 100)* @listing.price_cents}
+                  var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+                  document.getElementById('second_price').textContent = "As low as " + "$" + price + " with a subscription"
+                //}
+              }
+              });
+              $("#booking-dates").validate({
+                rules:
+                    {
+                      subscription_type:{ required:radio }
+                    },
+                errorPlacement: function(error, element) {                  
+                  if(element.is(":radio")) {
+                  error.appendTo(element.parents('.subscription-type'));
+                  } else { 
+                  error.insertAfter(element);
+                  }
+                }
+              });
+
+         
+          if(#{@listing.weekly_discount.present?})   {
+                //if (document.getElementById('subscription_type_weekly').checked) {
+                  var discount = #{(@listing.weekly_discount.to_f / 100)* @listing.price_cents}
+                  var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+                  //document.getElementById('second_price').textContent = "$" + price + " per day save #{@listing.weekly_discount}% with a subscription"
+                  var lowestprice = "As low as " + "$" + price + " with a subscription"
+                //}
+              }
+
+          else if(#{@listing.bi_weekly_discount.present?}) {
+            //if (document.getElementById('subscription_type_bi-weekly').checked) {
+              var discount = #{(@listing.bi_weekly_discount.to_f / 100)* @listing.price_cents}
+              var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+              //document.getElementById('second_price').textContent = "$" + price + " per day save #{@listing.bi_weekly_discount}% with a subscription"
+            //}
+              var lowestprice = "As low as " + "$" + price + " with a subscription"
+          }
+
+          else if(#{@listing.monthly_discount.present?}) {
+            //if (document.getElementById('subscription_type_monthly').checked) {
+              var discount = #{(@listing.monthly_discount.to_f / 100)* @listing.price_cents}
+              var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+              //document.getElementById('second_price').textContent = "$" + price + " per day save #{@listing.monthly_discount}% with a subscription"
+              var lowestprice = "As low as " + "$" + price + " with a subscription"
+            //}
+          }
+
+          else if(#{@listing.quarterly_discount.present?}) {
+            //if (document.getElementById('subscription_type_quarterly').checked) {
+              var discount = #{(@listing.quarterly_discount.to_f / 100)* @listing.price_cents}
+              var price = ((#{@listing.price_cents}-discount)/100).toFixed(2);
+              //document.getElementById('second_price').textContent = "$" + price + " per day save #{@listing.quarterly_discount}% with a subscription"
+              var lowestprice = "As low as " + "$" + price + " with a subscription"
+            //}
+          }
+          document.getElementById('second_price').textContent = lowestprice
+      
+          
+      - if @listing.recurring_payment.present?
+        .delivery-options-container
+          .delivery-row-low
+            .delivery-checkbox
+              = check_box_tag "subscription",true,false, id: "subscription-checkbox", class: "delivery-method-checkbox"
+            .delivery-left-field
+              - if @listing.discount.present?
+                = label_tag "subscription", "Subscribe & Save", class: "subscription-title"
+              - else
+                = label_tag "subscription", "Subscribe & Save", class: "subscription-title"
+          .subscription-type
+            .preauthorize-section
+              - @listing.recurring_payment.each_with_index do |key,value|
+                .row
+                  .col-12
+                    = radio_button_tag("subscription_type",key[0])
+                    = label_tag "subscription_type","#{key[0].capitalize}", :class => "radiobutton"
 
       - if [:day, :night].include?(@listing.quantity_selector&.to_sym)
         - blocked_dates_result.on_success do |blocked_dates|
@@ -35,7 +163,6 @@
 
           - content_for :extra_javascript do
             :javascript
-
               var disabledDates = [
                 #{blocked_dates.map { |d| "new Date(#{d.to_i * 1000})" }.join(",")}
               ];
@@ -81,7 +208,9 @@
                     return date < startDate || date >= endDate;
                   });
                 });
-              var rules = #{@listing.quantity_selector&.to_sym == :night} ? {
+
+              var rules = {}
+              rules[#{@listing.quantity_selector&.to_sym == :night}] ? {
                 "end_on": {
                   night_selected: {startOnSelector: "#start-on"},
                   availability_range: {startOnSelector: "#start-on"}
@@ -91,8 +220,20 @@
                   availability_range: {startOnSelector: "#start-on"}
                 }
               };
+
               $("#booking-dates").validate({
-                rules: rules,
+                rules:rules,
+                rules:
+                  {
+                    subscription_type:{ required:radio }
+                  },
+                errorPlacement: function(error, element) {
+                  if(element.is(":radio")) {
+                  error.appendTo(element.parents('.subscription-type'));
+                  } else { 
+                  error.insertAfter(element);
+                  }
+                },
                 submitHandler: function(form) {
                   var $form = $(form);
                   $form.find("#start-on").attr("name", "");
@@ -102,10 +243,13 @@
                 }
               });
 
+
               var endDate = new Date(#{blocked_dates_end_on.to_i * 1000});
               var nightPicker = #{@listing.quantity_selector.to_sym == :night};
 
               window.ST.initializeFromToDatePicker('datepicker', {disabledDates: disabledDates, endDate: endDate, nightPicker: nightPicker });
+
+              
           .input-daterange.input-group.clearfix#datepicker{:data => {:locale => I18n.locale, :dateformat => t("datepicker.format")}}
             .datepicker-start-wrapper
               = label_tag t(".booking_from")
@@ -126,14 +270,22 @@
         - content_for :extra_javascript do
           :javascript
             $("#booking-dates").validate({
+              rules:
+                  {
+                    subscription_type:{ required:radio }
+                  },
               errorPlacement: function(error, element) {
                 if (element.is("#quantity")) {
                   error.insertAfter(".quantity-wrapper");
-                } else {
-                  error.insertAfter(element);
+                } 
+                else if(element.is(":radio")) {
+                error.appendTo(element.parents('.subscription-type'));
+                } else { 
+                error.insertAfter(element);
                 }
               }
             });
+            
             window.ST.initializeQuantityValidation({validate: "positiveIntegers", input: "quantity", errorMessage: "#{t("errors.messages.positive_number")}" });
             if ("#{delivery_type}" == "shipping" && #{shipping_price_additional != nil}) {
               window.ST.initializeShippingPriceTotal('#quantity', '.delivery-price-value', '#{Maybe(delivery_opts)[0][:price].currency.decimal_mark.or_else(".")}');
@@ -148,10 +300,38 @@
 
       = render partial: "delivery_opts", locals: { delivery_opts: delivery_opts, is_author: is_author }
 
+      / - if @listing.discount.present?
+      /   .row
+      /     .col-12
+      /       .info-text-container
+      /         .info-text-icon
+      /           = icon_tag("information")
+      /         .info-text-content
+      /           %p= "#{number_to_percentage(@listing.discount,precision: 0)} discount is available for only subscription users "
+
+     
+
+     
+      - @listing.custom_field_values.each do |custom_field_value|
+        - custom_field_value.with_type do |type|
+          - if [:checkbox].include?(type)
+            .row
+              .col-12
+                .custom-filter-title
+                  = t("listings.form.service_time.time")
+
+                  - custom_field_value.selected_options.each do |option|
+                    .custom-filter-checkbox-container
+                      %label.custom-filter-checkbox-label
+                        = check_box_tag "service_time[]", option.title
+                        %span.custom-filter-checkbox-label-text
+                          = option.title(I18n.locale) 
+
+
       = hidden_field_tag(:listing_id, @listing.id)
 
       - blocked_dates_result.on_success do
-        %button.enabled-book-button
+        %button.enabled-book-button.orgcolor
           .content
             = action_button_label(@listing)
 

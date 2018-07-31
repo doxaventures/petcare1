@@ -140,6 +140,37 @@ class TransactionMailer < ActionMailer::Base
     end
   end
 
+  def subscription_auto_charge_receipt(payment, community)
+    recipient = payment.starter
+    prepare_template(community, recipient, "email_about_new_payments")
+    with_locale(recipient.locale, community.locales.map(&:to_sym), community.id) do
+      unit_type = Maybe(payment).select { |t| t.unit_type.present? }.map { |t| ListingViewUtils.translate_unit(t.unit_type, t.unit_tr_key) }.or_else(nil)
+      duration = payment.booking.present? ? payment.booking.duration : nil
+      premailer_mail(:to => payment.starter.confirmed_notification_emails_to,
+                     :from => community_specific_sender(community),
+                     :subject => t("emails.receipt_to_payer.receipt_of_payment")) { |format|
+        format.html {
+          render "payment_receipt_to_buyer", locals: {
+                   conversation_url: person_transaction_url(payment.starter, @url_params.merge({:id => payment.id.to_s})),
+                   listing_title: payment.listing_title,
+                   quantity_selector_label: nil,
+                   price_per_unit_title: t("emails.new_payment.price_per_unit_type", unit_type: unit_type),
+                   listing_price: humanized_money_with_symbol(payment.unit_price),
+                   listing_quantity: payment.listing_quantity,
+                   duration: duration,
+                   payment_total: humanized_money_with_symbol(payment.payment.total_sum),
+                   subtotal: humanized_money_with_symbol(payment.payment.total_sum),
+                   shipping_total: humanized_money_with_symbol(payment.shipping_price.present? ? payment.shipping_price : nil),
+                   recipient_full_name: payment.listing.author.name(community),
+                   recipient_given_name: payment.listing.author.given_name_or_username,
+                   automatic_confirmation_days: payment.automatic_confirmation_after_days,
+                   show_money_will_be_transferred_note: false
+                 }
+        }
+      }
+    end
+  end
+
   # seller_model, buyer_model and community can be passed as params for testing purposes
   def paypal_new_payment(transaction, seller_model = nil, buyer_model = nil, community = nil)
     seller_model ||= Person.find(transaction[:listing_author_id])

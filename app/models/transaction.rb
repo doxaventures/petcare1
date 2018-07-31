@@ -36,6 +36,12 @@
 #  availability                      :string(32)       default("none")
 #  booking_uuid                      :binary(16)
 #  deleted                           :boolean          default(FALSE)
+#  stripe_customer_id                :string(255)
+#  subscription_type                 :string(255)
+#  subscription_offers               :string(255)
+#  subscription                      :boolean          default(FALSE)
+#  listing_price_cents               :integer
+#  service_time                      :string(255)
 #
 # Indexes
 #
@@ -52,6 +58,8 @@
 class Transaction < ActiveRecord::Base
   attr_accessor :contract_agreed
 
+  serialize :service_time, Array
+  
   belongs_to :community
   belongs_to :listing
   has_many :transaction_transitions, dependent: :destroy, foreign_key: :transaction_id

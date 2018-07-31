@@ -14,10 +14,14 @@ module MarketplaceHelper
       color1: color1,
       color2: color2,
       image_map: {
-        cover_photo:         community.stable_image_url(:cover_photo, :hd_header),
-        small_cover_photo:   community.stable_image_url(:small_cover_photo, :hd_header),
-        wide_logo_lowres:    community.stable_image_url(:wide_logo, :header),
-        wide_logo_highres:   community.stable_image_url(:wide_logo, :header_highres),
+        # cover_photo:         community.stable_image_url(:cover_photo, :hd_header),
+        cover_photo:         community.stable_image_url(:cover_photo, :original),
+        # small_cover_photo:   community.stable_image_url(:small_cover_photo, :hd_header),
+        small_cover_photo:   community.stable_image_url(:small_cover_photo, :original),
+        # wide_logo_lowres:    community.stable_image_url(:wide_logo, :header),
+        # wide_logo_highres:   community.stable_image_url(:wide_logo, :header_highres),
+        wide_logo_lowres:    community.stable_image_url(:wide_logo, :original),
+        wide_logo_highres:   community.stable_image_url(:wide_logo, :original),
         square_logo_lowres:  community.stable_image_url(:logo, :header_icon),
         square_logo_highres: community.stable_image_url(:logo, :header_icon_highres),
       }

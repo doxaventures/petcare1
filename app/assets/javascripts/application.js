@@ -88,3 +88,6 @@
 //= require new_layout
 //= require connect
 //= require_self
+//= require landing_page_new/bootstrap.js
+//= require landing_page_new/Mtp-player.js
+//= require sticky-sidebar.js

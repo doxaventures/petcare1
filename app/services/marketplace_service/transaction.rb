@@ -32,6 +32,10 @@ module MarketplaceService
         :created_at,
         :availability,
         :booking_uuid,
+        :subscription_type,
+        :subscription,
+        :listing_price_cents,
+        :service_time,
         :__model
       )
 
@@ -112,9 +116,11 @@ module MarketplaceService
           community_uuid: transaction_model.community_uuid_object,
           starter_uuid: transaction_model.starter_uuid_object,
           listing_author_uuid: transaction_model.listing_author_uuid_object,
+          subscription_type: transaction_model.subscription_type,
+          subscription: transaction_model.subscription,
+          service_time: transaction_model.service_time,
           __model: transaction_model
         })]
-
       end
 
       def transaction_with_conversation(transaction_model, community_id)
@@ -153,7 +159,11 @@ module MarketplaceService
         [:starter_id, :string, :mandatory],
         [:author_id, :string, :mandatory],
         [:content, :string, :optional],
-        [:commission_from_seller, :fixnum, :optional]
+        [:commission_from_seller, :fixnum, :optional],
+        [:subscription_type, :string, :optional],
+        [:subscription, :to_bool, default: false],
+        [:listing_price_cents, :fixnum, :optional],
+        [:service_time, :array, :optional]
       )
 
       module_function
@@ -165,7 +175,12 @@ module MarketplaceService
             community_id: opts[:community_id],
             listing_id: opts[:listing_id],
             starter_id: opts[:starter_id],
-            commission_from_seller: opts[:commission_from_seller]})
+            commission_from_seller: opts[:commission_from_seller],
+            subscription_type: opts[:subscription_type],
+            subscription: opts[:subscription],
+            listing_price_cents: opts[:listing_price_cents],
+            service_time: opts[:service_time]
+            })
 
         conversation = transaction.build_conversation(
           community_id: opts[:community_id],
@@ -235,7 +250,6 @@ module MarketplaceService
       def save_transition(transaction, new_status, metadata = nil)
         transaction.current_state = new_status
         transaction.save!
-
         metadata_hash = Maybe(metadata)
           .map { |data| TransactionService::DataTypes::TransitionMetadata.create_metadata(data) }
           .map { |data| HashUtils.compact(data) }

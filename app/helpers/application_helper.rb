@@ -364,8 +364,15 @@ module ApplicationHelper
         :topic => :manage,
         :text => t("admin.communities.transactions.transactions"),
         :icon_class => icon_class("coins"),
-        :path => admin_community_transactions_path(@current_community, sort: "last_activity", direction: "desc"),
+        :path => admin_community_transactions_path(:community_id => @current_community),
         :name => "transactions"
+      },
+      {
+        :topic => :manage,
+        :text => t("admin.communities.product_feed.products"),
+        :icon_class => "ss-page",
+        :path => admin_community_products_path(@current_community, sort: "last_activity", direction: "desc"),
+        :name => "products_feed"
       },
       {
         :topic => :configure,
@@ -490,7 +497,7 @@ module ApplicationHelper
       :path => admin_settings_path,
       :name => "admin_settings"
     }
-
+    
     links
   end
   # rubocop:enable Metrics/MethodLength
@@ -518,6 +525,14 @@ module ApplicationHelper
         :icon_class => icon_class("notification_settings"),
         :path => notifications_person_settings_path(person),
         :name => "notifications"
+      },
+
+      {
+        :id => "settings-tab-notifications",
+        :text => t("layouts.settings.transactions"),
+        :icon_class => icon_class("payments"),
+        :path => upcoming_transactions_person_settings_path(person),
+        :name => "upcoming_transactions"
       }
     ]
 
@@ -661,7 +676,8 @@ module ApplicationHelper
   end
 
   def search_mode
-    FeatureFlagHelper.location_search_available ? MarketplaceService::API::Api.configurations.get(community_id: @current_community.id).data[:main_search] : :keyword
+    :keyword_and_location
+    # FeatureFlagHelper.location_search_available ? MarketplaceService::API::Api.configurations.get(community_id: @current_community.id).data[:main_search] : :keyword
   end
 
   def landing_page_path
@@ -682,4 +698,48 @@ module ApplicationHelper
       content_for :extra_javascript do js end
     end
   end
+
+  def is_homepage
+    params[:controller] == "homepage" && params[:action] == "home"
+  end
+
+  def is_listings_page
+    params[:controller] == "homepage" && params[:action] == "index"
+  end
+
+  def sign_up_page_active
+    ["people"].include?(controller_name) &&
+      ["new"].include?(action_name)
+  end
+
+  def login_page_active
+    ["sessions"].include?(controller_name) &&
+      ["new"].include?(action_name)
+  end
+
+  def needs_maps
+    # !FeatureFlagHelper.feature_enabled?(:topbar_v1) || search_mode == :keyword
+    true
+  end
+
+  def justifY_string(string, length=60)
+    string = truncate_html(string, :length => length, :omission => "...")
+    if string.size > (length + 3)
+      return (string + (" &nbsp; " * (string.size - length).abs))
+    end
+    string
+  end
+
+  def listing_discount(subscription_type,listing)
+    if subscription_type == "weekly" && @listing.weekly_discount.present?
+      @discount = @listing.weekly_discount
+    elsif subscription_type == "bi-weekly" && @listing.bi_weekly_discount.present?
+      @discount = @listing.bi_weekly_discount
+    elsif subscription_type == "monthly" && @listing.monthly_discount.present?
+      @discount = @listing.monthly_discount
+    elsif subscription_type == "yearly" && @listing.yearly_discount.present?
+      @discount = @listing.yearly_discount
+    end
+  end
+
 end

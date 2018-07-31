@@ -1,0 +1,7 @@
+.dropdown-2
+ .selectdiv
+  %label
+   %select#sub_category_id.form-control.1{:name => "sub_category", :style => "width:220px"}
+    %option Product or Service
+    - subcategories.each do |category|
+     %option{:value => "#{category.url}"}= category.display_name(I18n.locale)

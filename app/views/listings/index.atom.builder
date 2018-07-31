@@ -12,7 +12,7 @@ atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss'
 
         img_url = ensure_full_image_url(listing[:listing_images].first[:medium])
 
-        entry_content +=  "<br />\n" + link_to(image_tag(img_url), listing_url(listing[:url], host: @current_community.full_domain(port: '')))
+        entry_content +=  "<br />\n" + link_to(image_tag(img_url, :alt => listed_listing_title(listing)), listing_url(listing[:url], host: @current_community.full_domain(port: '')))
       end
 
       entry.content :type => 'html' do |content|

@@ -43,17 +43,19 @@ class StripeSaleService
 
       begin
 
-        # customer = Stripe::Customer.create(
-        #   :description => "Customer for #{@payer.emails.first.address}",
-        #   :source => token # obtained with Stripe.js
-        # )
+        customer = Stripe::Customer.create(
+          :description => "Customer for #{@payer.emails.first.address}",
+          :source => token # obtained with Stripe.js
+        )
 
-        # @payer.update_attribute(:stripe_customer_id, customer.id)
+        #@payer.update_attribute(:stripe_customer_id, customer.id)
+        @payment.tx.update_attribute(:stripe_customer_id, customer.id)
 
         charge_attrs = {
           :amount => (@amount * 100).to_i, # amount in cents
           :currency => @payment.currency,
-          :source => token,
+          # :source => token,
+          :customer => @payment.tx.stripe_customer_id,
           :description => "Listing fee charge to #{@recipient.full_name} from #{@payer.full_name}",
           :application_fee => (@service_fee * 100).to_i, # amount in cents
           :destination => @recipient.stripe_account.stripe_user_id,
@@ -64,6 +66,8 @@ class StripeSaleService
 
         # Create the charge on Stripe's servers - this will charge the user's card
         charge = Stripe::Charge.create(charge_attrs)
+
+        #charge = Stripe::Charge.create(charge_attrs1)
         # hold_charge = Stripe::Charge.create(hold_amount_attrs)
       rescue Stripe::CardError => e
         error = e.json_body[:error][:message]

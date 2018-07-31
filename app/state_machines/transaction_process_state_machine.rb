@@ -30,8 +30,8 @@ class TransactionProcessStateMachine
     else
       ConfirmConversation.new(transaction, payer, current_community).activate_automatic_confirmation!
     end
-
     Delayed::Job.enqueue(SendPaymentReceipts.new(transaction.id))
+   
   end
 
   after_transition(to: :rejected) do |transaction|
@@ -44,6 +44,20 @@ class TransactionProcessStateMachine
   after_transition(to: :confirmed) do |conversation|
     confirmation = ConfirmConversation.new(conversation, conversation.starter, conversation.community)
     confirmation.confirm!
+    if conversation.subscription? && conversation.listing.open? && conversation.listing.recurring_payment.present?
+      if conversation.subscription_type? && conversation.subscription_type == "weekly" && conversation.listing.recurring_payment["weekly"].present?
+        date = conversation.last_transition_at + 6.days
+      elsif conversation.subscription_type? && conversation.subscription_type == "bi-weekly" && conversation.listing.recurring_payment["bi-weekly"].present?
+        date = conversation.last_transition_at + 13.days
+      elsif conversation.subscription_type? && conversation.subscription_type == "monthly" && conversation.listing.recurring_payment["monthly"].present? 
+        date = conversation.last_transition_at + 29.days
+      elsif conversation.subscription_type? && conversation.subscription_type == "quaterly" && conversation.listing.recurring_payment["quaterly"].present?
+        date = conversation.last_transition_at + 89.days
+      end
+      if date.present?
+        Delayed::Job.enqueue(AutomaticTransactionJob.new(conversation.id), :run_at => date)
+      end
+    end
   end
 
   after_transition(from: :paid, to: :canceled) do |conversation|

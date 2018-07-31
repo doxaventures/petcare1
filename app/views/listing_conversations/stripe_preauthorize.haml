@@ -4,7 +4,9 @@
     Stripe.setPublishableKey(#{@current_community.payment_gateway.stripe_publishable_key.to_json});
     $(function() {
       var $form = $('#transaction-form');
+ 
       $form.submit(function(event) {
+        
         // Disable the submit button to prevent repeated clicks:
         $form.find('.submit').prop('disabled', true);
 
@@ -13,30 +15,41 @@
 
         // Prevent the form from being submitted:
         return false;
+        
       });
     });
 
     function stripeResponseHandler(status, response) {
       // Grab the form:
+
       var $form = $('#transaction-form');
 
-      if (response.error) {
-        // Problem!
-        // Show the errors on the form:
-        $form.find('.payment-errors').text(response.error.message);
-        $form.find('.submit').prop('disabled', false); // Re-enable submission
+      $("#transaction-form").validate();
+      
+        if (response.error) {
 
-      } else {
-        // Token was created!
-        // Get the token ID:
-        var token = response.id;
+          // Problem!
+          // Show the errors on the form:
+          $form.find('.payment-errors').text(response.error.message);
+          $form.find('.submit').prop('disabled', false); // Re-enable submission
 
-        // Insert the token ID into the form so it gets submitted to the server:
-        $form.append($('<input type="hidden" name="stripeToken">').val(token));
+        } else {
+          // Token was created!
+          // Get the token ID:
+          var token = response.id;
 
-        // Submit the form:
-        $form.get(0).submit();
-      }
+          // Insert the token ID into the form so it gets submitted to the server:
+          $form.append($('<input type="hidden" name="stripeToken">').val(token));
+           if($("#transaction-form").valid()) {
+            $form.get(0).submit();
+          }
+
+          // Submit the form:
+          
+        }
+
+    
+
     };
 
     $(document).ready(function() {
@@ -46,6 +59,9 @@
 
       stripePaymentForm.show();
     });
+
+   
+
 
 - content_for :javascript do
   initialize_send_message_form('#{I18n.locale}');
@@ -73,6 +89,29 @@
   = form_tag form_action, method: :post, id: "transaction-form" do
     = hidden_field_tag(:start_on, start_on&.iso8601 )
     = hidden_field_tag(:end_on, end_on&.iso8601 )
+    = hidden_field_tag(:subscription, subscription)
+    = hidden_field_tag(:subscription_type, subscription_type)
+    - if service_time.present?
+      - service_time.each do |time|
+        = hidden_field_tag(:"service_time[]", time)
+
+    
+
+    / .row
+    /   .col-4
+    /     %label= t(".address_country")
+    /     = select_tag 'shipping_address[country_code]', options_for_select(CountryI18nHelper.translated_shipping_countries, @current_community.country), {}
+
+    /   .col-8
+    /     .us-only.hidden
+    /       %label= t(".address_state")
+    /       = select_tag 'shipping_address[state_or_province]', options_for_select(us_states), class: 'required', prompt: "Select state"   
+
+    - if subscription.present?
+      .preauthorize-section
+        %p
+          = t("listing_conversations.preauthorize.subscription_message", transaction: link_to("here",upcoming_transactions_person_settings_path(@current_user))).html_safe
+
     .preauthorize-section
       %h2
         = t("listing_conversations.preauthorize.payment")
@@ -95,14 +134,49 @@
 
       - if delivery_method
         = hidden_field_tag :delivery, delivery_method
+        
+    
+    .preauthorize-section 
+      %h2= t("shipping_address.shipping_address")
+      .row
+        .col-12
+          %label= t("shipping_address.name")
+          = text_field_tag 'shipping_address[name]', '', class: 'required'
 
       .row
         .col-12
-          = button_tag t("stripe_payments.confirm_payment"), :class => "send_button"
+          %label= t("shipping_address.phone")
+          = text_field_tag 'shipping_address[phone]', '', class: 'required'
+
       .row
         .col-12
-          %p
-            = t("listing_conversations.preauthorize.you_will_be_charged", author: author_link, expiration_period: expiration_period ).html_safe
+          %label= t("shipping_address.address1")
+          = text_field_tag 'shipping_address[street1]', '', class: 'required'
+      .row
+        .col-12
+          %label= t("shipping_address.address2")
+          = text_field_tag 'shipping_address[street2]', ''
+
+      .row
+        .col-12
+          %label= t("shipping_address.city")
+          = text_field_tag 'shipping_address[city]', '', class: 'required'
+
+      .row
+        .col-7
+          %label= t("shipping_address.state")
+          = text_field_tag 'shipping_address[state_or_province]', '', class: 'required'
+        .col-5
+          %label= t("shipping_address.zipcode")
+          = text_field_tag 'shipping_address[postal_code]', '', class: 'required'
+
+    .row
+      .col-12
+        = button_tag t("stripe_payments.confirm_payment"), :class => "send_button"
+    .row
+      .col-12
+        %p
+          = t("listing_conversations.preauthorize.you_will_be_charged", author: author_link, expiration_period: expiration_period ).html_safe
 
   %noscript
     = "For security reasons JavaScript has to be enabled"

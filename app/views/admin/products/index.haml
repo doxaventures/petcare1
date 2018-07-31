@@ -1,0 +1,16 @@
+- content_for :title_header do
+  %h1
+    = t("layouts.admin.admin")
+    = "-"
+    = t("admin.communities.product_feed.products")
+
+= render :partial => "admin/left_hand_navigation", :locals => { :links => admin_links_for(@current_community) }
+
+.left-navi-section
+  %h2= t("admin.communities.product_feed.products", community_name: @community.name(I18n.locale))
+
+  %h3 Import a CSV File
+  = form_tag import_admin_community_products_path, multipart: true do
+    - if @current_user.is_admin?
+      = file_field_tag :file
+      = submit_tag "Import CSV"

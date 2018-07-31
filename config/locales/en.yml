@@ -312,6 +312,9 @@ en:
           initiated: "Waiting PayPal payment"
           pending_ext: "Waiting PayPal payment"
         not_available: "Not available"
+      product_feed:
+        products: "Upload Products Feed"
+
       stripe_payment_gateway:
         stripe_payment_gateway: "Stripe Payment API keys"
         environment: Environment
@@ -321,6 +324,8 @@ en:
         commission_from_seller: "Commission percentage from seller"
       paypal_account:
         paypal_admin_account: "Payment system"
+      discount:
+        discount: "Discounts"
     custom_fields:
       edit:
         edit_listing_field: "Edit listing field '%{field_name}'"
@@ -1114,7 +1119,7 @@ en:
       is: is
       are: are
       what_do_you_need: "What are you looking for?"
-      post_new_listing: "Post a new listing"
+      post_new_listing: "New listing"
       are_offering: offer
       add_news_item: "Add an article"
       lend_rent_help_carpool: "Sell, lend, help, share rides"
@@ -1382,6 +1387,7 @@ en:
       profile: "Profile info"
       settings: Settings
       payments: Payments
+      transactions: "Transactions"
   listings:
     bubble_listing_not_visible:
       listing_not_visible: "You do not have permission to view this listing."
@@ -1464,6 +1470,7 @@ en:
         uploading_failed: "Image uploading failed"
         image_processing_failed: "Image processing failed"
         file_too_large: "The file is too large"
+        file_too_small: "Please Upload image 660x440"
         accepted_formats: "The image format must be either GIF, JPG or PNG."
         images_not_uploaded_confirm: "All images have not finished uploading. Do you really want to continue?"
       location:
@@ -1517,6 +1524,8 @@ en:
         privacy: Privacy
         private: "Private (only users who are logged in can see)"
         public: "Public (visible to users who are not logged in)"
+      service_time:
+        time: "Service Available"
     help_texts:
       help_share_type_title: "Type of the offer or request"
       help_tags_title: Tags
@@ -1650,6 +1659,7 @@ en:
       night: night
       nights: nights
       invalid_parameters: "Unfortunately, payment authorization failed. Please try again or submit a different form of payment."
+      subscription_message: "You have selected a subscription service. You will receive your initial order at the discounted price. Then, the order will automatically renew at the chosen interval. By selecting a subscription service you are agreeing to a recurring charge. If you are ordering a pet service, the service provider will contact you to arrange an appointment time once the order has been received. To change subscription settings, please go to the transaction section under your profile %{transaction}."
     stripe_preauthorize:
       details: Details
       by: "%{listing} by %{author}"
@@ -1889,7 +1899,7 @@ en:
       grade: "grade:"
       and_gave_following_feedback: "and gave the following feedback"
     profile_listings:
-      show_also_closed: "Show also closed"
+      show_also_closed: "show closed items +"
       show_only_open: "Show only open"
       no_image: "No image"
     show:
@@ -1913,11 +1923,11 @@ en:
       slightly_less_than_expected: "Worse than expected"
       what_are_these: "What are these?"
       review: "received review"
-      reviews: "received reviews"
+      reviews: "Received Reviews"
       listing: listing
       listings: listings
       open_listing: "open listing"
-      open_listings: "open listings"
+      open_listings: "Open Listings"
       no_listings: "No listings"
       no_open_listings: "No open listings"
       no_reviews: "No reviews"
@@ -2047,8 +2057,22 @@ en:
       invisible: "(not shown to other users)"
       image_is_processing: "Hang on tight. We are processing your profile picture. It will be ready in a minute or two."
     save_information: "Save information"
+    subscription:
+      listing_title: "Listing Title"
+      author: "Provider"
+      price: "Price"
+      sub: "Subscription"
   shipping_address:
     shipping_address: "Shipping address"
+    address1: "Street address line 1*"
+    address2: "Street address line 2"
+    zipcode: "Zip code*"
+    city: "City*"
+    name: "Name*"
+    phone: "Phone number*"
+    state: "State*"
+
+
   tag_cloud:
     tag_used:
       with_tag: "With tag"
@@ -2191,6 +2215,7 @@ en:
       quantity: "Quantity:"
       subtotal: "Subtotal:"
       shipping-price: "Shipping:"
+      discount: "Discount:"
     price_per_quantity: "Price per %{unit_type}:"
     price: "Price:"
     quantity: "Quantity: %{quantity}"

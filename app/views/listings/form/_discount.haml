@@ -1,0 +1,14 @@
+.price-container
+  = form.label :discount_percentage
+  .info-text-container
+    .info-text-icon
+      = icon_tag("information")
+    .info-text-content
+      %p= "Discount will only apply to subscription products"
+  = form.text_field :discount, :class => "price-field"
+  .price-currency
+    %b= "%"
+
+  
+    
+    

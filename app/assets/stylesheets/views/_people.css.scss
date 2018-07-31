@@ -39,6 +39,12 @@ $profile-pic-gutter-mobile: lines(0.5);
   }
 }
 
+// Map
+.people-map {
+  width: 100%;
+  height: lines(8);
+}
+
 .profile-action-buttons-mobile {
   padding-left: $profile-pic-size-mobile + $profile-pic-gutter-mobile;
   padding-bottom: lines(0.75);

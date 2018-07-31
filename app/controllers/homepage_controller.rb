@@ -3,11 +3,13 @@ class HomepageController < ApplicationController
 
   before_filter :save_current_path, :except => :sign_in
 
-  APP_DEFAULT_VIEW_TYPE = "grid"
+  APP_DEFAULT_VIEW_TYPE = "map"
   VIEW_TYPES = ["grid", "list", "map"]
 
   def home
-    render layout: "home"
+    # render layout: "home"
+    @big_cover_photo = true
+    render locals: { main_search: search_mode }
   end
 
   def fetch_subcategories
@@ -25,10 +27,15 @@ class HomepageController < ApplicationController
     shape_name_map = all_shapes.map { |s| [s[:id], s[:name]]}.to_h
 
     filter_params = {}
-
-    m_selected_category = Maybe(@current_community.categories.find_by_url_or_id(params[:category]))
-    filter_params[:categories] = m_selected_category.own_and_subcategory_ids.or_nil
-    selected_category = m_selected_category.or_nil
+    if params[:sub_category].present? && params[:sub_category] != "Product or Service"
+      m_selected_category = Maybe(@current_community.categories.find_by_url_or_id(params[:sub_category]))
+      filter_params[:categories] = m_selected_category.own_and_subcategory_ids.or_nil
+      selected_category = m_selected_category.or_nil
+    else
+      m_selected_category = Maybe(@current_community.categories.find_by_url_or_id(params[:category]))
+      filter_params[:categories] = m_selected_category.own_and_subcategory_ids.or_nil
+      selected_category = m_selected_category.or_nil
+    end
     relevant_filters = select_relevant_filters(m_selected_category.own_and_subcategory_ids.or_nil)
 
     if FeatureFlagHelper.feature_enabled?(:searchpage_v1)
@@ -63,11 +70,12 @@ class HomepageController < ApplicationController
     includes =
       case @view_type
       when "grid"
-        [:author, :listing_images]
+        [:location, :author, :listing_images, :num_of_reviews]
       when "list"
-        [:author, :listing_images, :num_of_reviews]
+        [:location, :author, :listing_images, :num_of_reviews]
       when "map"
-        [:location]
+        # [:location]
+        [:location, :author, :listing_images, :num_of_reviews]
       else
         raise ArgumentError.new("Unknown view_type #{@view_type}")
       end
@@ -160,7 +168,6 @@ class HomepageController < ApplicationController
   end
 
   def find_listings(params:, current_page:, listings_per_page:, filter_params:, includes:, location_search_in_use:, keyword_search_in_use:, relevant_search_fields:)
-
     search = {
       # Add listing_id
       categories: filter_params[:categories],
@@ -172,12 +179,13 @@ class HomepageController < ApplicationController
       page: current_page,
       price_min: params[:price_min],
       price_max: params[:price_max],
+      date: params[:date],
       locale: I18n.locale,
       include_closed: false,
       sort: nil,
       lat: params[:lat],
       lng: params[:lng],
-      location_name: params[:location_name]
+      location_name: params[:location_name] || params[:lc_loc]
     }
 
     if @view_type != 'map' && location_search_in_use

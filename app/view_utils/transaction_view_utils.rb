@@ -23,6 +23,8 @@ module TransactionViewUtils
     [:total, :money],
     [:shipping_price, :money],
     [:total_label, :string],
+    [:subscription_type, :string],
+    [:subscription, :to_bool, default: false],
     [:unit_type, :symbol])
 
 

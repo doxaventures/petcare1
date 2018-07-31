@@ -47,6 +47,29 @@ class SettingsController < ApplicationController
     end
   end
 
+  def upcoming_transactions
+    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+    @selected_left_navi_link = "upcoming_transactions"
+    transactions =Transaction.where(starter_id: target_user.id).select{|u| u.subscription.eql?(true)}
+    render locals: {target_user: target_user, transactions: transactions}
+  end
+
+  def transaction_update
+    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+    transaction = Transaction.find(params[:transaction_id])
+    @selected_left_navi_link = "upcoming_transactions"
+    render locals: {target_user: target_user,transaction: transaction}
+  end
+
+  def transaction_updated
+    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+     @transaction = Transaction.find(params[:transaction_id])
+     @transaction.subscription_type = params[:transaction]["subscription_type"]
+     @transaction.subscription = params[:transaction]["subscription"]
+     @transaction.save!
+     redirect_to upcoming_transactions_person_settings_path
+  end
+
   private
 
   def add_location_to_person!(person)

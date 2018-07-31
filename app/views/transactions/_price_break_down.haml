@@ -45,13 +45,28 @@
       %span.initiate-transaction-sum-value
         = humanized_money_with_symbol(subtotal)
 
+  - if subscription_type.present? 
+    - if subscription_type == "weekly" && @listing.weekly_discount.present?
+      - @discount = @listing.weekly_discount
+    - elsif subscription_type == "bi-weekly" && @listing.bi_weekly_discount.present?
+      - @discount = @listing.bi_weekly_discount
+    - elsif subscription_type == "monthly" && @listing.monthly_discount.present?
+      - @discount = @listing.monthly_discount
+    - elsif subscription_type == "yearly" && @listing.yearly_discount.present?
+      - @discount = @listing.yearly_discount
+    - if @discount.present?
+      .initiate-transaction-sum-wrapper
+        %span.initiate-transaction-sum-label
+          = t("transactions.initiate.discount")
+        %span.initiate-transaction-sum-value
+          = number_to_percentage(@discount,precision: 0)
   - if shipping_price.present?
     .initiate-transaction-shipping-price-wrapper
       %span.initiate-transaction-shipping-price-label
         = t("transactions.initiate.shipping-price")
       %span.initiate-transaction-shipping-price-value
         = humanized_money_with_symbol(shipping_price)
-
+  
   - if total.present?
     .initiate-transaction-total-wrapper
       %span.initiate-transaction-total-label
@@ -60,4 +75,4 @@
         - else
           = t("transactions.total")
       %span.initiate-transaction-total-value
-        = humanized_money_with_symbol(total)
+        = humanized_money_with_symbol(total)      

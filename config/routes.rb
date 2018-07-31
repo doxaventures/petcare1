@@ -94,6 +94,7 @@ Kassi::Application.routes.draw do
   get '/s' => 'homepage#index', as: :search_without_locale, constraints: ->(request) {
     CustomLandingPage::LandingPageStore.enabled?(request.env[:current_marketplace]&.id)
   }
+  get '/:category/products'  => 'homepage#index'
 
   # Default routes for homepage, these are matched if custom landing page is not in use
   # Inside this constraits are the routes that are used when request has subdomain other than www
@@ -123,7 +124,8 @@ Kassi::Application.routes.draw do
     get "/transactions/transaction_op_status/:process_token" => "transactions#transaction_op_status", :as => :transaction_op_status
     get "/transactions/created/:transaction_id" => "transactions#created", as: :transaction_created
     get "/transactions/finalize_processed/:process_token" => "transactions#finalize_processed", as: :transaction_finalize_processed
-
+    get "/:person_id/settings/:transaction_id/transaction_update" => "settings#transaction_update", as: :edit_transaction
+    post "/:person_id/settings/:transaction_id/transaction_updated" => "settings#transaction_updated", as: :update_transaction
     # All new transactions (in the future)
     get "/transactions/new" => "transactions#new", as: :new_transaction
 
@@ -264,6 +266,12 @@ Kassi::Application.routes.draw do
           get "getting_started_guide/listing",                to: redirect("/admin/getting_started_guide/listing")
           get "getting_started_guide/invitation",             to: redirect("/admin/getting_started_guide/invitation")
 
+        end
+
+        resources :products do
+          collection do
+            post :import
+          end
         end
         resources :transactions, controller: :community_transactions, only: :index
         resources :emails
@@ -458,6 +466,7 @@ Kassi::Application.routes.draw do
             get :account
             get :notifications
             get :unsubscribe
+            get :upcoming_transactions
           end
         end
         resources :testimonials

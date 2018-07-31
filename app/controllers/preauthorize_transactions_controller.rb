@@ -47,7 +47,11 @@ class PreauthorizeTransactionsController < ApplicationController
     [:end_on, :date, transform_with: PARSE_DATE],
     [:message, :string],
     [:quantity, :to_integer, validate_with: IS_POSITIVE],
-    [:contract_agreed, transform_with: ->(v) { v == "1" }]
+    [:contract_agreed, transform_with: ->(v) { v == "1" }],
+    [:subscription_type, :string, :optional],
+    [:subscription, :to_bool, default: false],
+    [:service_time, :array, :optional]
+
   )
 
   ListingQuery = MarketplaceService::Listing::Query
@@ -248,10 +252,17 @@ class PreauthorizeTransactionsController < ApplicationController
         quantity: quantity)
 
       shipping_total = calculate_shipping_from_entity(tx_params: tx_params, listing_entity: listing_entity, quantity: quantity)
-
       order_total = OrderTotal.new(
         item_total: item_total,
         shipping_total: shipping_total)
+      @discount = listing_discount(params[:subscription_type],@listing)
+      if @discount.present?
+        discount = (@discount.to_f / 100) * order_total.total
+        @total_price = (order_total.total - discount)
+        #@total_price = MoneyUtil.to_money(@price, @listing.currency)
+      else
+        @total_price = order_total.total
+      end
 
       Analytics.record_event(
         flash.now,
@@ -267,6 +278,10 @@ class PreauthorizeTransactionsController < ApplicationController
           delivery_method: tx_params[:delivery],
           quantity: tx_params[:quantity],
           author: query_person_entity(listing_entity[:author_id]),
+          subscription_type: tx_params[:subscription_type],
+          subscription: tx_params[:subscription],
+          service_time: tx_params[:service_time],
+          stripe_shipping_required: listing.require_shipping_address && tx_params[:delivery] != :pickup,
           action_button_label: translate(listing_entity[:action_button_tr_key]),
           expiration_period: MarketplaceService::Transaction::Entity.authorization_expiration_period(:stripe),
           form_action: initiated_order_path(person_id: @current_user.id, listing_id: listing_entity[:id]),
@@ -282,12 +297,13 @@ class PreauthorizeTransactionsController < ApplicationController
             localized_selector_label: translate_selector_label_from_listing(listing_entity),
             subtotal: subtotal_to_show(order_total),
             shipping_price: shipping_price_to_show(tx_params[:delivery], shipping_total),
-            total: order_total.total,
+            total: @total_price,
+            subscription_type: tx_params[:subscription_type],
+            subscription: tx_params[:subscription],
             unit_type: listing.unit_type)
         }
 
     }
-
     validation_result.on_error { |msg, data|
       error_msg =
         if data.is_a?(Array)
@@ -333,16 +349,19 @@ class PreauthorizeTransactionsController < ApplicationController
       is_booking = date_selector?(listing)
 
       quantity = calculate_quantity(tx_params: tx_params, is_booking: is_booking, unit: listing.unit_type)
-
       shipping_total = calculate_shipping_from_model(tx_params: tx_params, listing_model: listing, quantity: quantity)
-
       tx_response = create_preauth_transaction(
         payment_type: :stripe,
+        shipping_address: params[:shipping_address],
         community: @current_community,
         listing: listing,
         listing_quantity: quantity,
         user: @current_user,
         content: tx_params[:message],
+        subscription_type: params[:subscription_type],
+        subscription: params[:subscription],
+        service_time: params[:service_time],
+        listing_price_cents: listing.price_cents,
         force_sync: !request.xhr?,
         delivery_method: tx_params[:delivery],
         shipping_price: shipping_total.total,
@@ -351,7 +370,6 @@ class PreauthorizeTransactionsController < ApplicationController
           start_on: tx_params[:start_on],
           end_on: tx_params[:end_on]
         })
-
       handle_tx_response(tx_response)
     }
 
@@ -534,7 +552,6 @@ class PreauthorizeTransactionsController < ApplicationController
         community_id: @current_community.id,
         listing_author_id: listing.author.id
       })
-
     unless ready[:data][:result]
       flash[:error] = t("layouts.notifications.listing_author_payment_details_missing")
 
@@ -549,7 +566,20 @@ class PreauthorizeTransactionsController < ApplicationController
   end
 
   def create_preauth_transaction(opts)
-    gateway_fields = { stripeToken: opts[:stripeToken] }
+    gateway_fields = { stripeToken: opts[:stripeToken], shipping_address: opts[:shipping_address]}
+
+     @discount = listing_discount(opts[:subscription_type],opts[:listing])
+      if @discount.present?
+        discount = (@discount.to_f / 100) * opts[:listing].price_cents
+        @price = (opts[:listing].price_cents - discount).to_i
+        @total_price = MoneyUtil.to_money(@price, opts[:listing].currency)
+        # if opts[:subscription_type].present? && opts[:listing].discount?
+        # discount = (opts[:listing].discount.to_f / 100) * opts[:listing].price_cents
+        # @price = (opts[:listing].price_cents - discount).to_i
+        # @total_price = MoneyUtil.to_money(@price, opts[:listing].currency)
+      else
+        @total_price = opts[:listing].price
+      end
 
     transaction = {
       community_id: opts[:community].id,
@@ -563,7 +593,7 @@ class PreauthorizeTransactionsController < ApplicationController
       listing_author_uuid: opts[:listing].author.uuid_object,
       listing_quantity: opts[:listing_quantity],
       unit_type: opts[:listing].unit_type,
-      unit_price: opts[:listing].price,
+      unit_price: @total_price,
       unit_tr_key: opts[:listing].unit_tr_key,
       unit_selector_tr_key: opts[:listing].unit_selector_tr_key,
       availability: opts[:listing].availability,
@@ -571,13 +601,16 @@ class PreauthorizeTransactionsController < ApplicationController
       payment_gateway: opts[:payment_type],
       payment_process: :preauthorize,
       booking_fields: opts[:booking_fields],
-      delivery_method: opts[:delivery_method]
-    }
+      delivery_method: opts[:delivery_method],
+      subscription_type: opts[:subscription_type],
+      subscription: opts[:subscription],
+      service_time: opts[:service_time],
+      listing_price_cents: opts[:listing].price_cents
 
+    }
     if(opts[:delivery_method] == :shipping)
       transaction[:shipping_price] = opts[:shipping_price]
     end
-
     TransactionService::Transaction.create({
         transaction: transaction,
         gateway_fields: gateway_fields

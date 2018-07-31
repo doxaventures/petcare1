@@ -57,7 +57,11 @@ module ListingIndexService::Search::Converters
 
   def num_of_reviews_hash(l, includes)
     if includes.include?(:num_of_reviews)
-      {num_of_reviews: l.author.received_testimonials.size}
+      {
+        num_of_reviews: l.author.received_testimonials.size,
+        num_of_positive_reviews: l.author.received_testimonials.where("grade IN (0.5,0.75,1)").size,
+        num_of_negative_reviews: l.author.received_testimonials.where("grade IN (0.0,0.25)").size,
+      }
     else
       {}
     end

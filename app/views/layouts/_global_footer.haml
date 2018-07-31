@@ -1,0 +1,17 @@
+.wrapper
+  %nav.navbar.navbar-default.navbar-footer{:role => "navigation"}
+    .footerblock
+      .col-6
+        %ul
+          %li= link_to "ABOUT", about_infos_path
+          %li= link_to "CONTACT", new_user_feedback_path
+      .col-6
+        %ul.social-icons
+          %li
+            = link_to image_tag("fb.png" ,:alt => "facebook"), "https://www.facebook.com/petstoredotcom", :target => "blank"
+          %li
+            = link_to image_tag("twit.png",:alt => "twitter" ), "https://twitter.com/petstoredeals", :target => "blank"
+          %li 
+            = link_to image_tag("inst.png",:alt => "instagram"), "https://www.pinterest.com/petstoredotcom/", :target => "blank"
+    / /.navbar-collapse
+/ /.container-fluid405668

@@ -4,6 +4,7 @@ class TransactionsController < ApplicationController
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_view_your_inbox")
   end
 
+
   before_filter only: [:new] do |controller|
     fetch_data(params[:listing_id]).on_success do |listing_id, listing_model, _, process|
       Analytics.record_event(
@@ -28,8 +29,12 @@ class TransactionsController < ApplicationController
     [:message, :string],
     [:quantity, :fixnum, :to_integer, default: 1],
     [:start_on, transform_with: ->(v) { Maybe(v).map { |d| TransactionViewUtils.parse_booking_date(d) }.or_else(nil) } ],
-    [:end_on, transform_with: ->(v) { Maybe(v).map { |d| TransactionViewUtils.parse_booking_date(d) }.or_else(nil) } ]
+    [:end_on, transform_with: ->(v) { Maybe(v).map { |d| TransactionViewUtils.parse_booking_date(d) }.or_else(nil) } ],
+    [:subscription_type, :string, :optional],
+    [:subscription, :to_bool, default: false],
+    [:service_time, :array, :optional]
   )
+
 
   def new
     Result.all(
@@ -40,7 +45,7 @@ class TransactionsController < ApplicationController
         ensure_can_start_transactions(listing_model: listing_model, current_user: @current_user, current_community: @current_community)
       }
     ).on_success { |((listing_id, listing_model, author_model, process, gateway))|
-      transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
+      transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery, :subscription_type, :subscription, :service_time)))
 
       case [process[:process], gateway]
       when matches([:none])
@@ -412,15 +417,25 @@ class TransactionsController < ApplicationController
     if tx[:payment_process] == :none && tx[:listing_price].cents == 0
       nil
     else
+      @listing = Listing.find(tx[:listing_id])
+      listing_price = MoneyUtil.to_money(@listing.price_cents, @listing.currency)
+      if params[:subscription_type].present? && @listing.discount.present?
+        discount = (@listing.discount.to_f / 100) * @listing.price_cents
+        price = (@listing.price_cents - discount).to_i
+        @total_price = MoneyUtil.to_money(price, @listing.currency)
+      else
+        @total_price = Maybe(tx[:payment_total]).or_else(tx[:checkout_total])
+      end
+
       localized_unit_type = tx[:unit_type].present? ? ListingViewUtils.translate_unit(tx[:unit_type], tx[:unit_tr_key]) : nil
       localized_selector_label = tx[:unit_type].present? ? ListingViewUtils.translate_quantity(tx[:unit_type], tx[:unit_selector_tr_key]) : nil
       booking = !!tx[:booking]
       quantity = tx[:listing_quantity]
       show_subtotal = !!tx[:booking] || quantity.present? && quantity > 1 || tx[:shipping_price].present?
       total_label = (tx[:payment_process] != :preauthorize) ? t("transactions.price") : t("transactions.total")
-
+     
       TransactionViewUtils.price_break_down_locals({
-        listing_price: tx[:listing_price],
+        listing_price: listing_price,
         localized_unit_type: localized_unit_type,
         localized_selector_label: localized_selector_label,
         booking: booking,
@@ -428,11 +443,14 @@ class TransactionsController < ApplicationController
         end_on: booking ? tx[:booking][:end_on] : nil,
         duration: booking ? tx[:booking][:duration] : nil,
         quantity: quantity,
-        subtotal: show_subtotal ? tx[:listing_price] * quantity : nil,
-        total: Maybe(tx[:payment_total]).or_else(tx[:checkout_total]),
+        subtotal: show_subtotal ? listing_price * quantity : nil,
+        total: @total_price,
         shipping_price: tx[:shipping_price],
         total_label: total_label,
-        unit_type: tx[:unit_type]
+        unit_type: tx[:unit_type],
+        subscription_type: tx[:subscription_type],
+        subscription: tx[:subscription],
+        listing: @listing
       })
     end
   end

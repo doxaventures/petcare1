@@ -20,4 +20,8 @@ class Booking < ActiveRecord::Base
   def self.columns
     super.reject { |c| c.name == "end_on_exclusive" }
   end
+
+  def duration
+    (self.end_on - self.start_on).to_i
+  end
 end

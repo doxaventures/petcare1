@@ -1,0 +1,95 @@
+- content_for :javascript do
+  initialize_homepage();
+
+- content_for :coverfade_class do
+  = "without-text"
+
+- content_for :extra_javascript do
+  - # maps.google can't be loaded twice
+  - maps_key = MarketplaceHelper.google_maps_key(@current_community.id)
+  - key_param = maps_key ? "&key=#{maps_key}" : ""
+  - # Topbar adds its own maps script, otherwise add it if location search enabled or map is visible
+  -# needs_maps = !FeatureFlagHelper.feature_enabled?(:topbar_v1) && (main_search != :keyword || @view_type.eql?("map") || @view_type.eql?("list"))
+  - needs_maps = true
+  - if(needs_maps)
+    = javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=places#{key_param}"
+  - if(@view_type.eql?("map"))
+    = javascript_include_tag "markerclusterer.js"
+
+- content_for :title_header do
+  - if @big_cover_photo
+    %h1.marketplace-lander-content-title= community_description.html_safe
+    -#%p= community_slogan.html_safe
+    - unless (is_homepage && !@current_community.private? && FeatureFlagHelper.feature_enabled?(:topbar_v1))
+      .search-form
+        - if @current_community.private?
+          %a.inline-big-button{href: sign_up_path}
+            .content
+              = t("layouts.application.connect")
+        - else
+          - if(main_search == :location)
+            = render partial: "location_bar"
+          - else
+            = render partial: "search_bar"
+  - elsif !(is_homepage && FeatureFlagHelper.feature_enabled?(:topbar_v1))
+    .browse-view-search-form
+      - if(main_search == :location)
+        = render partial: "location_bar"
+      - else
+        = render partial: "search_bar"
+
+-# content_for(:head) do
+  - if seo_pagination_links[:prev].present?
+    %link{rel: "prev", href: seo_pagination_links[:prev]}
+  - if seo_pagination_links[:next].present?
+    %link{rel: "next", href: seo_pagination_links[:next]}
+
+- if @current_community.private? && @big_cover_photo
+  - if @community_customization && @community_customization.private_community_homepage_content
+    .community-customization-wrapper
+      = @community_customization.private_community_homepage_content.html_safe
+  - else
+    = t(".this_is_private_community")
+
+- else
+  .homeCategory          
+    %section#portfolio
+      .wrapper  
+        .clearfix
+          .col-lg-12.text-center
+            %h2.section-head-title Heritage and Homemade Products
+            %hr.star-primary/
+          .row.portfolio
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=dog"}
+                = image_tag "dog.jpg", alt: "Dog", class: "img-responsive width-100"
+                %p Dog
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=cat"}
+                = image_tag "cat.jpg", alt: "Cat", class: "img-responsive width-100"
+                %p Cat
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=bird"}
+                = image_tag "bird.jpg", alt: "Birds", class: "img-responsive width-100"
+                %p Bird
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=small-animal"}
+                = image_tag "small-pet.jpg", alt: "Small Animal", class: "img-responsive width-100"
+                %p Small Pet
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=reptile"}
+                = image_tag "reptlie.jpg", alt: "Reptile", class: "img-responsive width-100"
+                %p Reptile
+            .cust-col-4.col-4
+              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=fish"}
+                = image_tag "fish.jpg", alt: "Fish", class: "img-responsive width-100"
+                %p Fish
+  .hometrust
+    .wrapper
+      .clearfix
+        .col-4
+          = image_tag "trust-worthy.jpg", alt: "Girl with dog", class: "img-responsive width-100"
+        .col-7
+          %h2.section-head-title Trustworthy Support
+          %p.bodycopy We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.
+          %a.cmn-btn{:href => "/en/user_feedbacks/new"} Contact Support

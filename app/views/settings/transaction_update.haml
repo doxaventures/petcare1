@@ -1,0 +1,56 @@
+- content_for :title_header do
+  %h1= t("layouts.no_tribe.settings")
+
+- content_for :extra_javascript do
+  :javascript
+    var $subscription_type_container = $('.subscription-type');
+    var $subscription_checkbox = $('#subscription-checkbox');
+    $subscription_checkbox.click(function() { toggleType(); });
+
+    var toggleType = function(){
+      if($subscription_checkbox.is(":checked")) {
+        $subscription_type_container.show();
+      } else {
+        $subscription_type_container.hide();
+      }
+    };
+      toggleType(); //initialize
+= render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user, @current_community) }
+
+#person_settings_form.left-navi-section.settings-section
+
+  .row
+    %b
+      Listing title:
+      = transaction.listing_title
+  .row
+    %b
+      - if transaction.payment
+        Listing price:
+        = humanized_money_with_symbol(transaction.payment.total_sum)
+      - else
+        Listing price:
+        = humanized_money_with_symbol(transaction.unit_price)
+
+  .row
+    %b
+      - if transaction.payment
+        -#Subscription:
+        = form_for transaction, :url => {:controller => "settings", :action => "transaction_updated"}, :method => :post do |form|
+
+          - if transaction.listing.recurring_payment.present?
+            .delivery-options-container
+              .delivery-row-low
+                .delivery-checkbox
+                  = form.check_box :subscription,checked: true, id: "subscription-checkbox", class: "delivery-method-checkbox required"
+                .delivery-left-field
+                  = form.label "subscription", "Subscription", class: "shipping-options-label"
+                .subscription-type
+                  .preauthorize-section
+                    %h2
+                      -#Subscription:
+                    - transaction.listing.recurring_payment.each_with_index do |key,value|
+                      = form.radio_button("subscription_type",key[0])
+                      = form.label "#{key}","#{key[0].capitalize}", :class => "radiobutton"
+
+          = form.button t("settings.save_information"), :class => "send_button_notifications"

@@ -46,6 +46,12 @@
 #  shipping_price_cents            :integer
 #  shipping_price_additional_cents :integer
 #  availability                    :string(32)       default("none")
+#  discount                        :integer
+#  recurring_payment               :text(65535)
+#  weekly_discount                 :integer
+#  bi_weekly_discount              :integer
+#  monthly_discount                :integer
+#  quarterly_discount              :integer
 #
 # Indexes
 #

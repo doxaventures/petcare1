@@ -47,6 +47,27 @@
 #  shipping_price_cents            :integer
 #  shipping_price_additional_cents :integer
 #  availability                    :string(32)       default("none")
+#  discount                        :integer
+#  recurring_payment               :text(65535)
+#  weekly_discount                 :integer
+#  bi_weekly_discount              :integer
+#  monthly_discount                :integer
+#  quarterly_discount              :integer
+#
+# Indexes
+#
+#  homepage_query                      (community_id,open,sort_date,deleted)
+#  homepage_query_valid_until          (community_id,open,valid_until,sort_date,deleted)
+#  index_listings_on_category_id       (old_category_id)
+#  index_listings_on_community_id      (community_id)
+#  index_listings_on_listing_shape_id  (listing_shape_id)
+#  index_listings_on_new_category_id   (category_id)
+#  index_listings_on_open              (open)
+#  index_listings_on_uuid              (uuid) UNIQUE
+#  person_listings                     (community_id,author_id)
+#  updates_email_listings              (community_id,open,updates_email_at)
+#
+
 #
 # Indexes
 #
@@ -87,6 +108,15 @@ class Listing < ActiveRecord::Base
 
   belongs_to :category
 
+  RECURRING_TYPES = [
+    "weekly",
+    "bi-weekly",
+    "monthly",
+    "quarterly"
+  ]
+  serialize :recurring_payment,Hash
+
+
   monetize :price_cents, :allow_nil => true, with_model_currency: :currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :currency
   monetize :shipping_price_additional_cents, allow_nil: true, with_model_currency: :currency
@@ -94,7 +124,17 @@ class Listing < ActiveRecord::Base
   before_validation :set_valid_until_time
 
   validates_presence_of :author_id
-  validates_length_of :title, :in => 2..60, :allow_nil => false
+  validates_length_of :title, :in => 2..200, :allow_nil => false
+
+ before_validation(:on => :create) do
+    set_recurring_payment unless self.recurring_payment
+  end
+
+   def set_recurring_payment
+    self.recurring_payment={} unless self.recurring_payment
+    RECURRING_TYPES.each { |t| self.recurring_payment[t] ||= "true"}
+    save
+  end
 
   before_create :set_sort_date_to_now
   def set_sort_date_to_now
@@ -130,7 +170,7 @@ class Listing < ActiveRecord::Base
     # This could be more general helper function, if this is needed in other textareas.
     self.description = description.gsub("\r\n","\n") if self.description
   end
-  validates_length_of :description, :maximum => 5000, :allow_nil => true
+  validates_length_of :description, :maximum => 30000, :allow_nil => true
   validates_presence_of :category
   validates_inclusion_of :valid_until, :allow_nil => :true, :in => DateTime.now..DateTime.now + 7.months
   validates_numericality_of :price_cents, :only_integer => true, :greater_than_or_equal_to => 0, :message => "price must be numeric", :allow_nil => true

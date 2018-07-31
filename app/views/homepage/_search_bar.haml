@@ -1,5 +1,122 @@
-.search-form-input.search-form-text-field
+- content_for :extra_javascript do
+  :javascript
+    window.ST.initializeLocationSearch({form: '#homepage-filters', search: '#lc_loc', status: '#ls', coordinate: '#lc', boundingbox: '#boundingbox', maxDistance: '#distance_max'});
+
+
+-#.search-form-input.search-form-text-field
   = text_field_tag "q", params[:q], :placeholder => (@community_customization && @community_customization.search_placeholder) || t("homepage.index.what_do_you_need")
-.search-form-input
+-#.search-form-input
   %button.action-button#search-button{type: 'submit'}
     = icon_tag("search", ["icon-part"])
+  %button.action-button#search-button{type: 'submit'} Search
+
+.search-form-input.homesearch
+  .wrapper
+    .topselection.align
+      .col-3.topsearch1
+        .selectdiv
+          %label
+            %select#user_category_id.form-control{"data-remote" => "true", "data-url" => fetch_subcategories_path, :name => "category"}
+              %option Choose a Pet
+              - Category.parent_categories.each do |category|
+                %option{:value => "#{category.url}"}= category.display_name(I18n.locale)
+              
+
+
+      .col-3.topsearch2
+        #fetch_subcategory
+          = render 'homepage/sub_categories', subcategories: []
+      .col-3.topsearch3
+        = icon_tag("location", ["icon-1x"])
+        = text_field_tag "lc_loc", params[:lc_loc], :placeholder => (@community_customization && @community_customization.search_placeholder) || t("homepage.index.what_do_you_need"), :class => "form-control"
+        = hidden_field_tag :lat, params[:lat]
+        = hidden_field_tag :lng, params[:lng]
+
+        = hidden_field_tag 'lc', params[:lc]
+        = hidden_field_tag 'ls', ''
+        = hidden_field_tag 'boundingbox', params[:boundingbox]
+        = hidden_field_tag 'distance_max', ''
+      - search_btn = "col-3"
+      - unless is_homepage
+        - search_btn = "col-2"
+        .col-1.topsearch5
+          = icon_tag("calendar", ["icon-1x"])
+          = text_field_tag "date", params[:date], :placeholder => "Date", :class => "form-control", :id => "datepicker"
+        - content_for :extra_javascript do
+          :javascript
+            $( function() {
+              $( "#datepicker" ).datepicker();
+            } );
+      .topsearch4{class: search_btn}
+        .search-form-input
+          %button.action-button#search-btn{type: 'submit'} Search
+
+
+-# content_for :extra_javascript do
+  :javascript
+    $("select").each(function() {
+      var $this = $(this),
+        numberOfOptions = $(this).children("option").length;
+
+      $this.addClass("select-hidden");
+      $this.wrap('<div class="select"></div>');
+      $this.after('<div class="select-styled"></div>');
+
+      var $styledSelect = $this.next("div.select-styled");
+      $styledSelect.text(
+        $this
+          .children("option")
+          .eq(0)
+          .text()
+      );
+
+      var $list = $("<ul />", {
+        class: "select-options"
+      }).insertAfter($styledSelect);
+
+      for (var i = 0; i < numberOfOptions; i++) {
+        $("<li />", {
+          text: $this
+            .children("option")
+            .eq(i)
+            .text(),
+          rel: $this
+            .children("option")
+            .eq(i)
+            .val()
+        }).appendTo($list);
+      }
+
+      var $listItems = $list.children("li");
+
+      $styledSelect.click(function(e) {
+        e.stopPropagation();
+        $("div.select-styled.active")
+          .not(this)
+          .each(function() {
+            $(this)
+              .removeClass("active")
+              .next("ul.select-options")
+              .hide();
+          });
+        $(this)
+          .toggleClass("active")
+          .next("ul.select-options")
+          .toggle();
+      });
+
+      $listItems.click(function(e) {
+        category = $(e.target).attr('rel');
+        $('select#user_category_id').val(category).trigger('change');
+        e.stopPropagation();
+        $styledSelect.text($(this).text()).removeClass("active");
+        $this.val($(this).attr("rel"));
+        $list.hide();
+        //console.log($this.val());
+      });
+
+      $(document).click(function() {
+        $styledSelect.removeClass("active");
+        $list.hide();
+      });
+    });

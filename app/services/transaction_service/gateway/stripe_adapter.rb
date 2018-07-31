@@ -3,6 +3,8 @@ module TransactionService::Gateway
 
     PaymentModel = ::StripePayment
 
+    TransactionStore = TransactionService::Store::Transaction
+
     def create_payment(tx:, gateway_fields:, force_sync: nil)
       payment_gateway_id = StripePaymentGateway.where(community_id: tx[:community_id]).pluck(:id).first
       
@@ -21,6 +23,13 @@ module TransactionService::Gateway
         currency: tx[:unit_price_currency],
         sum_cents: ((tx[:unit_price] * tx[:listing_quantity]) + shipping_price) * 100
       })
+
+     if gateway_fields[:shipping_address].present?
+        TransactionStore.upsert_shipping_address(
+          community_id: tx[:community_id],
+          transaction_id: tx[:id],
+          addr: gateway_fields[:shipping_address])
+      end
 
       result, error = StripeSaleService.new(payment, gateway_fields).pay(false)
       

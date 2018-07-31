@@ -1,0 +1,35 @@
+- content_for :title_header do
+  %h1= t("layouts.no_tribe.settings")
+
+= render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user, @current_community) }
+
+#person_settings_form.left-navi-section.settings-section
+  %form
+    %table#admin_members_list
+      %thead
+        %tr
+          %th= t("settings.subscription.listing_title") 
+          %th= t("settings.subscription.author") 
+          %th= t("settings.subscription.price") 
+          %th= t("settings.subscription.sub")  
+          %th Active
+      %tbody
+        - transactions.each do |transaction|
+          %tr
+            %td 
+              = transaction.listing_title
+            %td
+              = transaction.listing.author.username
+            - if transaction.payment
+              %td
+                = humanized_money_with_symbol(transaction.payment.total_sum) 
+            - else
+              %td
+                = humanized_money_with_symbol(transaction.unit_price)
+            %td 
+              = transaction.subscription_type
+            %td 
+              = transaction.subscription
+            - if transaction.payment.present?
+              %td
+                = link_to (icon_tag("edit")),edit_transaction_path(target_user,transaction.id)

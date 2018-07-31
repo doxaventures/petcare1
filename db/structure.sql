@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.28, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: petstore_development
 -- ------------------------------------------------------
--- Server version	5.7.17-0ubuntu0.16.04.1
+-- Server version	5.6.28-0ubuntu0.15.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -862,6 +862,12 @@ CREATE TABLE `listings` (
   `shipping_price_cents` int(11) DEFAULT NULL,
   `shipping_price_additional_cents` int(11) DEFAULT NULL,
   `availability` varchar(32) DEFAULT 'none',
+  `discount` int(11) DEFAULT NULL,
+  `recurring_payment` text,
+  `weekly_discount` int(11) DEFAULT NULL,
+  `bi_weekly_discount` int(11) DEFAULT NULL,
+  `monthly_discount` int(11) DEFAULT NULL,
+  `quarterly_discount` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_listings_on_uuid` (`uuid`),
   KEY `index_listings_on_new_category_id` (`category_id`) USING BTREE,
@@ -1649,6 +1655,12 @@ CREATE TABLE `transactions` (
   `availability` varchar(32) DEFAULT 'none',
   `booking_uuid` binary(16) DEFAULT NULL,
   `deleted` tinyint(1) DEFAULT '0',
+  `stripe_customer_id` varchar(255) DEFAULT NULL,
+  `subscription_type` varchar(255) DEFAULT NULL,
+  `subscription_offers` varchar(255) DEFAULT NULL,
+  `subscription` tinyint(1) DEFAULT '0',
+  `listing_price_cents` int(11) DEFAULT NULL,
+  `service_time` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_transactions_on_listing_id` (`listing_id`) USING BTREE,
   KEY `index_transactions_on_conversation_id` (`conversation_id`) USING BTREE,
@@ -1670,7 +1682,7 @@ CREATE TABLE `transactions` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-02 20:16:20
+-- Dump completed on 2018-07-04 11:49:47
 INSERT INTO schema_migrations (version) VALUES ('20080806070738');
 
 INSERT INTO schema_migrations (version) VALUES ('20080807071903');
@@ -3304,4 +3316,16 @@ INSERT INTO schema_migrations (version) VALUES ('20170402143750');
 INSERT INTO schema_migrations (version) VALUES ('20170402144308');
 
 INSERT INTO schema_migrations (version) VALUES ('20170402144605');
+
+INSERT INTO schema_migrations (version) VALUES ('20180322060555');
+
+INSERT INTO schema_migrations (version) VALUES ('20180323124658');
+
+INSERT INTO schema_migrations (version) VALUES ('20180327134941');
+
+INSERT INTO schema_migrations (version) VALUES ('20180417085629');
+
+INSERT INTO schema_migrations (version) VALUES ('20180503123258');
+
+INSERT INTO schema_migrations (version) VALUES ('20180516070542');
 

@@ -152,6 +152,17 @@ group :development do
   gem 'web-console', '~> 2.0'
   gem 'awesome_print', '~> 1.6.1'
   gem 'letter_opener'
+
+  # deployment
+  gem 'capistrano'
+  # gem 'capistrano-rvm'
+  gem 'capistrano3-unicorn'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano3-delayed-job', '~> 1.0'
+  gem 'capistrano-npm'
+  gem 'capistrano-nvm'
 end
 
 group :test do
@@ -192,3 +203,5 @@ gem 'transit-ruby', '~> 0.8'
 gem 'redcarpet', '~> 3.3', '>= 3.3.4'
 gem 'geocoder'
 gem 'stripe'
+gem 'daemons'
+gem 'unicorn'

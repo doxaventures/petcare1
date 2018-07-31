@@ -45,7 +45,8 @@
 
 .listing-price-amount {
   @include huge-type;
-  color: $light-body;
+  // color: $light-body;
+  color: #f7882f;
   display: block;
   float: left;
   margin-right: lines(0.25);
@@ -149,6 +150,11 @@ $listing-author-avatar-height: 108;
   width: 100%;
 }
 
+.listing-author-contact-button:hover {
+  background:#91a0b0 !important;
+}
+
+
 // Listing author activity
 
 .listing-author-activity {
@@ -161,6 +167,7 @@ $listing-author-avatar-height: 108;
   display: block;
   float: left;
   width: em(32, 32);
+  color: #f7882f;
 }
 
 .listing-author-activity-item {

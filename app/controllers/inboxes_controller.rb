@@ -66,8 +66,11 @@ class InboxesController < ApplicationController
         inbox_item[:starter],
         payment_sum
       )
-
-      action_messages.last[:content]
+      if action_messages.present?
+        action_messages.last[:content]
+      else
+        "Subscription payment accepted"
+      end
     end
   end
 
@@ -84,9 +87,9 @@ class InboxesController < ApplicationController
   end
 
   def person_entity_with_url(person_entity)
-    person_entity.merge({
-                          url: person_path(username: person_entity[:username]),
-                          display_name: PersonViewUtils.person_entity_display_name(person_entity, @current_community.name_display_type)
-                        })
-  end
+      person_entity.merge({
+                            url: person_path(username: person_entity[:username]),
+                            display_name: PersonViewUtils.person_entity_display_name(person_entity, @current_community.name_display_type)
+                          })
+    end
 end

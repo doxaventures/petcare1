@@ -60,32 +60,56 @@ module ListingIndexService::Search
         # Do a short circuit and return emtpy paginated collection of listings wrapped into a success result
         DatabaseSearchHelper.success_result(0, [], nil)
       else
+        with = HashUtils.compact(
+          {
+            community_id: community_id,
+            category_id: search[:categories], # array of accepted ids
+            listing_shape_id: search[:listing_shape_id],
+            price_cents: search[:price_cents],
+            listing_id: numeric_search_match_listing_ids
+          })
+
         if search[:location_name].present?
           limit = 10_000
           if (search[:lat].present? && search[:lat] > 0) && (search[:lng].present? && search[:lng] > 0)
-            @coordinates = [search[:lat], search[:lng]]
+            @coordinates = [to_radians(search[:lat]), to_radians(search[:lng])]
+            # @coordinates = [search[:lat], search[:lng]]
           else
             latlng = Geocoder.coordinates(search[:location_name])
-            @coordinates = [to_radians(latlng[0]), to_radians(latlng[1])]
+            @coordinates = [to_radians(latlng[0]), to_radians(latlng[1])] if latlng.present?
+            # @coordinates = [latlng[0], latlng[1]] if latlng.present?
           end
-          with_geo = HashUtils.compact(
-            {
-              community_id: community_id,
-              category_id: search[:categories], # array of accepted ids
-              listing_shape_id: search[:listing_shape_id],
-              price_cents: search[:price_cents],
-              listing_id: numeric_search_match_listing_ids,
-              geodist: 0.0..limit,
-            })
+          # with_geo = HashUtils.compact(
+          #   {
+          #     community_id: community_id,
+          #     category_id: search[:categories], # array of accepted ids
+          #     listing_shape_id: search[:listing_shape_id],
+          #     price_cents: search[:price_cents],
+          #     listing_id: numeric_search_match_listing_ids,
+          #     geodist: 0.0..limit.to_f,
+          #   })
+          with = with.merge({geodist: 0.0..limit.to_f}) if @coordinates.present?
+        end
+
+        # date_range = nil
+        if search[:date].present?
+          date = search[:date].split("/")
+          fortmat_date = [date[1], date[0], date[2]].join("/").to_datetime
         else
-          with = HashUtils.compact(
-            {
-              community_id: community_id,
-              category_id: search[:categories], # array of accepted ids
-              listing_shape_id: search[:listing_shape_id],
-              price_cents: search[:price_cents],
-              listing_id: numeric_search_match_listing_ids,
-            })
+          fortmat_date = Time.now
+        end
+        date_range = (fortmat_date - 5.years)..fortmat_date
+          # with = HashUtils.compact(
+          #   {
+          #     community_id: community_id,
+          #     category_id: search[:categories], # array of accepted ids
+          #     listing_shape_id: search[:listing_shape_id],
+          #     price_cents: search[:price_cents],
+          #     listing_id: numeric_search_match_listing_ids,
+          #     created_at: date_range,
+          #   })
+        if date_range
+          with = with.merge({created_at: date_range})
         end
 
         selection_groups = search[:fields].select { |v| v[:type] == :selection_group }
@@ -95,37 +119,58 @@ module ListingIndexService::Search
           custom_dropdown_field_options: (grouped_by_operator[:or] || []).map { |v| v[:value] },
           custom_checkbox_field_options: (grouped_by_operator[:and] || []).flat_map { |v| v[:value] },
         }
-        
+
+        search_filter = {
+          sql: {
+            include: included_models
+          },
+          page: search[:page],
+          per_page: search[:per_page],
+          star: true,
+          with: with,
+          with_all: with_all,
+          order: "#{@coordinates.present? ? 'geodist ASC, sort_date DESC' : 'weight() DESC'}",
+          max_query_time: 1000 # Timeout and fail after 1s
+        }
+
         if @coordinates.present?
-          models = Listing.search(
-            Riddle::Query.escape(search[:keywords] || ""),
-            sql: {
-              include: included_models
-            },
-            geo: @coordinates,
-            page: search[:page],
-            per_page: search[:per_page],
-            star: true,
-            with: with_geo,
-            with_all: with_all,
-            order: 'geodist ASC',
-            max_query_time: 1000 # Timeout and fail after 1s
-          )
-        else
-          models = Listing.search(
-            Riddle::Query.escape(search[:keywords] || ""),
-            sql: {
-              include: included_models
-            },
-            page: search[:page],
-            per_page: search[:per_page],
-            star: true,
-            with: with,
-            with_all: with_all,
-            order: 'sort_date DESC',
-            max_query_time: 1000 # Timeout and fail after 1s
-          )
+          search_filter = search_filter.merge({geo: @coordinates})
         end
+
+        # if @coordinates.present?
+        #   search_filter = {
+        #     sql: {
+        #       include: included_models
+        #     },
+        #     geo: @coordinates,
+        #     page: search[:page],
+        #     per_page: search[:per_page],
+        #     star: true,
+        #     with: with_geo,
+        #     with_all: with_all,
+        #     order: 'geodist ASC',
+        #     max_query_time: 1000 # Timeout and fail after 1s
+        #   }
+        # else
+        #   search_filter = {
+        #     sql: {
+        #       include: included_models
+        #     },
+        #     page: search[:page],
+        #     per_page: search[:per_page],
+        #     star: true,
+        #     with: with,
+        #     with_all: with_all,
+        #     order: 'sort_date DESC',
+        #     max_query_time: 1000 # Timeout and fail after 1s
+        #   }
+        # end
+
+        models = Listing.search(
+          Riddle::Query.escape(search[:keywords] || ""),
+          search_filter
+        )
+
         begin
           DatabaseSearchHelper.success_result(models.total_entries, models, includes)
         rescue ThinkingSphinx::SphinxError => e

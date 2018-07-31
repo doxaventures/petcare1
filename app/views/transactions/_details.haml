@@ -8,6 +8,11 @@
       - if price_break_down_locals.present?
         = render partial: "transactions/price_break_down", locals: price_break_down_locals
 
+      - if tx[:service_time].present?
+        .initiate-transaction-totals
+          %label= "Service Time"
+          = tx[:service_time].join(' ,')
+
       = render partial: "transactions/shipping_address", locals: { shipping_address: tx[:shipping_address] }
 
       %div{:id => "transaction_status"}

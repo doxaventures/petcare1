@@ -6,7 +6,6 @@
     window.ST.listing();
   - maps_key = MarketplaceHelper.google_maps_key(@current_community.id)
   - key_param = maps_key ? "?key=#{maps_key}" : ""
-  - needs_maps = !FeatureFlagHelper.feature_enabled?(:topbar_v1) || search_mode == :keyword
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js#{key_param}" if needs_maps
 
 - content_for :title, raw(@listing.title)
@@ -38,6 +37,9 @@
 
 .row
   .col-8.listing-details-container
+    .row
+      .col-12
+        %h1= @listing.title
     .row
       .col-12
         - with_image_frame(@listing) do |reason, listing_images|
@@ -76,7 +78,7 @@
       .col-12
         - if @listing.description && !@listing.description.blank?
           - text_with_line_breaks do
-            = @listing.description
+            = @listing.description.html_safe
           - if(youtube_link_ids.present?)
             - youtube_link_ids.each do |youtube_id|
               .listing-description-youtube-wrapper
@@ -151,7 +153,7 @@
               = link_to PersonViewUtils.person_display_name(@listing.author, @current_community), @listing.author, :id => "listing-author-link", :class => "listing-author-name-link", :title => "#{PersonViewUtils.person_display_name(@listing.author, @current_community)}"
             - if @listing.author != @current_user
               .listing-author-contact
-                %a#listing-contact{href: contact_to_listing_path(:listing_id => @listing.id.to_s), :class => "listing-author-contact-button"}
+                %a#listing-contact.grcolor{href: contact_to_listing_path(:listing_id => @listing.id.to_s), :class => "listing-author-contact-button"}
                   .content
                     = t(".contact")
 

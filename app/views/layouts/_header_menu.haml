@@ -1,5 +1,10 @@
 #header-menu-toggle-menu.toggle-menu.header-toggle-menu-menu.hidden
-
+  - unless @current_user
+    = link_to sign_up_path, class: "hidden-tablet" do
+      = t("header.signup")
+        
+    = link_to login_path, class: "hidden-tablet" do
+      = t("header.login")
   = link_to "/" do
     = icon_map_tag(icons, "home", ["icon-with-text"])
     = t("header.home")
@@ -15,6 +20,8 @@
   = link_to new_user_feedback_path do
     = icon_map_tag(icons, "feedback", ["icon-with-text"])
     = t("header.contact_us")
+
+        
 
   - with_invite_link do
     = link_to new_invitation_path do
