@@ -8,7 +8,7 @@ class ListingImageJob < Struct.new(:community_id,:file)
  
   def perform
     @community = Community.find(community_id)
-    @author = @community.admins.last.id
+    @author = Person.where(username: "petstore").first.id
     
   total_categories = { "Treats & Snacks>Dental Dog Bones " => "Dog Supplies/Treats & Snacks",
   "Treats & Snacks>Chews " => "Dog Supplies/Treats & Snacks",
@@ -105,8 +105,8 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Lighting>Lighting Ballasts & Parts>Fluorescent Parts " => "Aquarium & Pond Supplies/Lighting - Bulbs & Parts",
   "Lighting>Fully Assembled Fixtures>T5 & T12 Fixtures " => "Aquarium & Pond Supplies/Lighting - Fixtures",
   "Lighting>Bulbs>Fluorescent Tubes " => "Aquarium & Pond Supplies/Lighting - Bulbs & Parts",
-  "Backgrounds & Decor>Life-Like Decor " => "Aquarium & Pond Supplies/Décor & Substrate",
-  "Backgrounds & Decor>Decorations " => "Aquarium & Pond Supplies/Décor & Substrate",
+  "Backgrounds & Decor>Life-Like Decor " => "Aquarium & Pond Supplies/Decor & Substrate",
+  "Backgrounds & Decor>Decorations " => "Aquarium & Pond Supplies/Decor & Substrate",
   "Filters>Power Filters " => "Aquarium & Pond Supplies/Filtration",
   "Filter Media>Media Cartridges " => "Aquarium & Pond Supplies/Filter Media",
   "Maintenance>Siphons & Gravel Cleaning " => "Aquarium & Pond Supplies/Maintenance Supplies",
@@ -115,26 +115,26 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Filter Media>Biological " => "Aquarium & Pond Supplies/Filter Media",
   "Fish Food & Reef Food>Flake & Pellet Food " => " Aquarium & Pond Supplies/Food",
   "Fish Food & Reef Food>Bottom Feeder Food " => "Aquarium & Pond Supplies/Food",
-  "Backgrounds & Decor>Rock & Driftwood " => "Aquarium & Pond Supplies/Décor & Substrate",
+  "Backgrounds & Decor>Rock & Driftwood " => "Aquarium & Pond Supplies/Decor & Substrate",
   "Water Testing>Test Kits " => "Aquarium & Pond Supplies/Water Testing",
   "Additives & Supplements>Water Conditioners & Buffers " => "Aquarium & Pond Supplies/Additives & Supplements",
-  "Medications & Treatments>Algae Removers " => "Aquarium & Pond Supplies/Medication",
+  "Medications & Treatments>Algae Removers " => "Aquarium & Pond Supplies/Medications",
   "Additives & Supplements>Water Clarifiers " => "Aquarium & Pond Supplies/Additives & Supplements",
-  "Medications & Treatments>Fungal & Bacterial " => "Aquarium & Pond Supplies/Medication",
+  "Medications & Treatments>Fungal & Bacterial " => "Aquarium & Pond Supplies/Medications",
   "Filters>Canister Filters " => "Aquarium & Pond Supplies/Filtration",
-  "Saltwater Supplies>Protein Skimmers " => "Aquarium & Pond Supplies/Saltwater Supplies",
+  "Saltwater Supplies>Protein Skimmers " => "Aquarium & Pond Supplies/Saltwater Specialty",
   "Aquariums & Bowls>Aquarium Stands & Hoods " => "Aquarium & Pond Supplies/Aquariums",
   "Water Pumps>Powerheads & Accessories>Replacement Parts & Accessories " => "Aquarium & Pond Supplies/Pumps & Powerheads",
   "Lighting>LED Lights & Moonlights>LED Lights " => "Aquarium & Pond Supplies/Lighting - Fixtures",
   "Filters>Inline & Specialty Filters " => "Aquarium & Pond Supplies/Filtration",
   "Additives & Supplements>Vitamins & Supplements " => "Aquarium & Pond Supplies/Additives & Supplements",
-  "Freshwater Supplies>Freshwater Supplements " => "Aquarium & Pond Supplies/Freshwater Supplies",
-  "Freshwater Supplies>Freshwater Gravel & Substrate "=> "Aquarium & Pond Supplies/Décor & Substrate",
-  "Saltwater Supplies>Salt Mix "=> "Aquarium & Pond Supplies/Saltwater Supplies",
+  "Freshwater Supplies>Freshwater Supplements " => "Aquarium & Pond Supplies/Freshwater Specialty",
+  "Freshwater Supplies>Freshwater Gravel & Substrate "=> "Aquarium & Pond Supplies/Decor & Substrate",
+  "Saltwater Supplies>Salt Mix "=> "Aquarium & Pond Supplies/Saltwater Specialty",
   "Saltwater Supplies>Substrate "=> "Aquarium & Pond Supplies/Saltwater Specialty",
   "Additives & Supplements>Bio Additives "=> "Aquarium & Pond Supplies/Additives & Supplements",
   "Lighting>Bulbs>Power Compact Bulbs "=> "Aquarium & Pond Supplies/Lighting - Bulbs & Parts",
-  "Medications & Treatments>Ich & External Parasites "=> "Aquarium & Pond Supplies/Medication",
+  "Medications & Treatments>Ich & External Parasites "=> "Aquarium & Pond Supplies/Medications",
   "Maintenance>Fish Nets & Containment "=> "Aquarium & Pond Supplies/Maintenance Supplies",
   "Thermometers>Internal Floating & Standing "=> "Aquarium & Pond Supplies/Controllers & Monitors",
   "Saltwater Supplies>Coral Propagation Supplies>Miscellaneous Coral Propagation "=> "Aquarium & Pond Supplies/Saltwater Specialty",
@@ -194,8 +194,8 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Food " => "Bird Supplies/Bird Food",
   "Lighting, Heaters & Timers>Light Fixtures " => "Bird Supplies/Lighting & Heating",
   "Cage Accessories, Play Stands & Carriers>Nets " => "Bird Supplies/Cage Accessories",
-  "Cage Litter, Liners & Nesting>Tunnels & Cozys " => "Bird Supplies/Litter & Liners",
-  "Cage Litter, Liners & Nesting>Nests & Nesting Material " => "Bird Supplies/Litter & Liners",
+  "Cage Litter, Liners & Nesting>Tunnels & Cozys " => "Bird Supplies/Cage Accessories",
+  "Cage Litter, Liners & Nesting>Nests & Nesting Material " => "Bird Supplies/Cage Accessories",
   "Toys>Parrot & Large Hookbill " => "Bird Supplies/Toys",
   "Wild Bird>Wild Bird Feeders and Waterers " => "Bird supplies/Feeders & Waterers",
   "Cage Bedding, Liners & Scoops>Paper Bedding " => "Small Pet Services & Supplies/Litter & Liners",
@@ -303,7 +303,7 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Cat Food>Non-Domestic (Exotic) " => "Cat Supplies/Cat Food",
   "Cages & Carriers>Playpens " => "Cat Supplies/Cages & Carriers",
   "Health Care, Supplements & Nutrition>Urinary Tract Care " => "Cat Supplies/Health Care Supplies",
-  "Substrate & Scoops>Bark & Walnut Shell " => "Reptile Services & Supplies/Substrate",
+  "Substrate & Scoops>Bark & Walnut Shell " => "Reptile Services & Supplies/Substrates and Such",
   "Lighting>Light Fixtures " => " Reptile Services & Supplies/Lighting",
   "Food>Turtle & Tortoise Food " => " Reptile Services & Supplies/Food",
   "Cages, Terrariums & Stands>Wire & Screen Cages " => "Reptile Services & Supplies/Cages & Terrariums",
@@ -326,8 +326,8 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Health Care, Supplements & Nutrition>Vitamins & Calcium " => "Reptile Services & Supplies/Health Care Supplies",
   "Cleaning, Sanitation & Handling>Sifters & Scoops " => "Reptile Services & Supplies/Cleaning & Sanitation",
   "Cleaning, Sanitation & Handling>Cage & Terrarium Cleaners " => "Reptile Services & Supplies/Cleaning & Sanitation",
-  "Substrate & Scoops>Moss " => "Reptile Services & Supplies/Substrate",
-  "Substrate & Scoops>Cage Liners " => "Reptile Services & Supplies/Substrate",
+  "Substrate & Scoops>Moss " => "Reptile Services & Supplies/Substrates and Such",
+  "Substrate & Scoops>Cage Liners " => "Reptile Services & Supplies/Substrates and Such",
   "Bowls, Feeders & Waterers>Feeders & Waterers " => "Reptile Services & Supplies/Feeders & Waterers",
   "Food>Gecko Food " => "Reptile Services & Supplies/Food",
   "Health Care, Supplements & Nutrition>Eye Drops " => "Reptile Services & Supplies/Health Care Supplies",
@@ -341,14 +341,19 @@ class ListingImageJob < Struct.new(:community_id,:file)
   "Food>Hermit Crab Food " => "Reptile Services & Supplies/Food",
   "Cleaning, Sanitation & Handling>Gloves, Hooks & Hand Sanitizers " => "Reptile Services & Supplies/Cleaning & Sanitation",
   "Cage & Terrarium Accessories>Liners & Backgrounds " => "Reptile Services & Supplies/Cage Accessories",
-  "Substrate & Scoops>Reptile Sand " => "Reptile Services & Supplies/Substrate",
+  "Substrate & Scoops>Reptile Sand " => "Reptile Services & Supplies/Substrates and Such",
   "Health Care, Supplements & Nutrition>Turtle Health Care " => "Reptile Services & Supplies/Health Care Supplies",
   "Cleaning, Sanitation & Handling>Water Clarifiers & Plant Cleaners " => "Reptile Services & Supplies/Cleaning & Sanitation",
   "Humidity Control>Cage Misters " => "Reptile Services & Supplies/Humidity Control",
-  "Food>Amphibian Food " => "Reptile Services & Supplies/Food" }
+  "Food>Amphibian Food " => "Reptile Services & Supplies/Food",
+  "Miscellaneous " => "Reptile Services & Supplies/Everything Else",
+  "Travel & Outdoors>Car Barriers & Protectors " => "Dog Supplies/Travel & Outdoors",
+  "Travel & Outdoors>Car Harnesses " => "Dog Supplies/Travel & Outdoors",
+  "Travel & Outdoors>Carriers & Dog Purses " => "Dog Supplies/Travel & Outdoors",
+  "Travel & Outdoors>Travel & Outdoor Beds " => "Dog Supplies/Travel & Outdoors",
+  "Books & Videos>Saltwater>Saltwater Books " => "Aquarium & Pond Supplies/Everything Else" }
 
     CSV.foreach("#{Rails.root}/public/uploads/#{file}", :col_sep=>'|', :quote_char => '|',headers: true) do |row|
-      
         # if row["category"] == "Dog Supplies "
         #   category = Category.where(url: "dog-products1").first
         # elsif row["category"] == "Aquarium Supplies " || row["category"] == "Pond Supplies "

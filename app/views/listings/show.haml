@@ -77,8 +77,9 @@
     .row
       .col-12
         - if @listing.description && !@listing.description.blank?
-          - text_with_line_breaks do
-            = @listing.description.html_safe
+          = @listing.description.to_s.gsub(/&quot;/i, '"').gsub(/&lt;/i,'<').gsub(/&gt;/i,'>').gsub(/[\"]{2,}/, '"').html_safe
+          -# text_with_line_breaks do
+            = @listing.description.to_s.gsub(/&quot;/i, '"').gsub(/&lt;/i,'<').gsub(/&gt;/i,'>').gsub(/[\"]{2,}/, '"')
           - if(youtube_link_ids.present?)
             - youtube_link_ids.each do |youtube_id|
               .listing-description-youtube-wrapper

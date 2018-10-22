@@ -179,6 +179,7 @@ class HomepageController < ApplicationController
       page: current_page,
       price_min: params[:price_min],
       price_max: params[:price_max],
+      open: true,
       date: params[:date],
       locale: I18n.locale,
       include_closed: false,
