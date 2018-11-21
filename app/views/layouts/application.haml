@@ -36,21 +36,22 @@
 
 
     - content_for(:page_content) do
-      %section.marketplace-lander
-        - if @big_cover_photo 
-          .coverimage.heroimg
-            %figure.marketplace-cover.fluidratio
-              .lander-content.marketplace-lander-content
-                = yield :title_header 
-        - elsif !(is_homepage && FeatureFlagHelper.feature_enabled?(:topbar_v1))
-          .coverimage
-            %figure.marketplace-cover-small.fluidratio.small-cover-image
-            .coverimage-fade.small-cover-image{:class => yield(:coverfade_class)}
-              %figure.marketplace-cover-small-fade.fluidratio
-          .title-container
-            .title-header-wrapper
-              .marketplace-title-header
-                = yield :title_header if is_listings_page
+      - unless is_homepage
+        %section.marketplace-lander
+          - if @big_cover_photo 
+            .coverimage.heroimg
+              %figure.marketplace-cover.fluidratio
+                .lander-content.marketplace-lander-content
+                  = yield :title_header 
+          - elsif !(is_homepage && FeatureFlagHelper.feature_enabled?(:topbar_v1))
+            .coverimage
+              %figure.marketplace-cover-small.fluidratio.small-cover-image
+              .coverimage-fade.small-cover-image{:class => yield(:coverfade_class)}
+                %figure.marketplace-cover-small-fade.fluidratio
+            .title-container
+              .title-header-wrapper
+                .marketplace-title-header
+                  = yield :title_header if is_listings_page
     
       %article.page-content{class: is_homepage && !@big_cover_photo ? 'no-cover-photo' : "#{is_homepage ? '' : ''}"}
         .main

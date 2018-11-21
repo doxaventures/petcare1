@@ -1068,6 +1068,7 @@ en:
     invite: "Invite new members"
     login: "Log in"
     signup: "Sign up"
+    create_an_account: "Create an Account"
     menu: Menu
   homepage:
     additional_private_listings_slate:

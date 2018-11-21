@@ -129,7 +129,7 @@ module ListingIndexService::Search
           star: true,
           with: with,
           with_all: with_all,
-          order: "#{@coordinates.present? ? 'geodist ASC, sort_date DESC' : 'weight() DESC'}",
+          order: "#{@coordinates.present? ? 'geodist ASC, sort_date DESC' : 'sort_date DESC'}",
           max_query_time: 1000 # Timeout and fail after 1s
         }
 

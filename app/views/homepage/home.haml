@@ -59,31 +59,41 @@
           .col-lg-12.text-center
             %h2.section-head-title Heritage and Homemade Products
             %hr.star-primary/
-          .row.portfolio
+          .row.portfolio.align-center
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=dog"}
-                = image_tag "dog.jpg", alt: "Dog", class: "img-responsive width-100"
                 %p Dog
+                = image_tag "dog.jpg", alt: "Dog", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=dog"} VIEW PRODUCTS
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=cat"}
-                = image_tag "cat.jpg", alt: "Cat", class: "img-responsive width-100"
                 %p Cat
+                = image_tag "cat.jpg", alt: "Cat", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=cat"} VIEW PRODUCTS
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=bird"}
-                = image_tag "bird.jpg", alt: "Birds", class: "img-responsive width-100"
                 %p Bird
+                = image_tag "bird.jpg", alt: "Birds", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=bird"} VIEW PRODUCTS
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=small-animal"}
-                = image_tag "small-pet.jpg", alt: "Small Animal", class: "img-responsive width-100"
                 %p Small Pet
+                = image_tag "small-pet.jpg", alt: "Small Animal", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=small-animal"} VIEW PRODUCTS
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=reptile"}
-                = image_tag "reptlie.jpg", alt: "Reptile", class: "img-responsive width-100"
                 %p Reptile
+                = image_tag "reptlie.jpg", alt: "Reptile", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=reptile"} VIEW PRODUCTS
             .cust-col-4.col-4
               %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=fish"}
-                = image_tag "fish.jpg", alt: "Fish", class: "img-responsive width-100"
                 %p Fish
+                = image_tag "fish.jpg", alt: "Fish", class: "img-responsive width-100"
+                %a.cmn-btn{:href => "/s?category=fish"} VIEW PRODUCTS
+  
+  %div.middel-img
+    = image_tag "home-middle-banner.jpg", alt: "home-middle-banner", class: "img-responsive width-100"
+
   .hometrust
     .wrapper
       .clearfix

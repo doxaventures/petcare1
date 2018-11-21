@@ -67,7 +67,7 @@
             = render partial: "location_bar"
           - else
             = render partial: "search_bar"
-  - elsif !(is_homepage && FeatureFlagHelper.feature_enabled?(:topbar_v1))
+  -# elsif !(is_homepage && FeatureFlagHelper.feature_enabled?(:topbar_v1))
     .browse-view-search-form.align2
       - if(main_search == :location)
         = render partial: "location_bar"

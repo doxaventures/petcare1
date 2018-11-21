@@ -1,0 +1,74 @@
+.footer-section.clearfix
+  .wrapper
+    %nav.navbar.navbar-default.navbar-footer{:role => "navigation"}
+      .footerblock
+        .col-3
+          %h2 
+            CUSTOMER SERVICES
+          %ul
+            %li= link_to "Track Order", "#", :class => "form"
+            %li= link_to "Returns", "#", :class => "form"
+            %li= link_to "Shipping Info", "#", :class => "form"
+            %li= link_to "Pet Store Locator", "#", :class => "form"
+            %li= link_to "Help", "#", :class => "form"
+            %li= link_to "Contact Us", new_user_feedback_path
+            %li= link_to "(877) 738-6742"
+        .col-3
+          %h2 
+            SERVICES
+          %ul
+            %li= link_to "In-Store Events", "#", :class => "form"
+            %li= link_to "Grooming", "#", :class => "form"
+            %li= link_to "Positive Dog Training", "#", :class => "form"
+            %li= link_to "Veterinary Services", "#", :class => "form"
+            %li= link_to "Pet Sitting", "#", :class => "form"
+            %li= link_to "Pet Adoptions", "#", :class => "form"
+            %li= link_to "Repeat Delivery", "#", :class => "form"
+        .col-3
+          %h2 
+            CORPORATE
+          %ul
+            %li= link_to "Careers", "#", :class => "form"
+            %li= link_to "About us", about_infos_path
+            %li= link_to "Code of ethics", "#", :class => "form"
+            %li= link_to "Event Sponsorships", "#", :class => "form"
+            %li= link_to "Vendors", "#", :class => "form"
+            %li= link_to "Affiliate Program", "#", :class => "form"
+            %li= link_to "Petco Foundation", "#", :class => "form"
+        .col-3
+          %h2 SIGN UP
+          %div.footer-text-box
+            %button.footer-btn
+              %i.fa.fa-envelope-o.fa-2x
+            = text_field_tag "email", nil, :class => :text_field, :placeholder => "Email address"
+          %p
+            Sign up to receive updates, special offers, program communication and other information from Petstore.com  
+          %ul.social-icons
+            %li= link_to image_tag("fb.png" ,:alt => "facebook"), "https://www.facebook.com/petstoredotcom", :target => "blank"
+            %li
+              = link_to image_tag("twit.png",:alt => "twitter" ), "https://twitter.com/petstoredeals", :target => "blank"
+            %li 
+              = link_to image_tag("inst.png",:alt => "instagram"), "https://www.pinterest.com/petstoredotcom/", :target => "blank"
+      / /.navbar-collapse
+  / /.container-fluid405668
+.footer-end-section
+  .wrapper
+    .text-center
+      %ul.footer-down-link
+        %li
+          %b= link_to "Terms Of Use", terms_infos_path
+        %li
+          %b= link_to "Privacy Policy", privacy_infos_path
+        %li
+          %b= link_to "Site Map", "#", :class => "form"
+      %p.copyright
+        @2018 PetStore.com. All rights reserved.
+      %ul.footer-partner-link
+        %li= image_tag("pet-coach.jpg",:alt => "petcoach")
+        %li= image_tag("vetco.jpg",:alt => "vetco")
+        %li= image_tag("doctor-foster.jpg",:alt => "doctor-foster")
+        %li= image_tag("heads-tails.jpg",:alt => "heads-tails")
+        %li= image_tag("pupbox.jpg",:alt => "pupbox")
+        %li= image_tag("pet-insurance.jpg",:alt => "pet-insurance")
+      
+        

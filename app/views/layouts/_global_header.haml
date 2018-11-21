@@ -1,7 +1,47 @@
+- content_for :extra_javascript do
+  :javascript
+    $('.menu-toggle').click(function() {
+      $('#accordion2').toggleClass('opening');
+      //$('#accordion2.open.opening').slideUp('');
+      $(this).toggleClass('open');
+    });
+
 -# Hide header in map view if mobile
-- if is_homepage
+- if false && is_homepage
   %header.header.indiv
     .header-wrapper
+      %nav.site-nav
+        .menu-toggle
+          .hamburger
+        #accordion2.accordion.open.desktop
+          %h3 Find a pet care partner
+          - Category.parent_categories.sort_by(&:sort_priority).each do |category|
+            .accordion-group
+              .accordion-heading
+                %a.accordion-toggle{"data-toggle" => "collapse", :href => "#collapse-#{category.id}"}
+                  = image_tag("#{category.url}.png",:alt => "#{category.url}")
+                  %span{:value => "#{category.url}"}= category.display_name(I18n.locale)
+              .accordion-body.collapse{id: "collapse-#{category.id}"}
+                .accordion-inner
+                  %ul
+                    - category.subcategories.sort_by(&:sort_priority).each do |child|
+                      %li
+                        = link_to child.display_name(I18n.locale), search_path({category: category, sub_category: child}), :class => "toggle-menu-subitem"
+
+      .top-level-logo.header-logo-container.cust-header-container-nouse
+        = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
+          -# if @current_community.logo.present?
+            %i.header-square-logo.hidden-tablet
+              -# Logo is here, it's a CSS background
+          - else
+            %span.header-square-logo-text.hidden-tablet
+              = @current_community.name(I18n.locale)[0]
+          - if @current_community.wide_logo.present?
+            %i.header-wide-logo
+              -# Logo is here, it's a CSS background
+          - else
+            %span.header-wide-logo-text.visible-tablet
+              = @current_community.name(I18n.locale)
       .top-level-nav
         .header-left.visible-tablet.searchbox
           = form_tag '/s', method: :get do
@@ -21,8 +61,9 @@
         .header-right.visible-tablet.nav-new-listing
           = link_to t("homepage.index.post_new_listing"), new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
 
-        .header-right.visible-tablet.nav-menu
+        .header-right.nav-menu
           #header-menu-desktop-anchor.nav-menu.header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
+          = render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
 
         - if logged_in
           .header-right.nav-profile
@@ -55,11 +96,197 @@
               %span.visible-tablet-inline.box-shadow-menu-nouse
                 = t("header.menu")
 
-        = render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
+        =# render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
 
         -#
           If necessary, the buttons will overlap with the logo. Buttons should be on top, that's
           keep the logo here after buttons
+    - cache 'mainslider' do
+      .clearfix
+      .mainslider.hidden-xs
+        .row12
+          .col-md-1212
+            #myCarousel.carousel.slide{"data-ride" => "carousel"}
+              / Indicators
+              %ol.carousel-indicators          
+                %li.active{ data: {slide_to: 0, target: "#myCarousel"} }
+                - (1..3).each do |i|
+                  %li{ data: {slide_to: i, target: "#myCarousel"} }
+              .carousel-inner{:role => "listbox"}
+                .item.active
+                  = image_tag "/assets/petstore-slider-1.jpg", alt: 'Petstore slider-1'
+               
+                .item
+                  = image_tag "/assets/petstore-slider-2.jpg", alt: 'Petstore slider-2'
+                
+                .item
+                  = image_tag "/assets/petstore-slider-3.jpg", alt: 'Petstore slider-3'
+
+                .item
+                  = image_tag "/assets/petstore-slider-4.jpg", alt: 'Petstore slider-4'                
+
+              %link{:href => "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", :rel => "stylesheet"}/
+
+              = link_to '#myCarousel', class: 'left carousel-control', data: {slide: 'prev'}, role: 'button' do
+                %i.fa.fa-angle-left.fa-2x
+
+              = link_to '#myCarousel', class: 'right carousel-control', data: {slide: 'next'}, role: 'button' do
+                %i.fa.fa-angle-right.fa-2x
+  .clearfix              
+- else
+
+  %header.header.list-page.indiv
+    .header-wrapper
+      %nav.site-nav
+        .menu-toggle
+          .hamburger
+        #accordion2.accordion.open.desktop
+          .accordion-group
+            .accordion-heading
+              %a.accordion-toggle{"data-toggle" => "collapse", :href => "#collapse-one"}
+                = image_tag("account.png",:alt => "account.png", :width => 30)
+                %span Account
+            .accordion-body.collapse{id: "collapse-one"}
+              .accordion-inner
+                %ul.none-bullet
+                  - unless @current_user
+                    %li
+                      = link_to sign_up_path do
+                        = image_tag("signup-icon.png",:alt => "signup-icon.png")
+                        = t("header.signup")
+                      
+                    %li  
+                      = link_to login_path do
+                        = image_tag("login-icon.png",:alt => "login-icon.png")
+                        = t("header.login")
+                      
+                    %li
+                      = link_to new_listing_path do
+                        = icon_map_tag(icons, "new_listing", ["icon-with-text"])
+                        = t("homepage.index.post_new_listing")
+                    
+                    %li
+                      = link_to "/", class: "sub-menu" do
+                        = icon_map_tag(icons, "home", ["icon-with-text"])
+                        = t("header.home")
+
+                    %li 
+                      = link_to about_infos_path, class: "sub-menu" do
+                        = icon_map_tag(icons, "information", ["icon-with-text"])
+                        = t("header.about")
+
+                    %li
+                      = link_to new_user_feedback_path, class: "sub-menu" do
+                        = icon_map_tag(icons, "feedback", ["icon-with-text"])
+                        = t("header.contact_us")
+
+                  - if @current_user
+                    %li
+                      = link_to inbox_path do
+                        = icon_map_tag(icons, "mail", ["icon-with-text"])
+                        = t("layouts.conversations.messages")
+                        - if unread_count > 0
+                          .mobile-badge{:class => get_badge_class(unread_count)}
+                            = unread_count
+                    %li
+                      = link_to profile_path do
+                        = icon_map_tag(icons, "user", ["icon-with-text"])
+                        = t("header.profile")
+                    %li
+                      = link_to manage_listings_path do
+                        = icon_map_tag(icons, "list", ["icon-with-text"])
+                        = t("header.manage_listings")
+                    %li
+                      = link_to settings_path do
+                        = icon_map_tag(icons, "settings", ["icon-with-text"])
+                        = t("layouts.logged_in.settings")
+                    %li
+                      = link_to new_listing_path do
+                        = icon_map_tag(icons, "new_listing", ["icon-with-text"])
+                        = t("homepage.index.post_new_listing")
+                    %li
+                      = link_to "/", class: "sub-menu" do
+                        = icon_map_tag(icons, "home", ["icon-with-text"])
+                        = t("header.home")
+                    %li 
+                      = link_to about_infos_path, class: "sub-menu" do
+                        = icon_map_tag(icons, "information", ["icon-with-text"])
+                        = t("header.about")
+                    %li
+                      = link_to new_user_feedback_path, class: "sub-menu" do
+                        = icon_map_tag(icons, "feedback", ["icon-with-text"])
+                        = t("header.contact_us")
+                    - with_invite_link do
+                      %li 
+                        = link_to new_invitation_path, class: "sub-menu" do
+                          = icon_map_tag(icons, "invite", ["icon-with-text"])
+                          = t("header.invite")
+                    - Maybe(@current_community).menu_links.each do |menu_links|
+                      - menu_links.each do |menu_link|
+                        %li
+                          = link_to menu_link.url(I18n.locale), :target => "_blank", class: "sub-menu" do
+                            = icon_map_tag(icons, "redirect", ["icon-with-text"])
+                            = menu_link.title(I18n.locale)
+                    - if @current_user && @current_user.has_admin_rights?
+                      %li
+                        = link_to admin_details_edit_path, class: "sub-menu" do
+                          = icon_map_tag(icons, "admin", ["icon-with-text"])
+                          = t("layouts.logged_in.admin")
+                    %li
+                      = link_to logout_path do
+                        = icon_map_tag(icons, "logout", ["icon-with-text"])
+                        = t("layouts.logged_in.logout")
+          / .accordion-group
+          /   .accordion-heading
+          /     = link_to "/", class: "sub-menu" do
+          /       = icon_map_tag(icons, "home", ["icon-with-text"])
+          /       = t("header.home")
+          / .accordion-group    
+          /   .accordion-heading
+          /     = link_to about_infos_path, class: "sub-menu" do
+          /       = icon_map_tag(icons, "information", ["icon-with-text"])
+          /       = t("header.about")
+          / .accordion-group
+          /   .accordion-heading{class: "#{@current_user ? '' : 'border-line'}"}
+          /     = link_to new_user_feedback_path, class: "sub-menu" do
+          /       = icon_map_tag(icons, "feedback", ["icon-with-text"])
+          /       = t("header.contact_us")
+
+          / - with_invite_link do
+          /   .accordion-group
+          /     .accordion-heading{class: "#{@current_user.has_admin_rights? ? '' : 'border-line'}"}
+          /       = link_to new_invitation_path, class: "sub-menu" do
+          /         = icon_map_tag(icons, "invite", ["icon-with-text"])
+          /         = t("header.invite")
+        
+          / - Maybe(@current_community).menu_links.each do |menu_links|
+          /   - menu_links.each do |menu_link|
+          /     = link_to menu_link.url(I18n.locale), :target => "_blank", class: "sub-menu" do
+          /       = icon_map_tag(icons, "redirect", ["icon-with-text"])
+          /       = menu_link.title(I18n.locale)
+          
+          / - if @current_user && @current_user.has_admin_rights?
+          /   .accordion-group
+          /     .accordion-heading.border-line
+          /       = link_to admin_details_edit_path, class: "sub-menu" do
+          /         = icon_map_tag(icons, "admin", ["icon-with-text"])
+          /         = t("layouts.logged_in.admin")
+          / .clearfix
+
+          %h3 Find a pet care partner
+          - Category.parent_categories.sort_by(&:sort_priority).each do |category|
+            .accordion-group
+              .accordion-heading
+                %a.accordion-toggle{"data-toggle" => "collapse", :href => "#collapse-#{category.id}"}
+                  = image_tag("#{category.url}.png",:alt => "#{category.url}")
+                  %span{:value => "#{category.url}"}= category.display_name(I18n.locale)
+              .accordion-body.collapse{id: "collapse-#{category.id}"}
+                .accordion-inner
+                  %ul
+                    - category.subcategories.sort_by(&:sort_priority).each do |child|
+                      %li                    
+                        = link_to child.display_name(I18n.locale), search_path({category: category, sub_category: child}), :class => "toggle-menu-subitem"
+
       .top-level-logo.header-logo-container.cust-header-container-nouse
         = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
           -# if @current_community.logo.present?
@@ -74,82 +301,97 @@
           - else
             %span.header-wide-logo-text.visible-tablet
               = @current_community.name(I18n.locale)
+      .top-level-nav 
+        .header-left.visible-tablet.searchbox
+          = form_tag '/s', method: :get do
+            = text_field_tag "q", params[:q], :placeholder => t("homepage.index.what_do_you_need")
+            %button.action-button#search-button{type: 'submit'}
+              = image_tag("search.png", :alt => "Search")
 
-- else
-  %header.header.list-page
-    .header-wrapper
+        .header-right.hidden-tablet.mobile-search-box
+          .search
+            %input#search_box.search_box{:type => "checkbox"}
+            %label.icon-search{:for => "search_box"}
+              = image_tag("search.png", :alt => "Search")
+            .search_form
+              = form_tag '/s', method: :get do
+                = text_field_tag "q", params[:q], :placeholder => t("homepage.index.what_do_you_need")
+                %button.action-button#search-butn{type: 'submit'}
+                  = image_tag("search.png", :alt => "Search")
 
-      
-      .header-right.visible-tablet.nav-new-listing     
-        = link_to t("homepage.index.post_new_listing"), new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
+        -#.header-right.visible-tablet.nav-new-listing     
+          = link_to t("homepage.index.post_new_listing"), new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
 
-      .header-right.visible-tablet.nav-menu
-        #header-menu-desktop-anchor.header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
+        .header-right.nav-menu
+          #header-menu-desktop-anchor.header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
+          = render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
 
-      - if logged_in
-        .header-right.nav-profile
-          = render :partial => "layouts/header_anchors", locals: {avatar_url: avatar_url, current_user_name: current_user_name, icons: icons}
-          = render :partial => "layouts/header_user_menu", locals: {unread_count: unread_count, inbox_path: inbox_path, profile_path: profile_path, manage_listings_path: manage_listings_path, settings_path: settings_path, logout_path: logout_path, icons: icons}
+        -# if logged_in
+          .header-right.nav-profile
+            = render :partial => "layouts/header_anchors", locals: {avatar_url: avatar_url, current_user_name: current_user_name, icons: icons}
+            = render :partial => "layouts/header_user_menu", locals: {unread_count: unread_count, inbox_path: inbox_path, profile_path: profile_path, manage_listings_path: manage_listings_path, settings_path: settings_path, logout_path: logout_path, icons: icons}
 
-        = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}
+          = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}
 
-      - if available_locales.size > 1
-        .header-right.visible-desktop
-          #header-locales-menu.toggle.header-hover{data: {toggle: '#header-locales-toggle-menu', 'toggle-position' => 'absolute'}}
-            %span.header-text-link
-              = current_locale_name
-              = icon_map_tag(icons, "dropdown", ["icon-dropdown"])
-          #header-locales-toggle-menu.toggle-menu.header-toggle-menu-language.hidden
-            = render :partial => "layouts/locale_select", :collection => available_locales, :as => :loc_array, locals: {return_after_locale_change: return_after_locale_change}
+        - if available_locales.size > 1
+          .header-right.visible-desktop
+            #header-locales-menu.toggle.header-hover{data: {toggle: '#header-locales-toggle-menu', 'toggle-position' => 'absolute'}}
+              %span.header-text-link
+                = current_locale_name
+                = icon_map_tag(icons, "dropdown", ["icon-dropdown"])
+            #header-locales-toggle-menu.toggle-menu.header-toggle-menu-language.hidden
+              = render :partial => "layouts/locale_select", :collection => available_locales, :as => :loc_array, locals: {return_after_locale_change: return_after_locale_change}
 
-      - unless logged_in
-        .header-right.visible-tablet.nav-login
-          = link_to login_path, class: "header-text-link header-hover #{login_page_active ? 'active-menu' : '' }", id: "header-login-link" do
-            = t("header.login")
-        .header-right.visible-tablet.nav-signup
-          = link_to sign_up_path, class: "header-text-link header-hover #{sign_up_page_active ? 'active-menu' : '' }" do
-            = t("header.signup")
+        -# unless logged_in
+          .header-right.visible-tablet.nav-login
+            = link_to login_path, class: "header-text-link header-hover #{login_page_active ? 'active-menu' : '' }", id: "header-login-link" do
+              = t("header.login")
+          .header-right.visible-tablet.nav-signup
+            = link_to sign_up_path, class: "header-text-link header-hover #{sign_up_page_active ? 'active-menu' : '' }" do
+              = t("header.signup")
 
-      .header-left.hidden-tablet
-        .header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
-          #header-menu-mobile-anchor.header-menu-toggle-container.toggle-header-container
-            = icon_map_tag(icons, "rows", ["header-menu-icon"])
-            %span.visible-tablet-inline.box-shadow-menu-nouse
-              = t("header.menu")
+        -#.header-left.hidden-tablet
+          .header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
+            #header-menu-mobile-anchor.header-menu-toggle-container.toggle-header-container
+              = icon_map_tag(icons, "rows", ["header-menu-icon"])
+              %span.visible-tablet-inline.box-shadow-menu-nouse
+                = t("header.menu")
 
+    .clearfix
+    - cache 'mainslider' do
+      .mainslider.hidden-xs
+        .row12
+          .col-md-1212
+            #myCarousel.carousel.slide{"data-ride" => "carousel"}
+              / Indicators
+              %ol.carousel-indicators          
+                %li.active{ data: {slide_to: 0, target: "#myCarousel"} }
+                - (1..3).each do |i|
+                  %li{ data: {slide_to: i, target: "#myCarousel"} }
+              .carousel-inner{:role => "listbox"}
+                .item.active
+                  = image_tag "/assets/petstore-slider-1.jpg", alt: 'Petstore slider-1'
+               
+                .item
+                  = image_tag "/assets/petstore-slider-2.jpg", alt: 'Petstore slider-2'
+                
+                .item
+                  = image_tag "/assets/petstore-slider-3.jpg", alt: 'Petstore slider-3'
 
+                .item
+                  = image_tag "/assets/petstore-slider-4.jpg", alt: 'Petstore slider-4'                
 
-      = render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
+              %link{:href => "https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", :rel => "stylesheet"}/
 
-      -#
-        If necessary, the buttons will overlap with the logo. Buttons should be on top, that's
-        keep the logo here after buttons
-      .header-left.header-logo-container.cust-header-container-nouse
-        = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
-          -# if @current_community.logo.present?
-            %i.header-square-logo.hidden-tablet
-              -# Logo is here, it's a CSS background
-          - else
-            %span.header-square-logo-text.hidden-tablet
-              = @current_community.name(I18n.locale)[0]
-          - if @current_community.wide_logo.present?
-            %i.header-wide-logo
-              -# Logo is here, it's a CSS background
-          - else
-            %span.header-wide-logo-text.visible-tablet
-              = @current_community.name(I18n.locale)
-      .header-left.header-padding.visible-tablet.searchbox
-        = form_tag '/s', method: :get do
-          = text_field_tag "q", params[:q], :placeholder => t("homepage.index.what_do_you_need")
-          %button.action-button#search-button{type: 'submit'}
-            = image_tag("search.png", :alt => "Search")
-      .header-right.hidden-tablet.mobile-search-box
-        .search
-          %input#search_box.search_box{:type => "checkbox"}
-          %label.icon-search{:for => "search_box"}
-            = image_tag("search.png", :alt => "Search")
-          .search_form
-            = form_tag '/s', method: :get do
-              = text_field_tag "mq", params[:q], :placeholder => t("homepage.index.what_do_you_need")
-              %button.action-button#search-butn{type: 'submit'}
-                = image_tag("search.png", :alt => "Search")
+              = link_to '#myCarousel', class: 'left carousel-control', data: {slide: 'prev'}, role: 'button' do
+                %i.fa.fa-angle-left.fa-2x
+
+              = link_to '#myCarousel', class: 'right carousel-control', data: {slide: 'next'}, role: 'button' do
+                %i.fa.fa-angle-right.fa-2x
+    .clearfix              
+
+    =# render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
+
+    -#
+      If necessary, the buttons will overlap with the logo. Buttons should be on top, that's
+      keep the logo here after buttons
