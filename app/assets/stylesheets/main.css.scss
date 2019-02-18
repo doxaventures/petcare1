@@ -2189,3 +2189,13 @@ figure.fluidratio {
     }
   }
 }
+
+
+.nav-tab-new{border-bottom:2px solid #ccc; margin-bottom:0px;}
+.nav-tab-new ul{margin-top:0; padding:0 0px 0 0px;}
+.nav-tab-new ul li{ display:inline-block; list-style:none;border:1px solid #ccc; border-radius:3px; border-bottom:0px solid #fff; border-bottom-right-radius:0; border-bottom-left-radius:0; background-color: #e9e9e9;}
+.nav-tab-new ul li a{padding:8px 15px; display:block;}
+.nav-tab-new ul li a.active{font-weight:600;}
+.nav-tab-new ul > li:first-child{
+   background-color:white;
+}

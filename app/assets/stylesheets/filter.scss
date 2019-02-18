@@ -1,0 +1,126 @@
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700);
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
+@charset "UTF-8";
+/* Base Styles */
+
+.filter-section{ border-top:2px solid #f7882f; padding: 5px 0 0 0;}
+#filtermenu{ margin-bottom:20px; position:relative;}
+#filtermenu ul ul { display:none; }
+#filtermenu ul{ margin:0; padding:0;list-style: none;}
+#filtermenu ul li{ line-height:24px; border-bottom:1px solid #ebebeb; font-size:17px;}
+#filtermenu ul li span{ padding:10px 15px; display:block;}
+#filtermenu ul li.has-sub.open ul li.has-sub.active a{outline:0;}
+#filtermenu ul li.has-sub.open ul li.has-sub.active{ background:#eee;}
+#filtermenu ul li.has-sub.active{ border-bottom:1px solid #ebebeb;}
+#filtermenu ul li.has-sub i{ font-size:18px; font-style: normal;}
+#filtermenu ul li.has-sub li.under-sub{ padding-left:0; padding-right:0;}
+#filtermenu ul li.has-sub li.under-sub a span{ background:none; padding:0 22px 0 10px; position:relative;  cursor:pointer;}
+#filtermenu ul li.has-sub.active.open i{font-style: normal; font-weight:600;}
+#filtermenu ul li.has-sub.active ul li.has-sub i{font-size:18px; font-style: normal; font-weight:normal;}
+#filtermenu ul li.has-sub.open ul li.has-sub.open i{font-style: normal; font-weight:500;}
+#filtermenu li.has-sub ul{border-top:1px solid #ccc;}
+#filtermenu li.has-sub ul li {padding:0px 15px;}
+#filtermenu li.has-sub ul li span{background:url(bullet.png) left center no-repeat;padding:0px 20px; color:#898686;}
+.home-categories-sub-color{background:url(bullet.png) left 11px no-repeat !important;padding:0px 20px; color:#898686;}
+#filtermenu ul li.has-sub li.under-sub ul li span {background:url(bullet.png) left center no-repeat;padding:0px 20px;}
+#filtermenu ul li.has-sub li span {background:url(bullet.png) left 5px no-repeat !important;padding:0px 20px;}
+#filtermenu > ul > li > a { display: block;}
+#filtermenu > ul > li > a > span {display: block;}
+#filtermenu > ul > li > a:hover {text-decoration: none;}
+#filtermenu > ul > li.active {  border-bottom: none;}
+#filtermenu > ul > li.active.has-sub.open > a span {background: url(icon_minus.png) 96% center no-repeat; cursor:pointer;}
+#filtermenu > ul > li.has-sub.active > a span {background: url(icon_plus.png) 96% center no-repeat;}
+#filtermenu ul li.has-sub.open li.under-sub.open a.arrow-list span{ position:relative; cursor:pointer;}
+#filtermenu ul li.has-sub.open li.under-sub a.arrow-list span:after{position: absolute;right:13px;top:1px;display: block;width: 10px;height: 2px;background: #ffffff;content: "+";-webkit-transition: all 0.1s ease-out;-moz-transition: all 0.1s ease-out;-ms-transition: all 0.1s ease-out;-o-transition: all 0.1s ease-out;transition: all 0.1s ease-out;}
+#filtermenu ul li.has-sub.active a span{}
+#filtermenu ul li.has-sub.open li.under-sub.open a.arrow-list span:after{position: absolute;right:1px;top:7px; background:#fff;display: block;width: 10px;height: 2px;background: #ffffff;content: "+";-webkit-transform: rotate(45deg);
+-moz-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+-o-transform: rotate(45deg);
+transform: rotate(45deg);}
+
+/* Sub menu */
+#filtermenu ul ul { display: none;}
+#filtermenu ul ul a { display: block; padding:7px 22px;}
+#filtermenu ul ul a.home-categories-sub-color.selected{background-color: #f7862f!important; color:#fff;}
+.custom-side{ padding:0px 0 5px 0}
+.custom-side h4{ color:#6b6666; border-bottom:1px solid #ebebeb; padding-bottom:5px;font-size:18px;}
+/* Customize the label (the container) */
+.custom-checkbox{display:block;position:relative;padding-left:25px;margin-bottom: 12px;  margin-left:10px;  cursor: pointer;  color:#898686;  font-size: 16px;  font-weight: normal;  -webkit-user-select: none;  -moz-user-select: none;  -ms-user-select: none;  user-select: none;}
+/* Hide the browser's default checkbox */
+.custom-checkbox input {position: absolute;opacity: 0;cursor: pointer;height: 0; width: 0;}
+/* Create a custom checkbox */
+.checkmark {position: absolute; top:0px; left: 0; height:16px; width: 16px; background-color: #eee; border: 1px solid #959595;border-radius: 5px;}
+/* On mouse-over, add a grey background color */
+.custom-checkbox:hover input ~ .checkmark { background-color: #eee; border: 1px solid #959595; border-radius: 5px;}
+/* When the checkbox is checked, add a blue background */
+.custom-checkbox input:checked ~ .checkmark {background-color: #fff;}
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after { content: ""; position: absolute; display: none;}
+/* Show the checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark:after { display: block;}
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark:after {left:-2px; top:-4px; background: url(right-mark.png) no-repeat top center; width: 24px;height: 24px;border: solid white;
+  border-width: 0 3px 3px 0; -webkit-transform: rotate(0deg); -ms-transform: rotate(0deg); transform: rotate(0deg);}
+.pt-5{padding-top:5px;}
+.pt-10{padding-top:10px;}
+select#brand{width:100%}
+#subcategory li {background:url(bullet.png) 17px 11px no-repeat !important;padding:0px 40px;}
+#subcategory li a{padding:7px 0; display:block;}
+#category ul li has-sub.active{background-color: e4e4e4}
+#filtermenu ul li.has-sub.active open li span{color: blue;}
+.length-list{padding-left:10px;}
+.length-list label{font-weight:normal; color:#898686;}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color:#898686;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;}
+
+@media all and (max-width:1169px) and (min-width:1024px){
+#filtermenu ul li{font-size: 15px!important;}
+#filtermenu ul li.has-sub i{font-size: 15px!important;}
+}
+@media all and (max-width:1023px) and (min-width:768px){
+#filtermenu ul li{font-size: 11px!important;}
+#filtermenu ul li.has-sub i{font-size: 11px!important;}
+#filtermenu li.has-sub ul li{padding: 0px 5px !important;}
+.listpage-map-right{width: 79% !important;}
+}
+@media all and (min-width:768px){
+#filtermenu ul li span i{padding-right:5px;}
+#product_custom{float:right; position:relative;padding:0 5px 10px 15px;}
+.listing-price{}
+.custom-side .checkbox{ max-height:220px; overflow-y:auto;overflow-x:hidden;}
+.view-mobile{ display:none;}
+.listpage-in .col-2.no-pad{ padding-left:0; padding-right:0; width:21%;}
+.listpage-map-right{width:62.333%}
+}
+@media all and (max-width:767px){
+.custom-side .checkbox{ max-height:320px; overflow-y:auto;overflow-x:hidden;}
+#filtermenu ul li a{outline:0;}
+#filtermenu ul li{border-bottom:0 !important;}
+#filtermenu li.has-sub ul{ border-top:0;}
+#filtermenu ul li.has-sub{ margin-bottom:10px;}
+#filtermenu ul li.has-sub a{ background:#6b7c8e; border-radius:10px; color:#fff;}
+#filtermenu ul li.has-sub ul li a{ background:none; color:#898686;}
+#filtermenu li.has-sub ul li{ border-bottom:1px solid #ebebeb !important; margin-bottom:0!important;}
+#filtermenu > ul > li.active.has-sub.open > a span {background: url(icon_minus-white.png) 96% center no-repeat !important;}
+#filtermenu > ul > li.has-sub.active > a span {background: url(icon_plus-white.png) 96% center no-repeat !important;}
+.listpage-in .col-2.no-pad{ border:1px solid #f7882f;}
+.filter-section{ padding:15px; border-top:2px solid #fff!important; }
+#filter-section.filterDiv_mobile{display:none;}
+.home-toolbar-show-filters-button.view-mobile{ display:block;background: #f7882f !important;margin-bottom:15px; color:#fff;width:100px;}
+.custom-side {padding: 0px 15px 5px 15px!important;}
+#subcategory li a{background: none !important; color: #626e60 !important;}
+}

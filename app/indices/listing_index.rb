@@ -15,6 +15,8 @@ if APP_CONFIG.use_thinking_sphinx_indexing.to_s.casecmp("true") == 0
     indexes description
     indexes custom_field_values(:text_value), :as => :custom_text_fields
     indexes origin_loc.google_address
+    indexes listing_variants(:size_name), :as => :size_name, :multi => true
+    #indexes listing_variants.inches_value, :as => :inches_value, type: :float
 
     # attributes
     has id, :as => :listing_id # id didn't work without :as aliasing
@@ -26,6 +28,12 @@ if APP_CONFIG.use_thinking_sphinx_indexing.to_s.casecmp("true") == 0
     has community_id
     has custom_dropdown_field_values.selected_options.id, :as => :custom_dropdown_field_options, :type => :integer, :multi => true
     has custom_checkbox_field_values.selected_options.id, :as => :custom_checkbox_field_options, :type => :integer, :multi => true
+    has "listing_variants.inches_value", :as => :inches_value, type: :float
+    has "listing_variants.oz_value", :as => :oz_value, type: :float
+    has "listing_variants.lbs_value", :as => :lbs_value, type: :float
+    has listing_variants(:manufacturer_id), :as => :variants, :type => :integer,:multi => true
+    has listing_variants(:listing_color_id), :as => :color_ids, :type => :integer,:multi => true
+    
 
     has "RADIANS(locations.latitude)", as: :latitude, type: :float
     has "RADIANS(locations.longitude)", as: :longitude, type: :float

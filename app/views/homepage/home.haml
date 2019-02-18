@@ -52,45 +52,98 @@
     = t(".this_is_private_community")
 
 - else
-  .homeCategory          
-    %section#portfolio
-      .wrapper  
-        .clearfix
-          .col-lg-12.text-center
-            %h2.section-head-title Heritage and Homemade Products
-            %hr.star-primary/
-          .row.portfolio.align-center
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=dog"}
-                %p Dog
-                = image_tag "dog.jpg", alt: "Dog", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=dog"} VIEW PRODUCTS
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=cat"}
-                %p Cat
-                = image_tag "cat.jpg", alt: "Cat", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=cat"} VIEW PRODUCTS
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=bird"}
-                %p Bird
-                = image_tag "bird.jpg", alt: "Birds", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=bird"} VIEW PRODUCTS
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=small-animal"}
-                %p Small Pet
-                = image_tag "small-pet.jpg", alt: "Small Animal", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=small-animal"} VIEW PRODUCTS
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=reptile"}
-                %p Reptile
-                = image_tag "reptlie.jpg", alt: "Reptile", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=reptile"} VIEW PRODUCTS
-            .cust-col-4.col-4
-              %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=fish"}
-                %p Fish
-                = image_tag "fish.jpg", alt: "Fish", class: "img-responsive width-100"
-                %a.cmn-btn{:href => "/s?category=fish"} VIEW PRODUCTS
+  .how-it-works
+    %h2.text-center How it Works 
+    .hometrust
+      .row
+        .col-4 
+          .white-box
+            %div.top-icon
+              = link_to (image_tag "search-icon.png"), "", alt: "Find", class: "img-responsive"
+            %h3 Find
+            %p Use the menu system and search bar <br> To find pet products and services
+        .col-4 
+          .white-box
+            %div.top-icon
+              = link_to (image_tag "order-icon.png"), "", alt: "Order", class: "img-responsive"
+            %h3 Order
+            %p Place a secure order for a product or service.<br> For pet services and custom products, your pet <br> care partner will contact you to finalize details.
+        .col-4
+          .white-box
+            %div.top-icon
+              = link_to (image_tag "enjoy-icon.png"), "", alt: "Enjoy", class: "img-responsive"
+            %h3 Enjoy
+            %p Our goal is to improve life for you and your pet. Write a review to share your experience with the community
+  / .homeCategory          
+  /   %section#portfolio
+  /     .wrapper  
+  /       .clearfix
+  /         .col-lg-12.text-center
+  /           %h2.section-head-title Heritage and Homemade Products
+  /           %hr.star-primary/
+  /         .row.portfolio.align-center
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=dog"}
+  /               %p Dog
+  /               = image_tag "dog.jpg", alt: "Dog", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=dog"} VIEW PRODUCTS
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=cat"}
+  /               %p Cat
+  /               = image_tag "cat.jpg", alt: "Cat", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=cat"} VIEW PRODUCTS
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=bird"}
+  /               %p Bird
+  /               = image_tag "bird.jpg", alt: "Birds", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=bird"} VIEW PRODUCTS
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=small-animal"}
+  /               %p Small Pet
+  /               = image_tag "small-pet.jpg", alt: "Small Animal", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=small-animal"} VIEW PRODUCTS
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=reptile"}
+  /               %p Reptile
+  /               = image_tag "reptlie.jpg", alt: "Reptile", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=reptile"} VIEW PRODUCTS
+  /           .cust-col-4.col-4
+  /             %a.portfolio-link{"data-toggle" => "modal", :href => "/s?category=fish"}
+  /               %p Fish
+  /               = image_tag "fish.jpg", alt: "Fish", class: "img-responsive width-100"
+  /               %a.cmn-btn{:href => "/s?category=fish"} VIEW PRODUCTS
   
+  .hometrust
+    .row
+      .col-6
+        .list-benifits
+          %h4 Choice is good
+          %p One site for homemade and name brand, private and professional.<br> Compare and choose the item or service that is right for you
+
+          %h4 Pet Care Partners
+          %p Find a partner in your neighborhood to provide loving care. <br> Our marketplace includes neighbors and businesses
+
+          %h4 Exotic Pet Services
+          %p Need a snake sitter? Fish feeder? Hedgehog hostess?<br> We've got you covered!
+
+          %h4 Homemade Pet Products 
+          %p Find the unique product your pet deserves
+
+          %h4 Big Name Brands
+          %p From Aqueon – Zukes, we carry the top brands your pet will love.
+
+      .col-6
+        .border-box
+          %h4 
+            %span Petstore.com is Trustworthy
+           
+          %ul 
+            %li 20+ years experience in online retail
+            %li Bizrate Circle of Excellence award winning customer support
+            %li Top 500 E-commere company
+            %li Secure, encrypted transactions via Stripe
+          %a.orange-btn Become part of the community  
+
   %div.middel-img
     = image_tag "home-middle-banner.jpg", alt: "home-middle-banner", class: "img-responsive width-100"
 
@@ -101,5 +154,5 @@
           = image_tag "trust-worthy.jpg", alt: "Girl with dog", class: "img-responsive width-100"
         .col-7
           %h2.section-head-title Trustworthy Support
-          %p.bodycopy We are here to support you and your pet. We have been providing pet care products online for nearly twenty years. Our award winning support team is here to help you with your pet care needs.
+          %p.bodycopy We are here to support you and your pet. We have been providing pet care products online for over twenty years. Our award winning support team is here to help you with your pet care needs.
           %a.cmn-btn{:href => "/en/user_feedbacks/new"} Contact Support

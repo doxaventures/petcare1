@@ -21,161 +21,36 @@
   %h1
     %span#listing-title.listing-title= @listing.title
 
-%script{type: "text/template", class: "template", id: "image-frame-template"}
-  .listing-image-frame
-    #listing-image-link.listing-image-frame-content
-      .listing-image-vertical-centering{:class => "${aspectRatioClass}" }
-        %img{:src => "${url}", :alt => @listing.title, :class => "listing-image ${aspectRatioClass}"}
-
-%script{type: "text/template", class: "template", id: "image-thumbnail-template"}
-  .listing-image-thumbnail-container
-    %img.listing-image-thumbnail{src: "${url}"}
-    .fade
-
 - if local_assigns[:show_onboarding_popup]
   = render :layout => "layouts/lightbox", :partial => "layouts/onboarding_popup", locals: {title: t(popup_title_key), body: t(popup_body_key), action_label: t(popup_button_key), action_link: popup_action_link, image: asset_path(popup_image), id: "onboarding-popup" }
 
-.row
-  .col-8.listing-details-container
-    .row
-      .col-12
-        %h1= @listing.title
-    .row
-      .col-12
-        - with_image_frame(@listing) do |reason, listing_images|
-          - if reason == :images_ok
-            .listing-image-carousel
-              #listing-image-frame
+- content_for :extra_javascript do
+  :javascript
+    $( document ).ready(function() {
+      $('#size-change').on('change',function(){
+        var list_id = $('select#size-change :selected').val();
+        //var list_id = this.value;
+        var list_url = "/en/listings/" + list_id;
+        $.ajax({
+          url: list_url,
+          type:  'GET',
+          dataType: 'script'
+          });
+      });
+      //$( "#product_custom").appendTo("#appendDiv");
 
-              - if @prev_image_id && @next_image_id
-                = link_to params.merge(image: @prev_image_id), class: "listing-image-navi listing-image-navi-left", id: "listing-image-navi-left" do
-                  .listing-image-navi-arrow-container
-                    .listing-image-arrow-icon-container.left
-                      = icon_tag("directleft", ["navigate-icon-fix", "listing-image-navi-arrow"])
-                = link_to params.merge(image: @next_image_id), class: "listing-image-navi listing-image-navi-right", id: "listing-image-navi-right" do
-                  .listing-image-navi-arrow-container
-                    .listing-image-arrow-icon-container.right
-                      = icon_tag("directright", ["navigate-icon-fix", "listing-image-navi-arrow"])
-            #thumbnail-stripe.listing-image-thumbnail-stripe
+    });
 
-            - content_for :extra_javascript do
-              :javascript
-                var listingImages = #{listing_images.map { |image| ListingImageJSAdapter.new(image) }.to_json }
-                var currentImage = #{params[:image].present? ? params[:image].to_i : listing_images.first.id};
-                ST.listingImages(listingImages, currentImage);
-          - else
-            .listing-image-text-container
-              .listing-image-frame
-                .listing-image-frame-content
-                  .listing-image-vertical-centering
-                    .listing-no-image
-                      - if reason == :images_processing
-                        = t("listings.show.processing_uploaded_image")
-                      - else
-                        = t(".no_description")
+- if @listings.present? && (@listings.select{|c| c.original_value }.present? || @listings.select{|c| c.listing_color_id }.present?)
+  -# .nav-tab-new
+    %ul#list
+      - @listings.each do |list|
+        %li{id: list.listing_child_id}
+          =# list.sku_name
+          = link_to "SKU: #{list.sku_name}",listing_path(list.listing_child_id),remote: true
+  .row1
+    .col-4#product_custom
+      %h4 Options:
+      = select_tag "size", options_for_select(@listings.collect { |c| ["#{c.original_value if c.original_value.present?} #{c.listing_color.name if c.listing_color.present?}", c.listing_child_id]}), prompt: 'Please select', :class => "form-control", :id => 'size-change'
 
-    .row
-      .col-12
-        - if @listing.description && !@listing.description.blank?
-          = @listing.description.to_s.gsub(/&quot;/i, '"').gsub(/&lt;/i,'<').gsub(/&gt;/i,'>').gsub(/[\"]{2,}/, '"').html_safe
-          -# text_with_line_breaks do
-            = @listing.description.to_s.gsub(/&quot;/i, '"').gsub(/&lt;/i,'<').gsub(/&gt;/i,'>').gsub(/[\"]{2,}/, '"')
-          - if(youtube_link_ids.present?)
-            - youtube_link_ids.each do |youtube_id|
-              .listing-description-youtube-wrapper
-                %iframe.listing-description-youtube-iframe{ title: t("listings.show.youtube_video_player"), width: 640, height:390, src: "//www.youtube.com/embed/#{ youtube_id }", frameborder: 0, allowfullscreen: true}
-
-    - @listing.custom_field_values.each do |custom_field_value|
-      .row
-        .col-12
-          - custom_field_value.with_type do |question_type|
-            = render :partial => "listings/custom_field_partials/#{question_type}", :locals => { :custom_field_value => custom_field_value }
-
-    - if @current_community.show_listing_publishing_date?
-      .row
-        .col-12
-          .icon-with-text-container
-            = icon_tag("calendar", ["icon-part"])
-            .text-part
-              %b
-                = t(".listing_created_at")
-                = l @listing.created_at, :format => :short_date
-
-    - if !@current_community.private?
-      .row
-        .col-12
-          .listing-social
-            .listing-fb-like-button
-              = facebook_like(current_user?(@listing.author))
-            .listing-tweet-button
-              = link_to("", "https://twitter.com/share", :class => "twitter-share-button", "data" => {count: "horizontal", via: (@current_community.twitter_handle || "Sharetribe"), text: @listing.title })
-              - content_for :extra_javascript do
-                :javascript
-                  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-
-    - unless (@listing.closed? && !current_user?(@listing.author)) || !@current_community.listing_comments_in_use
-      .view-item
-        #comments.discussion.overflow-allowed
-          %h2
-            = icon_tag("chat_bubble", ["icon-with_text"])
-            .text-with-icon
-              = t(".comments")
-              %span#comment_count= "(#{@listing.comments_count})"
-          #follow-links.follow-links
-            = render :partial => "follow_links"
-          #comment-list
-            = render :partial => "comment", :collection => @listing.comments
-          #comment-form
-            = render :partial => "comment_form"
-
-  %aside.col-4
-    - if @listing.price
-      .row
-        .col-12
-          .listing-price
-            %span.listing-price-amount
-              = humanized_money_with_symbol(@listing.price).upcase
-            - with_quantity_text(@current_community, @listing) do |text|
-              %span.listing-price-quantity
-                = text
-
-    .row-with-divider
-      .col-12
-        #listing-message-links
-          = render :partial => "listing_actions", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props, availability_enabled: availability_enabled }
-
-    .row-with-divider
-      .col-12
-        .listing-author
-          .listing-author-avatar
-            = medium_avatar_thumb(@listing.author, {:class => "listing-author-avatar-image"})
-          .listing-author-details
-            .listing-author-name
-              = link_to PersonViewUtils.person_display_name(@listing.author, @current_community), @listing.author, :id => "listing-author-link", :class => "listing-author-name-link", :title => "#{PersonViewUtils.person_display_name(@listing.author, @current_community)}"
-            - if @listing.author != @current_user
-              .listing-author-contact
-                %a#listing-contact.grcolor{href: contact_to_listing_path(:listing_id => @listing.id.to_s), :class => "listing-author-contact-button"}
-                  .content
-                    = t(".contact")
-
-    - if received_testimonials.size > 0
-      .row-with-divider.listing-author-activity
-        .col-12
-          %i.listing-author-activity-icon{:class => icon_class("testimonial")}
-          .listing-author-activity-item
-            .listing-author-activity-value
-              - if received_testimonials.size > 0
-                = feedback_positive_percentage.to_s + "%"
-                = t("people.show.positive")
-                = "(#{received_positive_testimonials.size}/#{received_testimonials.size})"
-              - else
-                = t(".no_reviews")
-            .listing-author-activity-description
-              = t(".feedback")
-
-    - if @listing.origin_loc && @listing.origin_loc.address != ""
-      .row
-        .col-12
-          #googlemap
-            = render :partial => "googlemap", :locals => { :listing => @listing}
-            = render :partial => "origin", :locals => { :origin_loc => @listing.origin_loc }
+= render partial: "listings/show", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props, availability_enabled: availability_enabled, youtube_link_ids: youtube_link_ids, received_testimonials: received_testimonials, received_positive_testimonials: received_positive_testimonials,feedback_positive_percentage: feedback_positive_percentage}

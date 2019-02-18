@@ -33,7 +33,12 @@ module ListingIndexService::DataTypes
     [:lat, :to_float, :optional],
     [:lng, :to_float, :optional],
     [:location_name, :string, :optional],
-    [:date, :string, :optional]
+    [:date, :string, :optional],
+    [:variants, :array, :optional],
+    [:color_ids, :array, default: []],
+    [:size, :array, :optional],
+    [:length, :string, :optional],
+    [:weight, :string, :optional]
   )
 
   AvatarImage = EntityUtils.define_builder(

@@ -52,6 +52,61 @@
   - if(@view_type.eql?("map"))
     = javascript_include_tag "markerclusterer.js"
 
+- content_for :extra_javascript do
+  :javascript
+    $('.clear-button').on('click', function(e) {
+    e.preventDefault();
+    root_origin = window.location.origin
+    window.location.replace(root_origin+"/s?category=all");
+    })
+
+- content_for :extra_javascript do
+  :javascript
+    $( document ).ready(function() {
+    $('#filter_div').click(function(){
+      $('#filter-section').toggleClass('filterDiv_mobile');
+    });
+      $('ul#category li').on('click', function(){
+        $("ul#category li").removeClass('active');
+        //var element = $(this).parent('li');
+
+        $(this).addClass('active');
+        var category_id = this.id;
+        var subcategory_url = "/homepage/get_subcategories?category_id=" + category_id;
+        $("ul#category li a").attr("href", "#sub-title");
+        $.ajax({
+          url: subcategory_url,
+          type:  'GET',
+          success: function(data) {
+            var d = data["all_data"].sub_category;
+            var category = data["all_data"].category_url;
+            var sub = data["all_data"].sub_category_url;
+            $('#subcategory').empty();
+            for(var i = 0, j=0; i < d.length,j < sub.length; i++,j++){
+              $('#subcategory').append("<li><a href=/s?category="+category+"&sub_category="+sub[j]+">"+d[i]+"</a></li>");
+            }
+          }
+        })
+      });
+      $('#filtermenu li.has-sub>a').on('click', function(){
+        $(this).removeAttr('href');
+        var element = $(this).parent('li');
+        if (element.hasClass('open')) {
+          element.removeClass('open');
+          element.find('li').removeClass('open');
+          element.find('ul').slideUp();
+        }
+        else {
+          element.addClass('open');
+          element.children('ul').slideDown();
+          element.siblings('li').children('ul').slideUp();
+          element.siblings('li').removeClass('open');
+          element.siblings('li').find('li').removeClass('open');
+          element.siblings('li').find('ul').slideUp();
+        }
+      });
+    });
+
 - content_for :title_header do
   - if @big_cover_photo
     %h1.marketplace-lander-content-title= community_slogan.html_safe
@@ -89,24 +144,24 @@
 
 - else
   .listpage.clearfix
-    -#.home-toolbar
+    .home-toolbar
 
-      - if listing_shape_menu_enabled || @category_menu_enabled
+      -# if listing_shape_menu_enabled || @category_menu_enabled
         .home-toolbar-show-filters-button-container
           .home-toolbar-show-filters-button#home-toolbar-show-filters
             = t(".filter")
 
-      .home-toolbar-button-group{:class => listing_shape_menu_enabled || @category_menu_enabled ? "filters-enabled" : ""}
-        - ["grid", "list", "map"].each do |view_type|
-          - selected_class = @view_type == view_type ? "selected" : ""
-          = link_to search_path(search_params.merge(view: view_type)), :class => "home-toolbar-button-group-button #{selected_class}", :title => t("homepage.filters.#{view_type}_button") do
-            = icon_tag(view_type, ["icon-fix", "home-button-group-icon"])
-            %span.home-toolbar-button-text
-              = t("homepage.filters.#{view_type}_button")
+      / .home-toolbar-button-group{:class => listing_shape_menu_enabled || @category_menu_enabled ? "filters-enabled" : ""}
+      /   - ["grid", "list", "map"].each do |view_type|
+      /     - selected_class = @view_type == view_type ? "selected" : ""
+      /     = link_to search_path(search_params.merge(view: view_type)), :class => "home-toolbar-button-group-button #{selected_class}", :title => t("homepage.filters.#{view_type}_button") do
+      /       = icon_tag(view_type, ["icon-fix", "home-button-group-icon"])
+      /       %span.home-toolbar-button-text
+      /         = t("homepage.filters.#{view_type}_button")
 
       - if listing_shape_menu_enabled || @category_menu_enabled
         .home-toolbar-filters.home-toolbar-filters-mobile-hidden#home-toolbar-filters
-          - if listing_shape_menu_enabled
+          -# if listing_shape_menu_enabled
             .toggle-container.home-toolbar-toggle-container
               .toggle.with-borders#home_toolbar-select-share-type{data: {toggle: '.home-toolbar-share-type-menu'}}
                 .toggle-header-container
@@ -143,35 +198,109 @@
                     - category.children.each do |child|
                       - is_selected = selected_category == child
                       = link_to child.display_name(I18n.locale), search_path(search_params.merge({category: child})), :class => "toggle-menu-subitem"
-
           / Filters
-          .hidden-tablet
-            - # Filters will be relocated to #desktop-filters when in desktop
-            #filters
-              = render :partial => "filters", :locals => { show_price_filter: show_price_filter, show_custom_fields: @show_custom_fields, filters: filters }
-
+          
     .listpage-in
-      -# if @category_menu_enabled
-        .col-3.visible-tablet
+      %div{:class => "col-12"}
+      .home-toolbar-show-filters-button#filter_div.btn.cmn-btn.view-mobile FILTER
+      - if @category_menu_enabled
+        .col-2.no-pad#filter-section
           - if @show_categories
             .row
               .col-12
-                = link_to t("homepage.filters.all_categories"), search_path(search_params.merge({category: "all"})), :class => "home-categories-main #{if selected_category.nil? then 'selected' end}"
-                - @main_categories.each do |category|
-                  - show_subcategories = show_subcategory_list(category, Maybe(selected_category).id.to_i.or_else(nil))
-                  = link_to category.display_name(I18n.locale), search_path(search_params.merge({category: category})), :class => "home-categories-main #{if show_subcategories then 'selected' end} #{if category.has_subcategories? then 'has-subcategories' end}", :data => {category: category.id}
-                  - if category.children
-                    - if show_subcategories
-                      - category.children.each do |child|
-                        - is_selected = selected_category == child
-                        = link_to child.display_name(I18n.locale), search_path(search_params.merge({category: child})), :class => "home-categories-sub #{if is_selected then 'selected' end}", :data => {:"sub-category" =>child.id}
+                .filter-section
+                  #filtermenu
+                    %ul
+                      %li.active.has-sub
+                        %a{:href => "#"}
+                          %span
+                            %i
+                              = params["category"].present? ? params["category"].titleize : "PET CATEGORIES"                            
+                        %ul
+                          - @main_categories.each do |category|
+                            - show_subcategories = show_subcategory_list(category, Maybe(selected_category).id.to_i.or_else(nil)) 
+                            %li
+                              %a.arrow-list
+                                %span
+                                  = link_to category.display_name(I18n.locale), search_path(search_params.merge({category: category, sub_category: nil})), :class => "home-categories-sub-color #{if show_subcategories then 'selected' end} #{if category.has_subcategories? then 'has-subcategories' end}", :data => {category: category.id}
+                                  =# category.display_name(I18n.locale)
+                      %li.active.has-sub#sub-title
+                        %a{:href => "#"}
+                          %span
+                            %i 
+                              = params["sub_category"].present? ? selected_category.display_name(I18n.locale) : "SUB CATEGORIES" 
+                        #subcategory
+                        - if params["category"].present?
+                          %ul
+                            - @subcategories.each do |child|
+                              %li
+                                %a
+                                  %span
+                                    - is_selected = selected_category == child
+                                    = link_to child.display_name(I18n.locale), search_path(search_params.merge({category: child.parent, sub_category: child})), :class => "home-categories-sub-color #{if is_selected then 'selected' end}", :data => {:"sub-category" =>child.id}
+                  .hidden-tablet
+                    - # Filters will be relocated to #desktop-filters when in desktop
+                    #filters
+                      = render :partial => "filters", :locals => { show_price_filter: show_price_filter, show_custom_fields: @show_custom_fields, filters: filters }
+                  #desktop-filters                        
+                  .custom-side
+                    %h4 Brand
+                    / .pt-10
+                    /   = select_tag "brand", options_for_select(@brand.collect { |c| [c.name, c.id]},:selected => params[:brand] ,:size => 30), prompt: 'Please select', :class => "form-control"
+                    .checkbox
+                      - @brand.each do |brand|
+                        %label.custom-checkbox
+                          - value = params["brand"].present? ? params["brand"].include?(brand.id.to_s) : false
+                          = check_box_tag "brand[]", brand.id, value
+                          = brand.name
+                          %span.checkmark 
+                  .custom-side
+                    %h4 Colors
+                    .checkbox
+                      - @colors.first(20).each do |color|
+                        %label.custom-checkbox
+                          - value = params["selected_color"].present? ? params["selected_color"].include?(color.id.to_s) : false
+                          = check_box_tag "selected_color[]", color.id, value
+                          = color.name
+                          %span.checkmark      
+                  .custom-side
+                    %h4 Size
+                    .checkbox
+                      - ListingVariant.sizes.each do |key,value|
+                        %label.custom-checkbox
+                          - value = params["size"].present? ? params["size"].include?(key) : false
+                          = check_box_tag "size[]", key, value
+                          = key.titleize
+                          %span.checkmark
+                  .custom-side
+                    %h4 Length
+                    / .pt-10
+                    / = select_tag "length", options_for_select(ListingVariant.inches.collect { |x,v| [x, v] }, :selected => params[:length]), prompt: 'Please select', :class => "form-control"
+                    .length-list
+                      - ListingVariant.inches.each do |key,value|
+                        %label
+                          - val = params["length"].present? ? params["length"].include?(key) : false
+                          = radio_button_tag "length", key, val
+                          = key
+                  .custom-side
+                    %h4 Weight
+                    / .pt-10
+                    / = select_tag "weight", options_for_select(ListingVariant.weights.collect { |x,v| [x, v] }, :selected => params[:weight]), prompt: 'Please select', :class => "form-control"
+                    .length-list
+                      - ListingVariant.weights.each do |key,value|
+                        %label
+                          - val = params["weight"].present? ? params["weight"].include?(key) : false
+                          = radio_button_tag "weight", key, val
+                          = key
+                  .custom-side-btn  
+                    %button{type: 'submit'}
+                      = t("homepage.custom_filters.update_view")
+                    / %button{class: 'filter-button clear-button'}
+                    /   = 'Clear'
+                    
+                  - # Filters will be relocated here when in desktop
 
-          #desktop-filters
-        - # Filters will be relocated here when in desktop
-
-      %div{:class => "col-12"}
-
-        .listpage-map-right.mpheight#content
+        .listpage-map-right.mpheight.col-8#content
           - if @listings.total_entries > 0
             .home-listings
               = render partial: "list_item", collection: @listings, as: :listing, locals: { shape_name_map: shape_name_map }
@@ -183,7 +312,7 @@
                 = t(".no_listings_notification",
                       add_listing_link: link_to(t(".add_listing_link_text"),
                       new_listing_path(ref: "add_listing_link"))).html_safe
-        .home-map.hidden-mobile.mpheight#sidebar
+        .home-map.hidden-mobile.mpheight.col-2#sidebar
           = render :partial => "map", locals: { viewport: viewport }                      
 
       -# main_container_class = if @category_menu_enabled then "listpage-map-right" else "col-12" end

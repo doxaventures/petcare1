@@ -2,24 +2,24 @@ module ListingIndexService::Search::Converters
   module_function
 
   def listing_hash(l, includes, meta={})
-    {
-      id: l.id,
-      title: l.title,
-      description: l.description,
-      updated_at: l.updated_at,
-      created_at: l.created_at,
-      category_id: l.category_id,
-      comment_count: l.comments_count,
-      price: l.price,
-      unit_tr_key: l.unit_tr_key,
-      unit_type: l.unit_type,
-      quantity: l.quantity,
-      shape_name_tr_key: l.shape_name_tr_key,
-      listing_shape_id: l.listing_shape_id
-    }.merge(meta)
-      .merge(location_hash(l, includes))
-      .merge(author_hash(l, includes))
-      .merge(listing_images_hash(l, includes))
+      {
+        id: l.id,
+        title: l.title,
+        description: l.description,
+        updated_at: l.updated_at,
+        created_at: l.created_at,
+        category_id: l.category_id,
+        comment_count: l.comments_count,
+        price: l.price,
+        unit_tr_key: l.unit_tr_key,
+        unit_type: l.unit_type,
+        quantity: l.quantity,
+        shape_name_tr_key: l.shape_name_tr_key,
+        listing_shape_id: l.listing_shape_id
+      }.merge(meta)
+        .merge(location_hash(l, includes))
+        .merge(author_hash(l, includes))
+        .merge(listing_images_hash(l, includes))
   end
 
   def location_hash(l, includes)

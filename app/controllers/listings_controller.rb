@@ -167,8 +167,9 @@ class ListingsController < ApplicationController
   end
 
   def show
-    @selected_tribe_navi_tab = "home"
-
+    @list = Listing.find(params[:id])
+    @listings = ListingVariant.where(listing_id: @list.id)
+    @selected_tribe_navi_tab = "home" 
     @current_image = if params[:image]
       @listing.image_by_id(params[:image])
     else
@@ -234,15 +235,21 @@ class ListingsController < ApplicationController
       blocked_dates_result: blocked_dates_result,
       blocked_dates_end_on: DateUtils.to_midnight_utc(blocked_dates_end_on)
     }
+    respond_to do |format|
+      format.html {
+        Analytics.record_event(
+          flash.now,
+          "ListingViewed",
+          { listing_id: @listing.id,
+            listing_uuid: @listing.uuid_object.to_s,
+            payment_process: process })
 
-    Analytics.record_event(
-      flash.now,
-      "ListingViewed",
-      { listing_id: @listing.id,
-        listing_uuid: @listing.uuid_object.to_s,
-        payment_process: process })
-
-    render(locals: onboarding_popup_locals.merge(view_locals))
+        render(locals: onboarding_popup_locals.merge(view_locals))
+      }
+      format.js {
+        render :layout => false, locals: {form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: @listing.unit_type, country_code: community_country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props(@current_community, @listing), availability_enabled: availability_enabled, youtube_link_ids: youtube_link_ids, received_testimonials: received_testimonials, listing_variants: @listings}
+      } 
+    end
   end
 
   def new

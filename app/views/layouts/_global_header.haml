@@ -28,7 +28,7 @@
                       %li
                         = link_to child.display_name(I18n.locale), search_path({category: category, sub_category: child}), :class => "toggle-menu-subitem"
 
-      .top-level-logo.header-logo-container.cust-header-container-nouse
+      .top-level-logo.header-logo-container.cust-header-container-nouse.col-9
         = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
           -# if @current_community.logo.present?
             %i.header-square-logo.hidden-tablet
@@ -43,7 +43,7 @@
             %span.header-wide-logo-text.visible-tablet
               = @current_community.name(I18n.locale)
       .top-level-nav
-        .header-left.visible-tablet.searchbox
+        .header-left.visible-tablet.searchbox.pull-right
           = form_tag '/s', method: :get do
             = text_field_tag "search", params[:q], :placeholder => t("homepage.index.what_do_you_need")
             %button.action-button#search-bn{type: 'submit'}
@@ -287,7 +287,7 @@
                       %li                    
                         = link_to child.display_name(I18n.locale), search_path({category: category, sub_category: child}), :class => "toggle-menu-subitem"
 
-      .top-level-logo.header-logo-container.cust-header-container-nouse
+      .top-level-logo.header-logo-container.cust-header-container-nouse.col-9
         = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
           -# if @current_community.logo.present?
             %i.header-square-logo.hidden-tablet
@@ -302,7 +302,7 @@
             %span.header-wide-logo-text.visible-tablet
               = @current_community.name(I18n.locale)
       .top-level-nav 
-        .header-left.visible-tablet.searchbox
+        .header-left.visible-tablet.searchbox.pull-right
           = form_tag '/s', method: :get do
             = text_field_tag "q", params[:q], :placeholder => t("homepage.index.what_do_you_need")
             %button.action-button#search-button{type: 'submit'}

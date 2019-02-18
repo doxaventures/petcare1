@@ -146,3 +146,8 @@
     @include image-too-narrow;
   }
 }
+.listing-image-vertical-centering.list-image-style
+{
+  width: 100%;
+  text-align: center;
+}

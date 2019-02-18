@@ -15,7 +15,6 @@ module ListingIndexService::Search::DatabaseSearchHelper
         deleted: 0,
         listing_shape_id: Maybe(search[:listing_shape_ids]).or_else(nil)
       })
-
     query = Listing
             .where(where_opts)
             .includes(included_models)
@@ -29,6 +28,7 @@ module ListingIndexService::Search::DatabaseSearchHelper
         query.currently_open
       end
 
+    
     success_result(listings.total_entries, listings, includes)
   end
 
@@ -51,7 +51,12 @@ module ListingIndexService::Search::DatabaseSearchHelper
       :price_cents,
       :lat,
       :lng,
-      :location_name
+      :location_name,
+      :variants,
+      :color_ids,
+      :size,
+      :length,
+      :weight
     ].any? { |field| search[field].present? }
   end
 

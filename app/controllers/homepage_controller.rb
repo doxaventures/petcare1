@@ -22,10 +22,8 @@ class HomepageController < ApplicationController
   # rubocop:disable MethodLength
   def index
     redirect_to landing_page_path and return if no_current_user_in_private_clp_enabled_marketplace?
-
     all_shapes = shapes.get(community_id: @current_community.id)[:data]
     shape_name_map = all_shapes.map { |s| [s[:id], s[:name]]}.to_h
-
     filter_params = {}
     if params[:sub_category].present? && params[:sub_category] != "Product or Service"
       m_selected_category = Maybe(@current_community.categories.find_by_url_or_id(params[:sub_category]))
@@ -56,6 +54,35 @@ class HomepageController < ApplicationController
       @show_custom_fields = relevant_filters.present? || show_price_filter
       @category_menu_enabled = @show_categories || @show_custom_fields
     end
+    
+    if params["brand"].present?
+      variants = params["brand"].map{|x,y| x}
+    end
+
+    if params["selected_color"].present? 
+
+      #if params["selected_color"].to_a?(String)
+      #color_ids = []
+      #else  
+      color_ids = params["selected_color"].map{|x,y| x}
+      #end
+    end
+
+    if params["size"].present?
+      size = params["size"]
+      #else
+      #params.delete("size")
+    end
+
+    if params["length"].present?
+      length = params["length"]
+    end
+
+    if params["category"].present?
+      category = Category.find_by(url: params[:category])
+      @subcategories = category.parent_id.present? ? Category.where(parent_id: category.parent_id) : Category.where(parent_id: category.id)
+    end
+
 
     listing_shape_param = params[:transaction_type]
 
@@ -79,6 +106,8 @@ class HomepageController < ApplicationController
       else
         raise ArgumentError.new("Unknown view_type #{@view_type}")
       end
+    @brand = Manufacturer.all
+    @colors = ListingColor.all
 
     main_search = search_mode
     enabled_search_modes = search_modes_in_use(params[:q], params[:lc], main_search)
@@ -95,6 +124,10 @@ class HomepageController < ApplicationController
                                   includes: includes.to_set,
                                   location_search_in_use: location_in_use,
                                   keyword_search_in_use: keyword_in_use,
+                                  variants: variants,
+                                  color_ids: color_ids,
+                                  size: size,
+                                  length: length,
                                   relevant_search_fields: relevant_search_fields)
 
     if @view_type == 'map'
@@ -152,6 +185,15 @@ class HomepageController < ApplicationController
       }
     end
   end
+
+  def get_subcategories
+    @category = Category.find(params["category_id"])
+    @subcategories = Category.where(parent_id: params["category_id"]).collect{|x| x.display_name(I18n.locale)}
+    @sub_url = Category.where(parent_id: params["category_id"]).collect{|x| x.url}
+    respond_to do |format|
+      format.json {render json: {all_data: {sub_category_url: @sub_url, sub_category: @subcategories, category_url: @category.url }}}
+    end
+  end
   # rubocop:enable AbcSize
   # rubocop:enable MethodLength
 
@@ -167,7 +209,7 @@ class HomepageController < ApplicationController
     SearchPageHelper.remove_irrelevant_search_fields(search_fields, relevant_filters)
   end
 
-  def find_listings(params:, current_page:, listings_per_page:, filter_params:, includes:, location_search_in_use:, keyword_search_in_use:, relevant_search_fields:)
+  def find_listings(params:, current_page:, listings_per_page:, filter_params:, includes:, location_search_in_use:, keyword_search_in_use:, relevant_search_fields:, variants:, color_ids:, size:, length:)
     search = {
       # Add listing_id
       categories: filter_params[:categories],
@@ -177,9 +219,14 @@ class HomepageController < ApplicationController
       fields: relevant_search_fields,
       per_page: listings_per_page,
       page: current_page,
+      variants: variants,
+      color_ids: color_ids,
+      size: size,
+      weight: params[:weight],
       price_min: params[:price_min],
       price_max: params[:price_max],
       open: true,
+      length: length,
       date: params[:date],
       locale: I18n.locale,
       include_closed: false,

@@ -42,9 +42,9 @@ module ListingIndexService::Search
     private
 
     def search_with_sphinx(community_id:, search:, included_models:, includes:)
+      get_listing_ids = []
       numeric_search_fields = search[:fields].select { |f| f[:type] == :numeric_range }
       perform_numeric_search = numeric_search_fields.present?
-
       numeric_search_match_listing_ids =
         if numeric_search_fields.present?
           numeric_search_params = numeric_search_fields.map { |n|
@@ -55,6 +55,39 @@ module ListingIndexService::Search
           []
         end
 
+      if search[:weight].present?
+        if search[:weight].include?("oz")
+          get_value = search[:weight].delete(" oz")
+          values = get_value.split('-')
+          get_listing_ids << ListingVariant.where(oz_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+        else
+          values = search[:weight].split('-')
+          get_listing_ids << ListingVariant.where(lbs_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+        end
+      end
+
+      if search[:length].present?
+        values = search[:length].split('-')
+        get_listing_ids << ListingVariant.where(inches_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+      end
+
+      if search[:variants].present?
+        search[:variants].each do |id|
+          get_listing_ids << ListingVariant.where(manufacturer_id: id).collect(&:listing_id).uniq
+        end  
+      end
+
+      if search[:color_ids].present?
+        search[:color_ids].each do |id|
+          get_listing_ids << ListingVariant.where(listing_color_id: id).collect(&:listing_id).uniq
+        end
+      end
+
+      if search[:size].present?
+        search[:size].each do |size|
+          get_listing_ids << ListingVariant.where(size_name: size).collect(&:listing_id).uniq
+        end
+      end
       if perform_numeric_search && numeric_search_match_listing_ids.empty?
         # No matches found with the numeric search
         # Do a short circuit and return emtpy paginated collection of listings wrapped into a success result
@@ -65,8 +98,11 @@ module ListingIndexService::Search
             community_id: community_id,
             category_id: search[:categories], # array of accepted ids
             listing_shape_id: search[:listing_shape_id],
+            #variants: search[:variants],
+            #color_ids: search[:color_ids],
             price_cents: search[:price_cents],
-            listing_id: numeric_search_match_listing_ids
+            #listing_id: numeric_search_match_listing_ids - get_listing_ids
+            listing_id: get_listing_ids.flatten.compact.uniq
           })
 
         if search[:location_name].present?
@@ -108,9 +144,26 @@ module ListingIndexService::Search
           #     listing_id: numeric_search_match_listing_ids,
           #     created_at: date_range,
           #   })
+        # if search[:length].present?
+        #   values = search[:length].split('-')
+        #   with =  with.merge({inches_value: values.first.to_f..values.last.to_f})
+        # end
+
         if date_range
           with = with.merge({created_at: date_range})
         end
+
+        # if search[:weight].present?
+        #   if search[:weight].include?("oz")
+        #     get_value = search[:weight].delete(" oz")
+        #     values = get_value.split('-')
+        #     with =  with.merge({oz_value: values.first.to_f..values.last.to_f})
+        #   else
+        #     values = search[:weight].split('-')
+        #     with =  with.merge({lbs_value: values.first.to_f..values.last.to_f})
+        #   end
+
+        # end
 
         selection_groups = search[:fields].select { |v| v[:type] == :selection_group }
         grouped_by_operator = selection_groups.group_by { |v| v[:operator] }
@@ -120,12 +173,19 @@ module ListingIndexService::Search
           custom_checkbox_field_options: (grouped_by_operator[:and] || []).flat_map { |v| v[:value] },
         }
 
+        # if search[:size].present?
+        #   conditions = {:size_name => search[:size].join("|")}
+        # else
+        #   conditions = {:size => []}
+        # end
+
         search_filter = {
           sql: {
             include: included_models
           },
           page: search[:page],
           per_page: search[:per_page],
+          #conditions: conditions,
           star: true,
           with: with,
           with_all: with_all,
@@ -170,6 +230,7 @@ module ListingIndexService::Search
           Riddle::Query.escape(search[:keywords] || ""),
           search_filter
         )
+
 
         begin
           DatabaseSearchHelper.success_result(models.total_entries, models, includes)

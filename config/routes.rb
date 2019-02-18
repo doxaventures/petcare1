@@ -167,7 +167,7 @@ Kassi::Application.routes.draw do
 
     get  '/community_memberships/check_email_availability_and_validity' => 'community_memberships#check_email_availability_and_validity'
     get  '/community_memberships/check_invitation_code'                 => 'community_memberships#check_invitation_code'
-
+    get '/homepage/get_subcategories' => 'homepage#get_subcategories'
     namespace :paypal_service do
       resources :checkout_orders do
         collection do
@@ -271,6 +271,7 @@ Kassi::Application.routes.draw do
         resources :products do
           collection do
             post :import
+            post :filter_feed
           end
         end
         resources :transactions, controller: :community_transactions, only: :index
@@ -335,6 +336,8 @@ Kassi::Application.routes.draw do
       collection do
         get :sign_in
         post :join
+        post :index
+        
       end
     end
 

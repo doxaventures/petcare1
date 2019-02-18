@@ -38,7 +38,7 @@ module ListingIndexService::API
     def process_results(results, engine)
       ListingIndexResult.call(
         count: results[:count],
-        listings: results[:listings].map { |search_res|
+        listings: results[:listings].compact.map { |search_res|
           search_res.merge(url: "#{search_res[:id]}-#{search_res[:title].to_url}")
         }
       )

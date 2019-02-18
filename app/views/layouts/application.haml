@@ -15,7 +15,7 @@
       - props = onboarding_topbar_props
       - unless props[:next_step] == :all_done
         - react_component_cache(name: "onboarding_topbar", props: props) do
-          = react_component("OnboardingTopBar", props: props, prerender: true)
+          =# react_component("OnboardingTopBar", props: props, prerender: true)
 
     - if FeatureFlagHelper.feature_enabled?(:topbar_v1)
       - if(search_mode != :keyword || @view_type.eql?("map"))
@@ -26,7 +26,7 @@
         = javascript_include_tag "markerclusterer.js"
       - props = topbar_props
       - cache props do
-        = react_component("TopbarApp", props: props, prerender: true, id: 'topbar-container')
+        =# react_component("TopbarApp", props: props, prerender: true, id: 'topbar-container')
     - else
       = render partial: 'layouts/global_header', locals: header_props()
 
@@ -73,7 +73,8 @@
     -#%form{method: "get", id: "homepage-filters"}
     = form_tag '/s', method: :get, id: "homepage-filters", class: "#{is_listings_page ? '' : 'ake'}" do
       - # New top bar search params are in different form and they have to be retained here
-      - search_params = ["q", "lc_loc", "lc", "ls", "boundingbox", "distance_max"]
+
+      - search_params = ["q", "lc_loc", "lc", "ls", "boundingbox", "distance_max", "selected_color","size","brand","length","weight"]
       - excluded_params = search_params unless FeatureFlagHelper.feature_enabled?(:topbar_v1)
       - params.except("action", "controller", "view", "utf8", *excluded_params).each do |param, value|
         - unless CustomFieldSearchParams.custom_field_search_param?(param) || param.match(/^price_/) || param.match(/lat/) || param.match(/lng/)
