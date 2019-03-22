@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby '2.3.1'
 
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.11.1'
 
 gem 'coffee-rails', "~> 4.0.1"
 gem 'uglifier', "~> 2.7.2"
@@ -55,7 +55,7 @@ gem 'delayed_job_active_record', "~> 4.1.0"
 
 gem 'web_translate_it', "~>2.1.8"
 gem 'rails-i18n', '~> 4.0.8'
-gem 'devise', "~>3.5.0"
+gem 'devise', "~>4.6.0"
 gem 'devise-encryptable', '~> 0.2.0'
 gem "omniauth-facebook", "~> 4.0.0"
 
