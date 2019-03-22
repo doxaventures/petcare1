@@ -20,6 +20,7 @@ module ListingIndexService::Search::Converters
         .merge(location_hash(l, includes))
         .merge(author_hash(l, includes))
         .merge(listing_images_hash(l, includes))
+        .merge(listing_variants_hash(l, includes))
   end
 
   def location_hash(l, includes)
@@ -80,6 +81,20 @@ module ListingIndexService::Search::Converters
                 medium: li.image.url(:medium)
               }]
             }.or_else([])
+        }
+      else
+        {}
+      end
+  end
+
+  def listing_variants_hash(l, includes)
+      if includes.include?(:listing_variants)
+        {
+          listing_variants: l.listing_variants.map { |li|
+              {
+                title: li.title
+              }
+            }
         }
       else
         {}

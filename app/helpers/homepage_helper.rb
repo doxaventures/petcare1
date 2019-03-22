@@ -23,4 +23,11 @@ module HomepageHelper
     precision = (distance < 1) ? 1 : 2
     (distance < 0.1) ? "< #{number_with_delimiter(0.1, locale: locale)}" : number_with_precision(distance, precision: precision, significant: true, locale: locale)
   end
+
+  def listing_price(listing)
+    list = Listing.find(listing.id)
+    tot_listings = list.listing_variants.pluck(:listing_child_id)
+    get_price = Listing.where(id: tot_listings).pluck(:price_cents).min
+    price = (get_price.to_f/100)
+  end
 end

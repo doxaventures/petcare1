@@ -64,6 +64,10 @@ module ListingIndexService::DataTypes
     [:num_of_negative_reviews, :fixnum, default: 0]
   )
 
+  ListingVariant = EntityUtils.define_builder(
+    [:title, :string, :optional]
+    )
+
   Listing = EntityUtils.define_builder(
     [:id, :fixnum, :mandatory, :to_integer],
     [:url, :string, :mandatory],
@@ -75,6 +79,7 @@ module ListingIndexService::DataTypes
     [:category_id, :fixnum, :mandatory],
     [:author, entity: Author],
     [:listing_images, collection: ListingImage],
+    [:listing_variants, collection: ListingVariant],
     [:updated_at, :time, :mandatory, str_to_time: "%Y-%m-%dT%H:%M:%S.%L%z"], # 2014-12-08T20:51:29.000+0200
     [:created_at, :time, :mandatory, str_to_time: "%Y-%m-%dT%H:%M:%S.%L%z"],
     [:latitude],

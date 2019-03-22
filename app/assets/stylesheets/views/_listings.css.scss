@@ -257,3 +257,31 @@ $listing-author-avatar-height: 108;
 .listings-how-paypal-works-link {
   font-size: em(14);
 }
+
+//css given by petcare
+
+#transaction_status [class^="icon-"] {
+  background: #DCC7AA !important;
+  color: #fff;
+  border-radius: 5px;
+  display: inline-block;
+  padding: 6px 7px 7px;
+  font-size: 15px;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  cursor: pointer;
+  z-index: 10;
+  position: relative;
+}
+
+
+#transaction_status .icon-with-text-container .icon-part {
+  position: absolute;
+  top: 0.125em;
+  left: 2px;
+  font-size: 14px !important;
+  background: none !important;
+}
+

@@ -21,6 +21,8 @@
 #  listing_child_id :integer
 #  other_value      :float(24)
 #  unit_name        :string(255)
+#  title            :string(255)
+#  style_value      :string(255)
 #
 
 class ListingVariant < ActiveRecord::Base
@@ -47,6 +49,7 @@ class ListingVariant < ActiveRecord::Base
         end 
         @color = row["Color"].present? ? ListingVariant.listing_clr_creation(row["Color"]) : nil     
         @parent_sku = row["ParentSKU"].eql?(row["ChildSKU"]) ? nil : row["ParentSKU"]         
+        @title = @parent_sku.present? ? nil : row["Name"]
         #@listing_child_id = @parent_sku.present? ? ListingVariant.where(sku_name: row["ParentSKU"]).first.try(:id) : nil
         @listing_id = @parent_sku.present? ? ListingVariant.where(sku_name: row["ParentSKU"]).first.try(:listing_id) : @listing.id
         if row["Size"].present?
@@ -57,7 +60,7 @@ class ListingVariant < ActiveRecord::Base
           @val.each do |size_val|
             @size_value = ListingVariant.get_size_name(size_val.delete(" ").downcase)
             check_syn = ["-","x","for","with","gallon"]
-            if size_val.exclude?("-") && size_val.exclude?("x") && !@size_value.present?              
+            if size_val.exclude?("-") && size_val.exclude?("x")              
               length_width_val(size_val.downcase)
               @inches = @inches_value
               @oz   = @oz_value
@@ -76,14 +79,14 @@ class ListingVariant < ActiveRecord::Base
                 @list.update_attributes(lbs_value: @lbs)
               end
             else
-              @listing_variant = ListingVariant.new(parent_sku: @parent_sku, sku_name: row["ChildSKU"], listing_child_id: @listing.id, listing_id: @listing_id, size_name: @size_value, mixed_value: @mixed_value, original_value: row["Size"], manufacturer_id: @manu.id, listing_color_id: @color.try(:id), inches_value: @inches, oz_value: @oz, lbs_value: @lbs, in_stock: row["InStock"])
+              @listing_variant = ListingVariant.new(parent_sku: @parent_sku, sku_name: row["ChildSKU"], listing_child_id: @listing.id, listing_id: @listing_id, size_name: @size_value, mixed_value: @mixed_value, original_value: row["Size"], manufacturer_id: @manu.id, listing_color_id: @color.try(:id), inches_value: @inches, oz_value: @oz, lbs_value: @lbs, in_stock: row["InStock"], title: @title, style_value: row["Style"])
               @listing_variant.save
             end
           end
         else
           set_val_nil
           @size_val = nil
-          @listing_variant = ListingVariant.new(parent_sku: @parent_sku, sku_name: row["ChildSKU"], listing_child_id: @listing.id, listing_id: @listing_id, size_name: @size_value, mixed_value: @mixed_value, original_value: row["Size"], manufacturer_id: @manu.id, listing_color_id: @color.try(:id), inches_value: @inches, oz_value: @oz, lbs_value: @lbs, in_stock: row["InStock"])
+          @listing_variant = ListingVariant.new(parent_sku: @parent_sku, sku_name: row["ChildSKU"], listing_child_id: @listing.id, listing_id: @listing_id, size_name: @size_value, mixed_value: @mixed_value, original_value: row["Size"], manufacturer_id: @manu.id, listing_color_id: @color.try(:id), inches_value: @inches, oz_value: @oz, lbs_value: @lbs, in_stock: row["InStock"], title: @title, style_value: row["Style"])
           @listing_variant.save
         end
       end

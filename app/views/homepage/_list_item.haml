@@ -17,7 +17,10 @@
           %p.bodycopyitl= listing.address
         .list-task
           = link_to listing_path(listing.url) do
-            = justifY_string(listing.title, 60)
+            - if listing.listing_variants.present?
+              = justifY_string(listing.listing_variants.first.title, 60)
+            - else
+              = justifY_string(listing.title, 60)
         .list-rating
           .star-ratings-reviews
             - star_rating_percentage = 0
@@ -31,7 +34,10 @@
               = pluralize(listing.author.num_of_reviews, t(".review"), t(".reviews"))
         - if listing.price
           .list-item-price-value
-            = humanized_money_with_symbol(listing.price).upcase
+            - if listing.listing_variants.present? && listing.listing_variants.count > 1
+              = "From $#{humanized_money(listing_price(listing)).upcase}"
+            - else
+              = humanized_money_with_symbol(listing.price).upcase
           -# price_text = nil
           -# if listing.quantity.present?
             - price_text = t("listings.form.price.per") + " " + listing.quantity

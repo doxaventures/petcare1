@@ -1,6 +1,6 @@
 module ListingIndexService::API
 
-  RELATED_RESOURCES = [:listing_images, :author, :num_of_reviews, :location].to_set
+  RELATED_RESOURCES = [:listing_images, :listing_variants, :author, :num_of_reviews, :location].to_set
 
   ListingIndexResult = ListingIndexService::DataTypes::ListingIndexResult
 

@@ -93,8 +93,6 @@
                   }
                 }
               });
-
-         
           if(#{@listing.weekly_discount.present?})   {
                 //if (document.getElementById('subscription_type_weekly').checked) {
                   var discount = #{(@listing.weekly_discount.to_f / 100)* @listing.price_cents}
@@ -329,19 +327,17 @@
 
 
       = hidden_field_tag(:listing_id, @listing.id)
-
-
-
-      - if @listing.listing_variants.present? && @listing.listing_variants.first.in_stock.eql?("NO")
-        - blocked_dates_result.on_error do
-          %button.disabled-book-button{disabled: true}
-            .content
-              = action_button_label(@listing)
-      - else
-        - blocked_dates_result.on_success do
-          %button.enabled-book-button.orgcolor
-            .content
-              = action_button_label(@listing)
+      - unless @listings.present? && !list_type.present? && @listings.count > 1
+        - if @listing.listing_variants.present? && @listing.listing_variants.first.in_stock.eql?("NO")
+          - blocked_dates_result.on_success do
+            %button.disabled-book-button{disabled: true}
+              .content
+                = "Out of Stock"
+        - else
+          - blocked_dates_result.on_success do
+            %button.enabled-book-button.orgcolor
+              .content
+                = action_button_label(@listing)
 
 
         

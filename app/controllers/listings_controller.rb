@@ -46,7 +46,7 @@ class ListingsController < ApplicationController
 
           # Returns the listings for one person formatted for profile page view
           per_page = params[:per_page] || 1000 # the point is to show all here by default
-          includes = [:author, :listing_images]
+          includes = [:author, :listing_images, :listing_variants]
           include_closed = @person == @current_user && params[:show_closed]
           search = {
             author_id: @person.id,
@@ -169,6 +169,7 @@ class ListingsController < ApplicationController
   def show
     @list = Listing.find(params[:id])
     @listings = ListingVariant.where(listing_id: @list.id)
+    @list_type = params["list_type"].present? ? params["list_type"] : nil
     @selected_tribe_navi_tab = "home" 
     @current_image = if params[:image]
       @listing.image_by_id(params[:image])
@@ -247,7 +248,7 @@ class ListingsController < ApplicationController
         render(locals: onboarding_popup_locals.merge(view_locals))
       }
       format.js {
-        render :layout => false, locals: {form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: @listing.unit_type, country_code: community_country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props(@current_community, @listing), availability_enabled: availability_enabled, youtube_link_ids: youtube_link_ids, received_testimonials: received_testimonials, listing_variants: @listings}
+        render :layout => false, locals: {form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: @listing.unit_type, country_code: community_country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props(@current_community, @listing), availability_enabled: availability_enabled, youtube_link_ids: youtube_link_ids, received_testimonials: received_testimonials, listing_variants: @listings, list_type: @list_type}
       } 
     end
   end

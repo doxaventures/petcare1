@@ -1,6 +1,9 @@
 - content_for :javascript do
   initialize_listing_view('#{I18n.locale}');
 
+- content_for :javascript do
+  DropDown('#select');
+
 - content_for :extra_javascript do
   :javascript
     window.ST.listing();
@@ -24,7 +27,7 @@
 - if local_assigns[:show_onboarding_popup]
   = render :layout => "layouts/lightbox", :partial => "layouts/onboarding_popup", locals: {title: t(popup_title_key), body: t(popup_body_key), action_label: t(popup_button_key), action_link: popup_action_link, image: asset_path(popup_image), id: "onboarding-popup" }
 
-- content_for :extra_javascript do
+-# content_for :extra_javascript do
   :javascript
     $( document ).ready(function() {
       $('#size-change').on('change',function(){
@@ -38,19 +41,31 @@
           });
       });
       //$( "#product_custom").appendTo("#appendDiv");
-
     });
 
-- if @listings.present? && (@listings.select{|c| c.original_value }.present? || @listings.select{|c| c.listing_color_id }.present?)
+- if @listings.present? && (@listings.select{|c| c.original_value }.present? || @listings.select{|c| c.listing_color_id }.present? || @listings.select{|c| c.style_value }.present?)
   -# .nav-tab-new
     %ul#list
       - @listings.each do |list|
         %li{id: list.listing_child_id}
           =# list.sku_name
           = link_to "SKU: #{list.sku_name}",listing_path(list.listing_child_id),remote: true
+  .js-icon-loading.hidden
+    .loading-img
+      = image_tag("ajax-loader-grey.gif", class: "")
   .row1
     .col-4#product_custom
-      %h4 Options:
-      = select_tag "size", options_for_select(@listings.collect { |c| ["#{c.original_value if c.original_value.present?} #{c.listing_color.name if c.listing_color.present?}", c.listing_child_id]}), prompt: 'Please select', :class => "form-control", :id => 'size-change'
+      %h4.option-caption Options
+      #select.wrapper-dropdown-custom{:tabindex => "1"}
+        %span Please Select
+        - options =  @listings.collect { |c| ["#{c.original_value if c.original_value.present?} #{c.listing_color.name if c.listing_color.present?} #{c.style_value if c.style_value.present?}", c.listing_child_id]}
+        %ul.dropdown
+          - options.each do |key,value|
+            %li{id: value}
+              %a{:href => "#"}
+                %i.icon-envelope.icon-large>
+                  = key
+        
+      =# select_tag "size", options_for_select(@listings.collect { |c| ["#{c.original_value if c.original_value.present?} #{c.listing_color.name if c.listing_color.present?}", c.listing_child_id]}), prompt: 'Please select', :class => "form-control", :id => 'size-chang'
 
 = render partial: "listings/show", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props, availability_enabled: availability_enabled, youtube_link_ids: youtube_link_ids, received_testimonials: received_testimonials, received_positive_testimonials: received_positive_testimonials,feedback_positive_percentage: feedback_positive_percentage}

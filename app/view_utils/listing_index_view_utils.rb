@@ -12,6 +12,7 @@ module ListingIndexViewUtils
     :author,
     :description,
     :listing_images,
+    :listing_variants,
     :price,
     :unit_tr_key,
     :unit_type,
@@ -37,6 +38,9 @@ module ListingIndexViewUtils
     :thumb,
     :small_3x2,
     :medium)
+
+  ListingVariant = Struct.new(
+    :title)
 
   module_function
 
@@ -69,6 +73,15 @@ module ListingIndexViewUtils
           []
         end
 
+      listing_variants = 
+        if includes.include?(:listing_variants)
+           l[:listing_variants].map {|li|
+              ListingVariant.new(li[:title])
+          }
+        else
+          []    
+        end  
+
       ListingItem.new(
         l[:id],
         l[:url],
@@ -81,6 +94,7 @@ module ListingIndexViewUtils
         author,
         l[:description],
         listing_images,
+        listing_variants,
         l[:price],
         l[:unit_tr_key],
         l[:unit_type],

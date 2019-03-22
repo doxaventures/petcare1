@@ -7,6 +7,7 @@ module ListingIndexService::Search
 
     INCLUDE_MAP = {
       listing_images: :listing_images,
+      listing_variants: :listing_variants,
       author: :author,
       num_of_reviews: {author: :received_testimonials},
       location: :location
@@ -54,40 +55,51 @@ module ListingIndexService::Search
         else
           []
         end
-
+      
+      conditions = {}
       if search[:weight].present?
         if search[:weight].include?("oz")
           get_value = search[:weight].delete(" oz")
           values = get_value.split('-')
-          get_listing_ids << ListingVariant.where(oz_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+          oz_values = (values.first.to_f..values.last.to_f).step(0.1).map{|f| f.round(2)}      
+          conditions.merge!(:oz_value => oz_values)
         else
           values = search[:weight].split('-')
-          get_listing_ids << ListingVariant.where(lbs_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+          lb_values = (values.first.to_f..values.last.to_f).step(0.1).map{|f| f.round(2)}
+          conditions.merge!(:lbs_value => lb_values)
         end
       end
 
       if search[:length].present?
         values = search[:length].split('-')
-        get_listing_ids << ListingVariant.where(inches_value: values.first.to_f..values.last.to_f).collect(&:listing_id).uniq
+        length_values = (values.first.to_f..values.last.to_f).step(0.1).map{|f| f.round(2)}
+        conditions.merge!(:inches_value => length_values)
       end
 
       if search[:variants].present?
-        search[:variants].each do |id|
-          get_listing_ids << ListingVariant.where(manufacturer_id: id).collect(&:listing_id).uniq
-        end  
+        values = search[:variants].map{|x| x.to_i}
+        conditions.merge!(:manufacturer_id => values)        
       end
 
       if search[:color_ids].present?
-        search[:color_ids].each do |id|
-          get_listing_ids << ListingVariant.where(listing_color_id: id).collect(&:listing_id).uniq
-        end
+        values = search[:color_ids].map{|x| x.to_i}
+        conditions.merge!(:listing_color_id => values)
+      end
+      
+      if search[:size].present?
+        conditions.merge!(:size_name => search[:size])
+      end
+      
+      if conditions.present?
+        query = conditions.keys.map{|field| "#{field} IN (:#{field})" }.join(" AND ")
+        query_params = conditions.symbolize_keys
+        get_list_ids = ListingVariant.where(query, query_params).collect(&:listing_id).flatten.compact
+        listing_ids = get_list_ids.present? ? get_list_ids : [999999999]
+      else
+        get_listing_ids = ListingVariant.where("parent_sku IS NULL").pluck(:listing_id).uniq
+        listing_ids = get_listing_ids.flatten.compact
       end
 
-      if search[:size].present?
-        search[:size].each do |size|
-          get_listing_ids << ListingVariant.where(size_name: size).collect(&:listing_id).uniq
-        end
-      end
       if perform_numeric_search && numeric_search_match_listing_ids.empty?
         # No matches found with the numeric search
         # Do a short circuit and return emtpy paginated collection of listings wrapped into a success result
@@ -98,43 +110,42 @@ module ListingIndexService::Search
             community_id: community_id,
             category_id: search[:categories], # array of accepted ids
             listing_shape_id: search[:listing_shape_id],
-            #variants: search[:variants],
-            #color_ids: search[:color_ids],
             price_cents: search[:price_cents],
             #listing_id: numeric_search_match_listing_ids - get_listing_ids
-            listing_id: get_listing_ids.flatten.compact.uniq
+            listing_id: listing_ids
           })
 
-        if search[:location_name].present?
-          limit = 10_000
-          if (search[:lat].present? && search[:lat] > 0) && (search[:lng].present? && search[:lng] > 0)
-            @coordinates = [to_radians(search[:lat]), to_radians(search[:lng])]
-            # @coordinates = [search[:lat], search[:lng]]
-          else
-            latlng = Geocoder.coordinates(search[:location_name])
-            @coordinates = [to_radians(latlng[0]), to_radians(latlng[1])] if latlng.present?
-            # @coordinates = [latlng[0], latlng[1]] if latlng.present?
-          end
-          # with_geo = HashUtils.compact(
-          #   {
-          #     community_id: community_id,
-          #     category_id: search[:categories], # array of accepted ids
-          #     listing_shape_id: search[:listing_shape_id],
-          #     price_cents: search[:price_cents],
-          #     listing_id: numeric_search_match_listing_ids,
-          #     geodist: 0.0..limit.to_f,
-          #   })
-          with = with.merge({geodist: 0.0..limit.to_f}) if @coordinates.present?
-        end
+        # if search[:location_name].present?
+        #   limit = 10_000
+        #   if (search[:lat].present? && search[:lat] > 0) && (search[:lng].present? && search[:lng] > 0)
+        #     @coordinates = [to_radians(search[:lat]), to_radians(search[:lng])]
+        #     # @coordinates = [search[:lat], search[:lng]]
+        #   else
+        #     latlng = Geocoder.coordinates(search[:location_name])
+        #     @coordinates = [to_radians(latlng[0]), to_radians(latlng[1])] if latlng.present?
+        #     # @coordinates = [latlng[0], latlng[1]] if latlng.present?
+        #   end
+        #   # with_geo = HashUtils.compact(
+        #   #   {
+        #   #     community_id: community_id,
+        #   #     category_id: search[:categories], # array of accepted ids
+        #   #     listing_shape_id: search[:listing_shape_id],
+        #   #     price_cents: search[:price_cents],
+        #   #     listing_id: numeric_search_match_listing_ids,
+        #   #     geodist: 0.0..limit.to_f,
+        #   #   })
+        #   with = with.merge({geodist: 0.0..limit.to_f}) if @coordinates.present?
+        # end
+
 
         # date_range = nil
-        if search[:date].present?
-          date = search[:date].split("/")
-          fortmat_date = [date[1], date[0], date[2]].join("/").to_datetime
-        else
-          fortmat_date = Time.now
-        end
-        date_range = (fortmat_date - 5.years)..fortmat_date
+        # if search[:date].present?
+        #   date = search[:date].split("/")
+        #   fortmat_date = [date[1], date[0], date[2]].join("/").to_datetime
+        # else
+        #   fortmat_date = Time.now
+        # end
+        # date_range = (fortmat_date - 5.years)..fortmat_date
           # with = HashUtils.compact(
           #   {
           #     community_id: community_id,
@@ -149,20 +160,8 @@ module ListingIndexService::Search
         #   with =  with.merge({inches_value: values.first.to_f..values.last.to_f})
         # end
 
-        if date_range
-          with = with.merge({created_at: date_range})
-        end
-
-        # if search[:weight].present?
-        #   if search[:weight].include?("oz")
-        #     get_value = search[:weight].delete(" oz")
-        #     values = get_value.split('-')
-        #     with =  with.merge({oz_value: values.first.to_f..values.last.to_f})
-        #   else
-        #     values = search[:weight].split('-')
-        #     with =  with.merge({lbs_value: values.first.to_f..values.last.to_f})
-        #   end
-
+        # if date_range
+        #   with = with.merge({created_at: date_range})
         # end
 
         selection_groups = search[:fields].select { |v| v[:type] == :selection_group }
@@ -173,19 +172,12 @@ module ListingIndexService::Search
           custom_checkbox_field_options: (grouped_by_operator[:and] || []).flat_map { |v| v[:value] },
         }
 
-        # if search[:size].present?
-        #   conditions = {:size_name => search[:size].join("|")}
-        # else
-        #   conditions = {:size => []}
-        # end
-
         search_filter = {
           sql: {
             include: included_models
           },
           page: search[:page],
           per_page: search[:per_page],
-          #conditions: conditions,
           star: true,
           with: with,
           with_all: with_all,
@@ -193,9 +185,9 @@ module ListingIndexService::Search
           max_query_time: 1000 # Timeout and fail after 1s
         }
 
-        if @coordinates.present?
-          search_filter = search_filter.merge({geo: @coordinates})
-        end
+        # if @coordinates.present?
+        #   search_filter = search_filter.merge({geo: @coordinates})
+        # end
 
         # if @coordinates.present?
         #   search_filter = {

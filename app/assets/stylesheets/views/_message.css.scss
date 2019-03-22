@@ -195,3 +195,35 @@ $message-time-margin: lines(0.25);
 .message-price-vat {
   @include small-type
 }
+
+// css given by petcare
+
+#messages .message-bubble-arrow-to-left.message-mood-positive::after {
+  border-right-color: #e8e8e8;
+}
+
+#messages .message-bubble-arrow-to-left.message-mood-positive {
+  color: #333;
+  background: #e8e8e8;
+}
+
+
+#messages .message-bubble, .message-bubble-arrow-to-left, .message-bubble-arrow-to-right {
+  position: relative;
+  min-height: 3em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  padding: 0.75em 0.75em 0em 0.75em;
+  background: #7a8a9c;
+  color: #fff;
+}
+
+
+#messages  .message-bubble-arrow-to-left::after {
+  right: 100%;
+  border-right-color: #7a8a9c;
+  margin-top: -0.375em;
+}

@@ -54,6 +54,12 @@ class HomepageController < ApplicationController
       @show_custom_fields = relevant_filters.present? || show_price_filter
       @category_menu_enabled = @show_categories || @show_custom_fields
     end
+
+    if params[:sub_category].present?
+      @brand = Listing.where(category_id: selected_category[:id]).collect{|x| x.listing_variants.first.manufacturer if (x.listing_variants.present? && x.listing_variants.first.manufacturer.present?) }.uniq.compact
+    else
+      @brand = Manufacturer.all
+    end
     
     if params["brand"].present?
       variants = params["brand"].map{|x,y| x}
@@ -78,9 +84,9 @@ class HomepageController < ApplicationController
       length = params["length"]
     end
 
-    if params["category"].present?
+    if params["category"].present? && params["category"] != "all"
       category = Category.find_by(url: params[:category])
-      @subcategories = category.parent_id.present? ? Category.where(parent_id: category.parent_id) : Category.where(parent_id: category.id)
+      @subcategories = category.parent_id.present? ? Category.where(parent_id: category.parent_id).order(:url) : Category.where(parent_id: category.id).order(:url)
     end
 
 
@@ -99,14 +105,13 @@ class HomepageController < ApplicationController
       when "grid"
         [:location, :author, :listing_images, :num_of_reviews]
       when "list"
-        [:location, :author, :listing_images, :num_of_reviews]
+        [:location, :author, :listing_images, :num_of_reviews, :listing_variants]
       when "map"
         # [:location]
-        [:location, :author, :listing_images, :num_of_reviews]
+        [:location, :author, :listing_images, :num_of_reviews, :listing_variants]
       else
         raise ArgumentError.new("Unknown view_type #{@view_type}")
       end
-    @brand = Manufacturer.all
     @colors = ListingColor.all
 
     main_search = search_mode

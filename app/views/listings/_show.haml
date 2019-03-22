@@ -28,7 +28,10 @@
   .col-8.listing-details-container
     .row
       .col-12
-        %h1= @listing.title
+        - if @listings.present?
+          %h1= @listing.listing_variants.first.title
+        - else
+          %h1= @listing.title
     .row
       .col-12
         - with_image_frame(@listing) do |reason, listing_images|
@@ -129,7 +132,10 @@
           /   = select_tag "size", options_for_select(@listings.collect { |c| ["#{c.original_value if c.original_value.present?} #{c.listing_color.name if c.listing_color.present?}", c.listing_child_id]}), prompt: 'Please select', :class => "form-control", :id => 'size-change'
           .listing-price
             %span.listing-price-amount
-              = humanized_money_with_symbol(@listing.price).upcase
+              - if @listings.present? && @listing.listing_variants.count > 1 && !@list_type.present?
+                = "From $#{humanized_money(listing_price(@listing)).upcase}"
+              - else
+                = humanized_money_with_symbol(@listing.price).upcase
             - with_quantity_text(@current_community, @listing) do |text|
               %span.listing-price-quantity
                 = text
@@ -137,7 +143,7 @@
     .row-with-divider
       .col-12
         #listing-message-links
-          = render :partial => "listing_actions", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props, availability_enabled: availability_enabled }
+          = render :partial => "listing_actions", locals: { form_path: form_path, payment_gateway: payment_gateway, delivery_opts: delivery_opts, process: process, listing_unit_type: listing_unit_type, country_code: country_code, blocked_dates_end_on: blocked_dates_end_on, blocked_dates_result: blocked_dates_result, manage_availability_props: manage_availability_props, availability_enabled: availability_enabled, list_type: @list_type }
 
     .row-with-divider
       .col-12
