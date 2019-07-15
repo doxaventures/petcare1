@@ -40,6 +40,8 @@ class ListingVariant < ActiveRecord::Base
   LARGE = ["l","lg","jumbo","large","souper","super","wolf","heavy"].freeze
   EXTRA_LARGE = ["xl","x-lg","x-large","xxl","xx-lg","xx-large","colossal","giant","king","extra-heavy"].freeze          
 
+  #validates_numericality_of :oz_value, :only_integer => true, :message => "Value must be numeric", :allow_nil => true
+
   def self.to_csv(options = {})
     CSV.foreach("#{Rails.root}/tmp/filter/test_full.csv",encoding: "iso-8859-1:UTF-8", headers: true)  do |row|
       @listing = Listing.where(title: row["Keywords"]).first

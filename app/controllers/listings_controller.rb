@@ -280,7 +280,7 @@ class ListingsController < ApplicationController
     else
       @listing.build_origin_loc()
     end
-
+    @listing.build_child_variant
     form_content
   end
 
@@ -291,12 +291,15 @@ class ListingsController < ApplicationController
         @listing.build_origin_loc()
     end
 
+    unless @listing.child_variant
+      @listing.build_child_variant
+    end
+
     form_content
   end
 
   def create
     params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
-
     shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
     listing_uuid = UUIDUtils.create
 
@@ -341,7 +344,6 @@ class ListingsController < ApplicationController
         action_button_tr_key: shape[:action_button_tr_key],
         availability: shape[:availability]
     ).merge(unit_to_listing_opts(m_unit)).except(:unit)
-
     @listing = Listing.new(listing_params)
 
     ActiveRecord::Base.transaction do
@@ -349,7 +351,9 @@ class ListingsController < ApplicationController
 
       if @listing.save
         upsert_field_values!(@listing, params[:custom_fields])
-
+        if @listing.child_variant.present?
+          @listing.child_variant.update(listing_id: @listing.child_variant.listing_child_id) 
+        end
         listing_image_ids =
           if params[:listing_images]
             params[:listing_images].collect { |h| h[:id] }.select { |id| id.present? }
@@ -401,6 +405,10 @@ class ListingsController < ApplicationController
         @listing.build_origin_loc()
     end
 
+    unless @listing.child_variant
+      @listing.build_child_variant
+    end
+
     @custom_field_questions = @listing.category.custom_fields.where(community_id: @current_community.id)
     @numeric_field_ids = numeric_field_ids(@custom_field_questions)
 
@@ -442,6 +450,7 @@ class ListingsController < ApplicationController
       if @listing.origin_loc
         @listing.origin_loc.delete
       end
+  
     end
 
     shape = get_shape(params[:listing][:listing_shape_id])
@@ -567,6 +576,26 @@ class ListingsController < ApplicationController
 
   end
 
+  def parent_sku
+    @parent_sku = ListingVariant.where("parent_sku Is NOT NULL").limit(20).map(&:parent_sku).uniq
+    render json: @parent_sku
+  end
+
+  def redirect_aspx_url
+    if params["child"].present?
+      #get_ids = params["idproduct"].split('&').map { |e| e.split('=') }.to_h
+      @listing = Listing.where(product_id: params["child"])
+      if @listing.present?
+        redirect_to listing_path(@listing.first.id) 
+      else
+        redirect_to homepage_index_path
+      end
+    else
+      redirect_to homepage_index_path
+    end
+
+  end
+
   private
 
   def update_flash(old_availability:, new_availability:)
@@ -668,7 +697,6 @@ class ListingsController < ApplicationController
 
     shape = get_shape(Maybe(params)[:listing_shape].to_i.or_else(nil))
     process = get_transaction_process(community_id: @current_community.id, transaction_process_id: shape[:transaction_process_id])
-
     # PaymentRegistrationGuard needs this to be set before posting
     @listing.transaction_process_id = shape[:transaction_process_id]
     @listing.listing_shape_id = shape[:id]
@@ -975,8 +1003,8 @@ class ListingsController < ApplicationController
       shipping_price_additional_cents: params[:shipping_price_additional_cents],
       currency: params[:currency]
     )
-
-    add_location_params(listing_params, params)
+    location_params = add_location_params(listing_params, params)
+    add_variant(location_params, params)
   end
 
   def add_location_params(listing_params, params)
@@ -994,6 +1022,32 @@ class ListingsController < ApplicationController
 
       listing_params.merge(
         origin_loc_attributes: location_params
+      )
+    end
+  end
+
+  def add_variant(location_params, params)
+    if params[:child_variant_attributes].nil?
+      location_params
+    else
+      listing_variant_params = params[:child_variant_attributes].permit(
+        :id,
+        :parent_sku,
+        :sku_name,
+        :size_name,
+        :mixed_value,
+        :manufacturer_id,
+        :listing_color_id, 
+        :original_value, 
+        :inches_value, 
+        :oz_value, 
+        :lbs_value, 
+        :in_stock, 
+        :listing_id,
+        :style_value
+        )
+      location_params.merge(
+        child_variant_attributes: listing_variant_params
       )
     end
   end

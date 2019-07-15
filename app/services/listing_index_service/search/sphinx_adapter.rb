@@ -65,7 +65,7 @@ module ListingIndexService::Search
           conditions.merge!(:oz_value => oz_values)
         else
           values = search[:weight].split('-')
-          lb_values = (values.first.to_f..values.last.to_f).step(0.1).map{|f| f.round(2)}
+          lb_values = search[:weight].include?("40+ lbs.") ? (40.to_f..90.to_f).step(0.1).map{|f| f.round(2)} : (values.first.to_f..values.last.to_f).step(0.1).map{|f| f.round(2)}
           conditions.merge!(:lbs_value => lb_values)
         end
       end
@@ -97,7 +97,9 @@ module ListingIndexService::Search
         listing_ids = get_list_ids.present? ? get_list_ids : [999999999]
       else
         get_listing_ids = ListingVariant.where("parent_sku IS NULL").pluck(:listing_id).uniq
-        listing_ids = get_listing_ids.flatten.compact
+        child_ids = ListingVariant.where("parent_sku IS NOT NULL").pluck(:listing_child_id)
+        total_listing_ids = Listing.where("id NOT IN (?)",child_ids).pluck(:id)
+        listing_ids = (total_listing_ids | get_listing_ids).flatten.compact.uniq
       end
 
       if perform_numeric_search && numeric_search_match_listing_ids.empty?

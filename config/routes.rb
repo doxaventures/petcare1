@@ -36,6 +36,10 @@ Kassi::Application.routes.draw do
   if Rails.env.development?
     mount MailPreview => 'mail_view'
   end
+  Rails.application.config.redirect_aspx_root.each do |url|
+    get "/#{url}", to: 'listings#redirect_aspx_url'
+  end
+  
 
   # Some non-RESTful mappings
   post '/webhooks/paypal_ipn' => 'paypal_ipn#ipn_hook', as: :paypal_ipn_hook
@@ -380,6 +384,7 @@ Kassi::Application.routes.draw do
         get :terms
         get :privacy
         get :news
+        get :terms_and_conditions
       end
     end
     resource :terms do

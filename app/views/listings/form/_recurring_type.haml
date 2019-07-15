@@ -1,6 +1,7 @@
 .delivery-row-low
   .delivery-checkbox
-    = check_box_tag "listing[recurring_payment][#{recurring_type}]", "true",@listing.recurring_payment[recurring_type] ? true : false, :id => recurring_type, class: "delivery-method-checkbox"
+    = check_box_tag "listing[recurring_payment][#{recurring_type}]", "true",@listing.recurring_payment[recurring_type] ? true : false, :id => recurring_type, class: "delivery-method-checkbox" 
   .delivery-left-field
     = label_tag recurring_type.capitalize,recurring_type.capitalize,class: "shipping-options-label"
 %br
+

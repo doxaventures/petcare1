@@ -342,6 +342,9 @@
                 = t(".no_listings_notification",
                       add_listing_link: link_to(t(".add_listing_link_text"),
                       new_listing_path(ref: "add_listing_link"))).html_safe
+          = will_paginate(@listings)
+          - item_container = if @view_type.eql?("grid") then '.home-fluid-thumbnail-grid' else '.home-listings' end
+          = pageless(@listings.total_pages, item_container, current_search_path_without_page, t('.loading_more_content'), current_page)
         .home-map.hidden-mobile.mpheight.col-2#sidebar
           = render :partial => "map", locals: { viewport: viewport }                      
 

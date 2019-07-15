@@ -1,0 +1,45 @@
+-# content_for :extra_javascript do
+  :javascript
+    $(function() {
+      $("#parent_sku").autocomplete({
+        source: "/parent_sku",
+        min_length: 2,
+      });
+    });
+
+= form.fields_for :child_variant, @listing.child_variant do |variants|
+  .col-12
+    =# variants.label :sku
+    =# variants.text_field :sku_name 
+    =# variants.label :parent_sku
+    =# render partial: "layouts/info_text", locals: { text: t("listings.form.variants.parent_info") }
+    =# variants.text_field :parent_sku, :id => "parent_sku"
+    = variants.label :color,t("listings.form.variants.color")
+    = variants.select  :listing_color_id, ListingColor.all.limit(20).collect { |p| [ p.name, p.id ]}, {:include_blank => "Please select"}, {:class => 'form-control select-option'}
+    = variants.label :size, t("listings.form.variants.size")
+    = variants.select :size_name, ListingVariant.sizes.collect{|x,y| [x.titleize,x]}, {:include_blank => "Please select"}, {:class => 'form-control select-option'}
+    = label_tag :weight
+  .col-12
+    .col-4.variant-label
+      = variants.label :oz_value, t("listings.form.variants.oz_value")
+    .col-8
+      = variants.text_field :oz_value   
+  .col-12.row-variant
+    .col-4.variant-label
+      = variants.label :lbs, t("listings.form.variants.lbs_value")
+    .col-8
+      = variants.text_field :lbs_value
+  .col-12
+    = label_tag :length
+    .col-4.variant-label
+      = variants.label :inches_value, t("listings.form.variants.inches_value")
+    .col-8
+      = variants.text_field :inches_value
+    - unless @listing.child_variant.listing_id.present?
+      = variants.hidden_field :listing_id, :value => @listing.child_variant.listing_child_id
+    - unless @current_user.username.eql?("petstore") && @listing.child_variant.manufacuterer_id.present?
+      = variants.hidden_field :manufacturer_id, :value => 1
+
+  =# variants.label :other_value, t("listings.form.variants.other_value")
+  =# variants.text_field :original_value
+  %br

@@ -24,8 +24,20 @@
 
       var $form = $('#transaction-form');
 
-      $("#transaction-form").validate();
-      
+      //$("#transaction-form").validate();
+      $('#transaction-form').validate({
+        ignore: [],
+        errorPlacement: function() {},
+        invalidHandler: function() {
+          setTimeout(function() {
+            $('.nav-tabs a small.required').remove();
+            var validatePane = $('.tab-content .tab-pane:has(input.error)').each(function() {
+              var id = $(this).attr('id');
+              $('.nav-tabs').find('a[href^="#' + id + '"]').append(' <small class="required">required***</small>');
+            });
+          });            
+        },
+      });
         if (response.error) {
 
           // Problem!
@@ -54,8 +66,8 @@
 
     $(document).ready(function() {
       var stripePaymentForm = $("#transaction-form");
-      initialize_stripe_preauthorize_form("#{I18n.locale}", function beforeSubmit(next) {
-      });
+      //initialize_stripe_preauthorize_form("#{I18n.locale}", function beforeSubmit(next) {
+      //});
 
       stripePaymentForm.show();
     });
@@ -65,6 +77,7 @@
 
 - content_for :javascript do
   initialize_send_message_form('#{I18n.locale}');
+  
 
 - content_for :title_header do
   %h1
@@ -111,6 +124,10 @@
       .preauthorize-section
         %p
           = t("listing_conversations.preauthorize.subscription_message", transaction: link_to("here",upcoming_transactions_person_settings_path(@current_user))).html_safe
+    - if notice
+      %p.alert.alert-success= notice
+    - if alert
+      %p.alert.alert-danger= alert
 
     .preauthorize-section
       %h2
@@ -134,41 +151,82 @@
 
       - if delivery_method
         = hidden_field_tag :delivery, delivery_method
-        
-    
-    .preauthorize-section 
-      %h2= t("shipping_address.shipping_address")
-      .row
-        .col-12
-          %label= t("shipping_address.name")
-          = text_field_tag 'shipping_address[name]', '', class: 'required'
 
-      .row
-        .col-12
-          %label= t("shipping_address.phone")
-          = text_field_tag 'shipping_address[phone]', '', class: 'required'
+    -if @listing.require_shipping_address    
+      %ul.nav.nav-tabs
+        %li.active
+          %a{"data-toggle" => "tab", :href => "#billing"} Billing address
+        %li
+          %a{"data-toggle" => "tab", :href => "#shipping"} Shipping address
+      .tab-content
+        #billing.tab-pane.active
+          .preauthorize-section 
+            -#%h2= t("shipping_address.shipping_address")
+            .row
+              .col-12
+                %label= "Billing Name*"
+                = text_field_tag 'billing_address[name]', '', class: 'required'
+            .row
+              .col-12
+                %label= t("shipping_address.phone")
+                = text_field_tag 'billing_address[phone]', '', class: 'required'
 
-      .row
-        .col-12
-          %label= t("shipping_address.address1")
-          = text_field_tag 'shipping_address[street1]', '', class: 'required'
-      .row
-        .col-12
-          %label= t("shipping_address.address2")
-          = text_field_tag 'shipping_address[street2]', ''
+            .row
+              .col-12
+                %label= t("shipping_address.address1")
+                = text_field_tag 'billing_address[street1]', '', class: 'required'
+            .row
+              .col-12
+                %label= t("shipping_address.address2")
+                = text_field_tag 'billing_address[street2]', ''
 
-      .row
-        .col-12
-          %label= t("shipping_address.city")
-          = text_field_tag 'shipping_address[city]', '', class: 'required'
+            .row
+              .col-12
+                %label= t("shipping_address.city")
+                = text_field_tag 'billing_address[city]', '', class: 'required'
 
-      .row
-        .col-7
-          %label= t("shipping_address.state")
-          = text_field_tag 'shipping_address[state_or_province]', '', class: 'required'
-        .col-5
-          %label= t("shipping_address.zipcode")
-          = text_field_tag 'shipping_address[postal_code]', '', class: 'required'
+            .row
+              .col-7
+                %label= t("shipping_address.state")
+                = text_field_tag 'billing_address[state_or_province]', '', class: 'required'
+              .col-5
+                %label= t("shipping_address.zipcode")
+                = text_field_tag 'billing_address[postal_code]', '', class: 'required', :'data-stripe' => "address_zip"
+
+        #shipping.tab-pane
+          .preauthorize-section 
+            -#%h2= t("shipping_address.shipping_address")
+            .row
+              .col-12
+                %label= t("shipping_address.name")
+                = text_field_tag 'shipping_address[name]', '', class: 'required'
+
+            .row
+              .col-12
+                %label= t("shipping_address.phone")
+                = text_field_tag 'shipping_address[phone]', '', class: 'required'
+
+            .row
+              .col-12
+                %label= t("shipping_address.address1")
+                = text_field_tag 'shipping_address[street1]', '', class: 'required'
+            .row
+              .col-12
+                %label= t("shipping_address.address2")
+                = text_field_tag 'shipping_address[street2]', ''
+
+            .row
+              .col-12
+                %label= t("shipping_address.city")
+                = text_field_tag 'shipping_address[city]', '', class: 'required'
+
+            .row
+              .col-7
+                %label= t("shipping_address.state")
+                = text_field_tag 'shipping_address[state_or_province]', '', class: 'required'
+              .col-5
+                %label= t("shipping_address.zipcode")
+                = text_field_tag 'shipping_address[postal_code]', '', class: 'required'
 
     .row
       .col-12

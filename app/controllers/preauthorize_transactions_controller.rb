@@ -353,6 +353,7 @@ class PreauthorizeTransactionsController < ApplicationController
       tx_response = create_preauth_transaction(
         payment_type: :stripe,
         shipping_address: params[:shipping_address],
+        billing_address: params[:billing_address],
         community: @current_community,
         listing: listing,
         listing_quantity: quantity,
@@ -441,7 +442,7 @@ class PreauthorizeTransactionsController < ApplicationController
 
   def handle_tx_response(tx_response)
     if !tx_response[:success]
-      render_error_response(request.xhr?, t("error_messages.paypal.generic_error"), action: :initiate)
+      render_error_response(request.xhr?, tx_response[:error_msg], action: :initiate)
     elsif (tx_response[:data][:gateway_fields][:redirect_url])
       if request.xhr?
         render json: {
@@ -512,8 +513,8 @@ class PreauthorizeTransactionsController < ApplicationController
     if is_xhr
       render json: { error_msg: error_msg }
     else
-      flash[:error] = error_msg
-      redirect_to(redirect_params)
+      #flash.now[:notice] = error_msg
+      redirect_to redirect_params, alert: error_msg
     end
   end
 
@@ -566,8 +567,7 @@ class PreauthorizeTransactionsController < ApplicationController
   end
 
   def create_preauth_transaction(opts)
-    gateway_fields = { stripeToken: opts[:stripeToken], shipping_address: opts[:shipping_address]}
-
+    gateway_fields = { stripeToken: opts[:stripeToken], shipping_address: opts[:shipping_address], billing_address: opts[:billing_address]}
      @discount = listing_discount(opts[:subscription_type],opts[:listing])
       if @discount.present?
         discount = (@discount.to_f / 100) * opts[:listing].price_cents

@@ -459,6 +459,10 @@ window.ST = window.ST || {};
           error.insertAfter($(".shipping-price-default"));
         } else if (element.attr("name") == "listing[shipping_price_additional]") {
           error.insertAfter($(".js-shipping-price-additional"));
+        } else if (element.attr("name") == "listing[child_variant_attribute][oz_value]") {
+          error.insertAfter(element);
+        } else if (element.attr('name') == "listing_images[][id]") {
+          error.insertAfter($("#image-uploader-container"));
         } else {
           error.insertAfter(element);
         }
@@ -470,7 +474,11 @@ window.ST = window.ST || {};
         "listing[price]": {required: pr, money: true, minimum_price_required: [minimum_price, subunit_to_unit]},
         "listing[shipping_price]": {money: true},
         "listing[shipping_price_additional]": {money: true},
-        "listing[valid_until(1i)]": { min_date: true, max_date: true }
+        "listing[valid_until(1i)]": { min_date: true, max_date: true },
+        "listing[child_variant_attributes][oz_value]": {number_min:1, number_max:100},
+        "listing[child_variant_attributes][lbs_value]": {number_min:1, number_max:100},
+        "listing[child_variant_attributes][inches_value]": {number_min:1, number_max:100},
+        "listing_images[][id]": {required: true}
       }),
       messages: {
         "listing[valid_until(1i)]": { min_date: date_message, max_date: date_message },

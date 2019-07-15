@@ -770,6 +770,7 @@ en:
     exp_year: Expiry Year (YY)
     cvc: CVC
     confirm_payment: Confirm Payment
+    zip_code: Zip Code
   feedback:
     feedback_subject: "New feedback from %{service_name}"
     feedback_body: "%{author_name_and_email} has sent the following feedback from %{service_name}"
@@ -1237,6 +1238,7 @@ en:
       news: News
       register_details: Privacy
       terms: "Terms of use"
+      terms_and_conditions: "Terms and Conditions"
     logged_in:
       admin: Admin
       go_to_your_profile_page: Profile
@@ -1527,6 +1529,15 @@ en:
         public: "Public (visible to users who are not logged in)"
       service_time:
         time: "Service Available"
+      variants:
+        color: "Color"
+        size: "Size"
+        sku_name: "Sku Name"
+        oz_value: "Oz:"
+        inches_value: "Inches:"
+        lbs_value: "Lbs:"
+        other_value: "Others"
+        parent_info: "If this listing is belong to any parent listing please select parent SKU name"
     help_texts:
       help_share_type_title: "Type of the offer or request"
       help_tags_title: Tags
@@ -2072,6 +2083,8 @@ en:
     name: "Name*"
     phone: "Phone number*"
     state: "State*"
+  billing_address:
+    billing_address: "Billing address"
 
 
   tag_cloud:

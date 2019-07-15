@@ -29,6 +29,11 @@ class InfosController < ApplicationController
     @selected_left_navi_link = "privacy"
   end
 
+  def terms_and_conditions
+    @selected_tribe_navi_tab = "about"
+    @selected_left_navi_link = "terms_and_conditions"
+  end
+
   private
 
   def how_to_use_content?

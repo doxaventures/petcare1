@@ -299,6 +299,7 @@ module TransactionService::Transaction
         charged_commission: payment[:charged_commission],
         payment_gateway_fee: payment[:payment_gateway_fee],
         shipping_address: tx[:shipping_address],
+        billing_address: tx[:billing_address],
         subscription_type: tx[:subscription_type],
         subscription: tx[:subscription],
         booking: tx[:booking],

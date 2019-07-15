@@ -31,6 +31,13 @@ module TransactionService::Gateway
           addr: gateway_fields[:shipping_address])
       end
 
+      if gateway_fields[:billing_address].present?
+        TransactionStore.upsert_billing_address(
+          community_id: tx[:community_id],
+          transaction_id: tx[:id],
+          addr: gateway_fields[:billing_address])
+      end
+
       result, error = StripeSaleService.new(payment, gateway_fields).pay(false)
       
       if result and result.status == "succeeded"

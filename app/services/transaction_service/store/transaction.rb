@@ -2,6 +2,7 @@ module TransactionService::Store::Transaction
 
   TransactionModel = ::Transaction
   ShippingAddressModel = ::ShippingAddress
+  BillingAddressModel = ::BillingAddress
 
   NewTransaction = EntityUtils.define_builder(
     [:community_id, :fixnum, :mandatory],
@@ -62,6 +63,7 @@ module TransactionService::Store::Transaction
     [:last_transition_at, :time],
     [:current_state, :to_symbol],
     [:shipping_address, :hash],
+    [:billing_address, :hash],
     [:booking_uuid, :uuid, transform_with: UUIDUtils::PARSE_RAW],
     [:booking, :hash],
     [:subscription_type, :string, :optional],
@@ -70,6 +72,18 @@ module TransactionService::Store::Transaction
     [:service_time, :array])
 
   ShippingAddress = EntityUtils.define_builder(
+    [:status, :string],
+    [:name, :string],
+    [:phone, :string],
+    [:street1, :string],
+    [:street2, :string],
+    [:postal_code, :string],
+    [:city, :string],
+    [:state_or_province, :string],
+    [:country, :string],
+    [:country_code, :string])
+
+  BillingAddress = EntityUtils.define_builder(
     [:status, :string],
     [:name, :string],
     [:phone, :string],
@@ -155,6 +169,13 @@ module TransactionService::Store::Transaction
       .or_else { nil }
   end
 
+  def upsert_billing_address(community_id:, transaction_id:, addr:)
+    Maybe(TransactionModel.where(id: transaction_id, community_id: community_id).first)
+      .map { |m| BillingAddressModel.where(transaction_id: m.id).first_or_create!(transaction_id: m.id) }
+      .map { |a| a.update_attributes!(addr_fields(addr)) }
+      .or_else { nil }
+  end
+
   def delete(community_id:, transaction_id:)
     Maybe(TransactionModel.where(id: transaction_id, community_id: community_id).first)
       .each { |m| m.update_attribute(:deleted, true) }
@@ -182,6 +203,7 @@ module TransactionService::Store::Transaction
                .merge({unit_price: m.unit_price, minimum_commission: m.minimum_commission, shipping_price: m.shipping_price })
 
         hash = add_opt_shipping_address(hash, m)
+        hash = add_opt_billing_address(hash, m)
         hash = add_opt_booking(hash, m)
 
         hash
@@ -193,6 +215,14 @@ module TransactionService::Store::Transaction
   def add_opt_shipping_address(hash, m)
     if m.shipping_address
       hash.merge({shipping_address: ShippingAddress.call(EntityUtils.model_to_hash(m.shipping_address)) })
+    else
+      hash
+    end
+  end
+
+  def add_opt_billing_address(hash, m)
+    if m.billing_address
+      hash.merge({billing_address: BillingAddress.call(EntityUtils.model_to_hash(m.billing_address)) })
     else
       hash
     end

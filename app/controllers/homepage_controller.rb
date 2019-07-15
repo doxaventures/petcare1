@@ -56,9 +56,11 @@ class HomepageController < ApplicationController
     end
 
     if params[:sub_category].present?
-      @brand = Listing.where(category_id: selected_category[:id]).collect{|x| x.listing_variants.first.manufacturer if (x.listing_variants.present? && x.listing_variants.first.manufacturer.present?) }.uniq.compact
+      brands = Listing.where(category_id: selected_category[:id]).collect{|x| x.listing_variants.first.manufacturer if (x.listing_variants.present? && x.listing_variants.first.manufacturer.present?) }.uniq.compact
+      @brand =  brands.select{|e| e.name == "Homemade"} + brands.select{|e| e.name != "Homemade"}.sort_by(&:name)
     else
-      @brand = Manufacturer.all
+      #@brand = Manufacturer.all
+      @brand = Manufacturer.where("name =?","Homemade") + Manufacturer.where("name !=?","Homemade").sort_by(&:name)
     end
     
     if params["brand"].present?

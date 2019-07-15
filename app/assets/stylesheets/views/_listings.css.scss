@@ -259,9 +259,24 @@ $listing-author-avatar-height: 108;
 }
 
 //css given by petcare
+#transaction_status .conversation-status .inbox-horizontally-aligned-status{ display:block;}
+#transaction_status .conversation-status .inbox-horizontally-aligned-status .icon-with-text-container{width:100%;}
 
+#transaction_status .icon-with-text-container .text-part{padding-left:1.6em !important; padding-top:0.2em !important; padding-right:0.5em;}
+.conversation-status .inbox-horizontally-aligned-link a{ padding:0 1em 0 0.2em;}
+.conversation-status .inbox-horizontally-aligned-link a.cancel{padding:0 1em 0 0.2em;}
+.conversation-status .inbox-horizontally-aligned-link a.confirm{padding:0 1em 0 0.2em;}
+#transaction_status .icon-with-text-container .icon-part{font-size:18px;left:0;}
+#transaction_status .icon-with-text-container .text-part{font-weight:normal;}
+#transaction_status .icon-with-text-container{ background:#798899 !important;}
+#transaction_status .icon-with-text-container a{color:#fff !important; font-weight:600;}
+#transaction_status .status-links a.confirm .text-with-icon{color:#6f9228!important;}
+#transaction_status .status-links a.confirm .icon-with-text{color:#6f9228!important; font-size:18px;padding-right:0;}
+#transaction_status .status-links a.cancel{background:#eea09e;}
+#transaction_status .status-links a.cancel .text-with-icon{color:#fff !important;}
+#transaction_status .status-links a.cancel .icon-with-text{font-size:18px;padding-right:0;} 
 #transaction_status [class^="icon-"] {
-  background: #DCC7AA !important;
+  background:transparent;
   color: #fff;
   border-radius: 5px;
   display: inline-block;
@@ -281,7 +296,48 @@ $listing-author-avatar-height: 108;
   position: absolute;
   top: 0.125em;
   left: 2px;
-  font-size: 14px !important;
   background: none !important;
 }
+@media all and (max-width:767px){
+.sub-discount .col-6{width:50%; float:left;}
+}
+@media all and (max-width:330px){
+.percentage-value b {float:right; padding-top:10px;}
+}
 
+.select-option{
+  color: #3c3c3c !important;
+}
+
+.variant-label{
+  color: #898686 !important;
+}
+
+.row-variant{
+  margin-top: 10px !important;
+}
+
+ul.ui-autocomplete {
+  max-height:280px;
+  overflow-y:auto;
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: solid 1px #999;
+  cursor: default;
+  li {
+    background-color: #FFF;
+    border-top: solid 1px #DDD;
+    margin: 0;
+    padding: 6px 10px 1px 10px;
+    a {
+      color: #000;
+      display: block;
+      padding: 3px;
+    }
+    a.ui-state-hover, a.ui-state-active {
+      background-color: #FFFCB2;
+    }
+  }
+}

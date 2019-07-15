@@ -182,7 +182,7 @@ window.ST.imageUploader = function(listings, opts) {
   var elementManager = ST.imageUploadElementManager($("#image-uploader-container"));
   var directUploadToS3 = !!opts.s3Fields && !!opts.s3UploadPath;
 
-  var extraPlaceholders = 2;
+  var extraPlaceholders = 0;
 
   var renderS3Uploader = (function() {
     var i = 0;

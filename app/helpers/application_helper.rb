@@ -291,11 +291,17 @@ module ApplicationHelper
       :path => privacy_infos_path,
       :name => "privacy"
     }
+    # links << {
+    #   :text => t('layouts.infos.terms'),
+    #   :icon_class => icon_class("terms"),
+    #   :path => terms_infos_path,
+    #   :name => "terms"
+    # }
     links << {
-      :text => t('layouts.infos.terms'),
+      :text => t('layouts.infos.terms_and_conditions'),
       :icon_class => icon_class("terms"),
-      :path => terms_infos_path,
-      :name => "terms"
+      :path => terms_and_conditions_infos_path,
+      :name => "terms_and_conditions"
     }
   end
 

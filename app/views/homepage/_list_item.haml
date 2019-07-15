@@ -17,7 +17,7 @@
           %p.bodycopyitl= listing.address
         .list-task
           = link_to listing_path(listing.url) do
-            - if listing.listing_variants.present?
+            - if listing.listing_variants.present? && listing.listing_variants.first.title.present?
               = justifY_string(listing.listing_variants.first.title, 60)
             - else
               = justifY_string(listing.title, 60)

@@ -17,6 +17,7 @@ require File.expand_path('../../lib/sharetribe_logger', __FILE__)
 # Load the deprecator
 require File.expand_path('../../lib/method_deprecator', __FILE__)
 
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -238,6 +239,9 @@ module Kassi
     # TODO Remove this when upgrading to RAILS 5 END
 
     config.active_job.queue_adapter = :delayed_job
+
+    config.redirect_aspx_root = ['ps_viewitem.aspx']
+
 
     # TODO remove deprecation warnings when removing legacy analytics
     ActiveSupport::Deprecation.warn("Support for Kissmetrics is deprecated, please use Google Tag Manager instead") if APP_CONFIG.use_kissmetrics.to_s == "true"

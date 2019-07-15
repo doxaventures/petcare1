@@ -32,6 +32,7 @@ module TransactionService::DataTypes::Transaction
     [:charged_commission, :money],
     [:payment_gateway_fee, :money],
     [:shipping_address, :hash],
+    [:billing_address, :hash],
     [:subscription_type, :string, :optional],
     [:subscription, :to_bool, default: false],
     [:service_time, :array, :optional],

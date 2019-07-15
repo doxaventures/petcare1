@@ -227,7 +227,7 @@ class PersonMailer < ActionMailer::Base
     subject = t("feedback.feedback_subject", service_name: community.name(I18n.locale))
 
     premailer_mail(
-      :to => mail_feedback_to(community, APP_CONFIG.feedback_mailer_recipients),
+      :to => "sales@petstore.com", #mail_feedback_to(community, APP_CONFIG.feedback_mailer_recipients),
       :from => community_specific_sender(community),
       :subject => subject,
       :reply_to => feedback.email) do |format|

@@ -1,4 +1,4 @@
-.col-12
+.col-12.sub-discount.percentage-value
   .col-6
     = form.label :Subscription_recurrence
     = render :partial => "listings/form/recurring_type", :collection => Listing::RECURRING_TYPES, :as => :recurring_type
@@ -6,22 +6,18 @@
     = form.label :discount
   %br
     = form.number_field :weekly_discount, :class => "price-field", disabled: true, in: 0..100
-    .price-currency
-      %b= "%"
+    %b= "%"
   %br
     = form.number_field :bi_weekly_discount, :class => "price-field", disabled: true, in: 0..100
-    .price-currency
-      %b= "%"
+    %b= "%"
   %br
     = form.number_field :monthly_discount, :class => "price-field", disabled: true, in: 0..100
-    .price-currency
-      %b= "%"
+    %b= "%"
   %br
     = form.number_field :quarterly_discount, :class => "price-field", disabled: true, in: 0..100
-    .price-currency
-      %b= "%"
+    %b= "%"
   %br
-
+%br
 - content_for :discount_js do
   :javascript
     $('.delivery-method-checkbox').click(function() {

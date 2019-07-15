@@ -22,6 +22,7 @@
 #  search_placeholder                         :string(255)
 #  transaction_agreement_label                :string(255)
 #  transaction_agreement_content              :text(16777215)
+#  terms_and_condtions                        :text(65535)
 #
 # Indexes
 #
@@ -46,7 +47,8 @@ class CommunityCustomization < ActiveRecord::Base
     :verification_to_post_listings_info_content,
     :search_placeholder,
     :transaction_agreement_label,
-    :transaction_agreement_content
+    :transaction_agreement_content,
+    :terms_and_condtions
 
   # Set sane limits for content length. These are either driven by
   # column length in MySQL or, in case of :mediumtext type, set low

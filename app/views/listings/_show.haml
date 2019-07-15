@@ -28,15 +28,15 @@
   .col-8.listing-details-container
     .row
       .col-12
-        - if @listings.present?
+        - if @listings.present? && @listing.listing_variants.count > 1
           %h1= @listing.listing_variants.first.title
         - else
           %h1= @listing.title
-    .row
-      .col-12
+
         - with_image_frame(@listing) do |reason, listing_images|
           - if reason == :images_ok
-            .listing-image-carousel{style: "padding-bottom: 0px;"}
+            .listing-image-carousel
+              #listing-image-frame
               - if @prev_image_id && @next_image_id
                 = link_to params.merge(image: @prev_image_id), class: "listing-image-navi listing-image-navi-left", id: "listing-image-navi-left" do
                   .listing-image-navi-arrow-container
@@ -46,15 +46,21 @@
                   .listing-image-navi-arrow-container
                     .listing-image-arrow-icon-container.right
                       = icon_tag("directright", ["navigate-icon-fix", "listing-image-navi-arrow"])
-              .listing-image-vertical-centering.list-image-style
-                = image_tag @listing.listing_images.first.image
-
-            -# content_for :extra_javascript do
+                =# image_tag @listing.listing_images.first.image
+            #thumbnail-stripe.listing-image-thumbnail-stripe
+            - if request.xhr? 
               :javascript
                 var listingImages = #{listing_images.map { |image| ListingImageJSAdapter.new(image) }.to_json }
                 var currentImage = #{params[:image].present? ? params[:image].to_i : listing_images.first.id};
                 console.log(listingImages);
                 ST.listingImages(listingImages, currentImage);
+            - else
+              - content_for :extra_javascript do
+                :javascript
+                  var listingImages = #{listing_images.map { |image| ListingImageJSAdapter.new(image) }.to_json }
+                  var currentImage = #{params[:image].present? ? params[:image].to_i : listing_images.first.id};
+                  console.log(listingImages);
+                  ST.listingImages(listingImages, currentImage);
                
           - else
             .listing-image-text-container
