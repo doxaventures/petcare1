@@ -309,8 +309,8 @@ en:
           paid: Paid
           confirmed: Confirmed
           canceled: Canceled
-          initiated: "Waiting PayPal payment"
-          pending_ext: "Waiting PayPal payment"
+          initiated: "Waiting Stripe payment"
+          pending_ext: "Waiting Stripe payment"
         not_available: "Not available"
       product_feed:
         products: "Upload Products Feed"

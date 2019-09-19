@@ -174,7 +174,7 @@
             .row
               .col-12
                 %label= t("shipping_address.address1")
-                = text_field_tag 'billing_address[street1]', '', class: 'required'
+                = text_field_tag 'billing_address[street1]', '', class: 'required', :'data-stripe' => "address_line1"
             .row
               .col-12
                 %label= t("shipping_address.address2")

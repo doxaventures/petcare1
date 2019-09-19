@@ -23,6 +23,7 @@ Kassi::Application.routes.draw do
   # That's why there's the constraints in generate URL to accept host
   # parameter with dots
   #
+  get "/sitemap.xml"                        => "sitemap#sitemap", format: :xml
   get "/sitemap.xml.gz"                        => "sitemap#sitemap", format: :xml
   get "/sitemap/:sitemap_host/generate.xml.gz" => "sitemap#generate", format: :xml, :constraints => { sitemap_host: /[.\-\w]+/ }
 

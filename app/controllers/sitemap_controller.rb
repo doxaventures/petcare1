@@ -145,6 +145,8 @@ class SitemapController < ActionController::Metal
         open_listings.each do |l|
           add listing_path(id: l[:id]), lastmod: l[:lastmod]
         end
+        add '/infos/about', :changefreq => 'daily'
+        add '/infos/terms_and_conditions', :changefreq => 'daily'
       end
 
       compressed = ActiveSupport::Gzip.compress(adapter.data)
