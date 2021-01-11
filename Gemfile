@@ -200,7 +200,7 @@ gem 'uuidtools', '~> 2.1'
 gem 'transit-ruby', '~> 0.8'
 
 # Markdown parser
-gem 'redcarpet', '~> 3.3', '>= 3.3.4'
+gem 'redcarpet', '~> 3.5'
 gem 'geocoder'
 gem 'stripe'
 gem 'daemons'
