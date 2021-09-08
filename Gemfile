@@ -148,7 +148,7 @@ group :development do
   gem 'annotate', "~> 2.6.5"
   gem 'zeus', '~> 0.15.4', require: false
   gem 'quiet_assets', "~> 1.1.0"
-  gem 'better_errors', "~> 2.1.1"
+  gem 'better_errors', "~> 2.8.0"
   gem 'web-console', '~> 2.0'
   gem 'awesome_print', '~> 1.6.1'
   gem 'letter_opener'
